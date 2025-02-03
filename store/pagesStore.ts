@@ -258,7 +258,7 @@ export const usePagesStore = defineStore('pages', () => {
       icon: 'Folder'
     },
     {
-      id: 29,
+      id: 30,
       parentId: 4,
       url: '/racing',
       title: 'Racing',
@@ -268,7 +268,7 @@ export const usePagesStore = defineStore('pages', () => {
       icon: 'Folder'
     },
     {
-      id: 29,
+      id: 31,
       parentId: 4,
       url: '/simulator',
       title: 'Simulator',
@@ -278,7 +278,7 @@ export const usePagesStore = defineStore('pages', () => {
       icon: 'Folder'
     },
     {
-      id: 24,
+      id: 32,
       parentId: 4,
       url: '/strategy',
       title: 'Strategy',
@@ -288,7 +288,17 @@ export const usePagesStore = defineStore('pages', () => {
       icon: 'Folder'
     },
     {
-      id: 25,
+      id: 33,
+      parentId: 4,
+      url: '/file/readme.txt',
+      title: 'readme.txt',
+      h1: 'readme.txt',
+      metaDescription: '',
+      content: [],
+      icon: 'FileText'
+    },
+    {
+      id: 34,
       parentId: 22,
       url: '/fallout',
       title: 'Fallout',
@@ -298,7 +308,7 @@ export const usePagesStore = defineStore('pages', () => {
       icon: 'AppWindow'
     },
     {
-      id: 26,
+      id: 35,
       parentId: 22,
       url: '/fallout2',
       title: 'Fallout 2',

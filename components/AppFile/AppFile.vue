@@ -11,7 +11,9 @@ const isFullScreen = ref<boolean>(false)
 const isHidden = ref<boolean>(false)
 
 const pages = computed(() => pagesStore.pages);
-const currentPage = computed(() => pages.value.find(page => page.url === '/' + route.path.split('/').pop()));
+const currentPage = computed(() => pages.value.find(page => {
+  return page.url.replace('/file', '') === '/' + route.path.split('/').pop()
+}));
 
 watch(
   () => route.fullPath,
@@ -19,7 +21,7 @@ watch(
 )
 
 function closeWindow(): void {
-  const routesArr = route.path.split('/')
+  const routesArr = route.path.replace('/file', '').split('/')
   routesArr.splice(routesArr.length - 1, 1)
   router.push(routesArr.join('/'))
 }
@@ -34,12 +36,31 @@ function fullScreen(): void {
   isFullScreen.value = !isFullScreen.value
 }
 
+function isCursorPointer(): boolean {
+  // const el = document.querySelector('.content-folder')
+  // console.log(el)
+  //
+  // return false
+}
+
+watch(
+  () => document.querySelector('.content-folder')?.classList,
+  () => {
+    console.log('aaaaaaa')
+  },
+  { root: true }
+)
+
 </script>
 
 <template>
   <div
     class="content-file"
-    :class="{ 'content-file_full-screen': isFullScreen, 'content-file_hidden': isHidden }"
+    :class="{
+      'content-file_full-screen': isFullScreen,
+      'content-file_hidden': isHidden,
+      'content-file_cursor-pointer': isCursorPointer(),
+    }"
     @click="() => $bus.$emit('resetFront', false)"
   >
     <header class="title-bar">
@@ -56,7 +77,7 @@ function fullScreen(): void {
           <Minimize2 v-else :size="8" :strokeWidth="5" color="#31322d"/>
         </div>
       </div>
-      <h1 class="title">{{ currentPage.title }}</h1>
+      <h1 class="title">{{ currentPage?.title }}</h1>
     </header>
 
     <section class="content-wrapper">
@@ -69,7 +90,7 @@ function fullScreen(): void {
         </div>
 
         <footer class="status-bar">
-          {{ route.fullPath }}
+          {{ route.fullPath.replace('/file', '') }}
         </footer>
       </div>
     </section>
@@ -92,6 +113,9 @@ function fullScreen(): void {
 
   position: fixed;
 
+  &_cursor-pointer {
+    cursor: pointer;
+  }
   &_full-screen {
     box-shadow: none;
     height: 100vh;
@@ -123,6 +147,7 @@ function fullScreen(): void {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 44px;
 
   position: relative;
   padding: 10px 12px 10px 84px;

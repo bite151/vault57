@@ -13,19 +13,20 @@ const pagesStore = usePagesStore()
 const pages = computed(() => pagesStore.pages);
 const currentPage = computed(() => pages.value.find(page => {
   if (route.params.folder) {
-    return page.url === '/' + route.params.folder
+    return page.url.replace('/file', '') === '/' + route.params.folder
   }
-  const routesArr = route.path.split('/')
-  return page.url === '/' + routesArr[routesArr.length - 1]
+  const routesArr = route.path.replace('/file', '').split('/')
+  const level = !route.params.file ? 1 : 2
+  return page.url.replace('/file', '') === '/' + routesArr[routesArr.length - level]
 }));
 
 const breadCrumbs = computed(() => {
-  const routesArr = route.path.split('/')
+  const routesArr = route.path.replace('/file', '').split('/')
   if (route.params.file) {
     routesArr.splice(routesArr.length - 1, 1)
   }
   routesArr.splice(0, 1)
-  return routesArr.map(item => pages.value.find(page => page.url === '/' + item).url).join('')
+  return routesArr.map(item => pages.value.find(page => page.url.replace('/file', '') === '/' + item).url).join('')
 })
 
 $bus.$on('resetFront', () => isOnFront.value = false)
@@ -56,6 +57,7 @@ function toFront(): void {
       'content-folder_full-screen': isFullScreen,
       'content-folder_hidden': isHidden,
       'content-folder_front': isOnFront,
+      'content-folder_cursor-pointer': !isOnFront && route.params.file
     }"
     @click="toFront()"
   >
@@ -105,11 +107,13 @@ function toFront(): void {
   background-color: #f5f5f5;
   border: 3px solid #31322d;
   border-radius: 12px;
-  //box-shadow: 20px 20px 0 0 #31322d;
   box-shadow: 20px 20px 0 0 rgba(#31322d, .7);
 
   //position: fixed;
 
+  //&_cursor-pointer {
+  //  cursor: pointer;
+  //}
   &_full-screen {
     box-shadow: none;
     height: 100vh;
@@ -145,6 +149,7 @@ function toFront(): void {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 44px;
 
   position: relative;
   padding: 10px 12px 10px 84px;

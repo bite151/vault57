@@ -44,21 +44,23 @@ function isActive(url: string) {
   </EmptyFolder>
 
   <div class="files" v-else>
-    <nuxt-link
-      v-for="item in child"
-      :to="generateUrl(item)"
-      :key="item.id"
-      class="file"
-      active-class="file_active"
-      @click="resetFrontPosition()"
+    <div class="file"
+       v-for="item in child"
+       :key="item.id"
     >
-      <AsyncIcon
-        :name="item.icon"
-        :size="52"
-        :strokeWidth="1"
-      />
-      <p>{{ item.title }}</p>
-    </nuxt-link>
+      <nuxt-link
+        :to="generateUrl(item)"
+        active-class="file_active"
+        @click="resetFrontPosition()"
+      >
+        <AsyncIcon
+          :name="item.icon"
+          :size="52"
+          :strokeWidth="1"
+        />
+        <p>{{ item.title }}</p>
+      </nuxt-link>
+    </div>
   </div>
 </template>
 
@@ -72,15 +74,21 @@ function isActive(url: string) {
 
 .file {
   display: flex;
-  flex-direction: column;
-  width: calc((100% - 60px) / 4);
-  min-width: 218px;
-  align-items: center;
-  gap: 4px;
-  line-height: 1.1;
-  color: #31322d;
+  justify-content: center;
+  width: calc((100% - 80px) / 5);
+  min-width: 170px;
+  margin-bottom: 12px;
 
-  cursor: pointer;
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    line-height: 1.1;
+    color: #31322d;
+
+    cursor: pointer;
+  }
 
   svg {
     padding: 3px;
@@ -93,6 +101,8 @@ function isActive(url: string) {
     padding: 2px 6px;
     border-radius: 4px;
     border: 1px solid transparent;
+    text-align: center;
+    line-height: 1.3;
     transition: color .2s ease-in-out, background-color .2s ease-in-out, border-color .2s ease-in-out;
   }
   &:hover, &_active {

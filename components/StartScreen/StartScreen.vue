@@ -94,6 +94,7 @@ function redirect(url) {
     <Navigation
       @onRedirect="redirect"
       style="z-index: 2"
+      v-show="!changeScreenColor"
     />
     <div class="wrapper">
       <div v-if="!changeScreenColor" class="start-block">
