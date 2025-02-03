@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import ImageGallery from '@/components/Pages/Gallery/ImageGallery.vue'
 
 </script>
 
 <template>
-  gallery
+  <ImageGallery />
 </template>
 
 <style scoped lang="scss">

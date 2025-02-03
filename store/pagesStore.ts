@@ -258,6 +258,16 @@ export const usePagesStore = defineStore('pages', () => {
       icon: 'Folder'
     },
     {
+      id: 33,
+      parentId: 4,
+      url: '/file/readme.txt',
+      title: 'readme.txt',
+      h1: 'readme.txt',
+      metaDescription: '',
+      content: [],
+      icon: 'FileText'
+    },
+    {
       id: 30,
       parentId: 4,
       url: '/racing',
@@ -287,16 +297,7 @@ export const usePagesStore = defineStore('pages', () => {
       content: [],
       icon: 'Folder'
     },
-    {
-      id: 33,
-      parentId: 4,
-      url: '/file/readme.txt',
-      title: 'readme.txt',
-      h1: 'readme.txt',
-      metaDescription: '',
-      content: [],
-      icon: 'FileText'
-    },
+
     {
       id: 34,
       parentId: 22,
