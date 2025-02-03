@@ -9,11 +9,14 @@ const pagesStore = usePagesStore()
 
 const isFullScreen = ref<boolean>(false)
 const isHidden = ref<boolean>(false)
+const cursorPointer = ref<boolean>(false)
 
 const pages = computed(() => pagesStore.pages);
 const currentPage = computed(() => pages.value.find(page => {
   return page.url.replace('/file', '') === '/' + route.path.split('/').pop()
 }));
+
+$bus.$on('setFront', (flag: boolean) => cursorPointer.value = flag)
 
 watch(
   () => route.fullPath,
@@ -36,21 +39,6 @@ function fullScreen(): void {
   isFullScreen.value = !isFullScreen.value
 }
 
-function isCursorPointer(): boolean {
-  // const el = document.querySelector('.content-folder')
-  // console.log(el)
-  //
-  // return false
-}
-
-watch(
-  () => document.querySelector('.content-folder')?.classList,
-  () => {
-    console.log('aaaaaaa')
-  },
-  { root: true }
-)
-
 </script>
 
 <template>
@@ -59,9 +47,9 @@ watch(
     :class="{
       'content-file_full-screen': isFullScreen,
       'content-file_hidden': isHidden,
-      'content-file_cursor-pointer': isCursorPointer(),
+      'content-file_cursor-pointer': cursorPointer
     }"
-    @click="() => $bus.$emit('resetFront', false)"
+    @click="() => { $bus.$emit('resetFront', false); cursorPointer = false }"
   >
     <header class="title-bar">
       <div class="title-bar__buttons">
@@ -126,10 +114,10 @@ watch(
 
   &_hidden {
     position: fixed;
-    bottom: 16px;
+    bottom: 12px;
     left: 88px;
     width: 200px;
-    height: 46px;
+    height: 48px;
     min-height: 46px;
     box-shadow: none;
 

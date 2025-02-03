@@ -46,6 +46,7 @@ function fullScreen(): void {
 function toFront(): void {
   if (route.params?.file) {
     isOnFront.value = true
+    $bus.$emit('setFront', true)
   }
 }
 </script>
@@ -78,8 +79,6 @@ function toFront(): void {
 
     <section class="content-wrapper">
       <aside class="task-bar">
-<!--        <pre>{{ route.params }}</pre>-->
-<!--        <pre>{{ currentPage }}</pre>-->
         <slot name="navigation"></slot>
       </aside>
       <div class="main-frame">
@@ -111,9 +110,9 @@ function toFront(): void {
 
   //position: fixed;
 
-  //&_cursor-pointer {
-  //  cursor: pointer;
-  //}
+  &_cursor-pointer {
+    cursor: pointer;
+  }
   &_full-screen {
     box-shadow: none;
     height: 100vh;
@@ -126,7 +125,7 @@ function toFront(): void {
     bottom: 22px;
     left: 0;
     width: 200px;
-    height: 46px;
+    height: 48px;
     min-height: 46px;
     box-shadow: none;
 
