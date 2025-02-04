@@ -103,12 +103,10 @@ function toFront(): void {
   min-height: 300px;
   margin: 0 36px 0 16px;
 
-  background-color: #f5f5f5;
-  border: 3px solid #31322d;
+  background-color: var(--folder-bg-color);
+  border: 3px solid var(--folder-border-color);
   border-radius: 12px;
-  box-shadow: 20px 20px 0 0 rgba(#31322d, .7);
-
-  //position: fixed;
+  box-shadow: 20px 20px 0 0 var(--folder-shadow-color);
 
   &_cursor-pointer {
     cursor: pointer;
@@ -152,16 +150,15 @@ function toFront(): void {
 
   position: relative;
   padding: 10px 12px 10px 84px;
-  border-bottom: 3px solid #31322d;
+  border-bottom: 3px solid var(--folder-border-color);
   border-radius: 8px 8px 0 0;
-  background: #bebfb8;
+  background: var(--folder-title-bar-bg-color);
 
   user-select: none;
-  //cursor: move;
 
   .title {
     font-weight: 600;
-    color: #31322d;
+    color: var(--folder-title-bar-color);
   }
 
   &__buttons {
@@ -179,7 +176,7 @@ function toFront(): void {
       border: 2px solid #4d4d4d;
       border-radius: 50%;
 
-      background-color: #f5f5f5;
+      background-color: var(--folder-bg-color);
       transition: background-color .2s ease-in-out;
       cursor: pointer;
 
@@ -213,10 +210,10 @@ function toFront(): void {
   height: 100%;
   width: 300px;
   padding: 18px 36px 18px 18px;
-  border-right: 3px solid #31322d;
+  border-right: 3px solid var(--folder-border-color);
   border-radius: 0 0 0 8px;
 
-  background: #f5f6ef;
+  background: var(--folder-task-bar-bg-color);
   overflow: auto;
 }
 
@@ -236,9 +233,11 @@ function toFront(): void {
   align-items: center;
   height: 36px;
   padding: 0 18px;
-  border-top: 3px solid #31322d;
+  border-top: 3px solid var(--folder-border-color);
+  border-radius: 0 0 8px 0;
 
+  background-color: var(--folder-status-bar-bg-color);
   font-weight: 600;
-  color: #31322d;
+  color: var(--folder-status-bar-color);
 }
 </style>

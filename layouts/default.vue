@@ -50,7 +50,7 @@ main {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #c0c2be;
+  background-color: var(--desctop-bg-color);
 
   overflow: hidden;
   //background-image: url("/images/vault57_b1.png");

@@ -1,2 +1,38 @@
 $primary: #FFF;
 $secondary: #046e40;
+
+
+:root {
+  --desctop-bg-color: #c0c2be;
+
+  --folder-bg-color: #f5f5f5;
+
+  --folder-title-bar-bg-color: #bebfb8;
+  --folder-title-bar-color: #31322d;
+
+  --folder-task-bar-bg-color: #f5f6ef;
+  --folder-navigation-color: #31322d;
+
+  --folder-status-bar-bg-color: #f5f5f5;
+  --folder-status-bar-color: #31322d;
+
+  --folder-border-color: #31322d;
+  --folder-shadow-color: rgba(49, 50, 45, .7);
+
+  // ~ DARK THEME (in progress)
+  //--desctop-bg-color: #2b2a33;
+  //
+  //--folder-bg-color: #3a3a42;
+  //
+  //--folder-title-bar-bg-color: #232229;
+  //--folder-title-bar-color: #b2b2ad;
+  //
+  //--folder-task-bar-bg-color: #2f2e36;
+  //--folder-navigation-color: #191916;
+  //
+  //--folder-status-bar-bg-color: #32323a;
+  //--folder-status-bar-color: #191916;
+  //
+  //--folder-border-color:  #1d1c22;
+  //--folder-shadow-color: rgba(29, 28, 34, 0.3);
+}

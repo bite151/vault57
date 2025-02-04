@@ -125,11 +125,15 @@ function generateUrl(currentPage: any, url: string[] = []): string {
     gap: 8px;
     padding: 6px 12px;
     font-weight: 600;
-    color: #31322d;
+    color: var(--folder-navigation-color);
     border-radius: 8px;
     transition: background-color 0.2s;
 
     white-space: nowrap;
+
+    svg {
+      stroke: var(--folder-navigation-color);
+    }
 
     &:hover {
       background-color: rgba(0, 0, 0, 0.04);
@@ -137,9 +141,6 @@ function generateUrl(currentPage: any, url: string[] = []): string {
 
     &.active {
       background-color: rgba(0, 0, 0, 0.1);
-      //&:not(.active ~ ul) {
-      //  background-color: #2e840f;
-      //}
     }
   }
 }

@@ -92,23 +92,16 @@ function closeWindow(): void {
 
 <style scoped lang="scss">
 .content-file {
-  //max-width: 1180px;
-  //width: 1180px;
-  //min-width: 360px;
   height: 90vh;
   min-height: 300px;
   margin: -40px -166px 0 16px;
 
-  background-color: #f5f5f5;
-  border: 3px solid #31322d;
+  background-color: var(--folder-bg-color);
+  border: 3px solid var(--folder-border-color);
   border-radius: 12px;
-  box-shadow: 20px 20px 0 0 rgba(#31322d, .7);
+  box-shadow: 20px 20px 0 0 var(--folder-shadow-color);
 
   position: fixed;
-  //top: 0;
-  //right: 0;
-  //bottom: 0;
-  //left: 148px;
 
   z-index: 10;
 
@@ -152,17 +145,15 @@ function closeWindow(): void {
 
   position: relative;
   padding: 10px 12px 10px 84px;
-  border-bottom: 3px solid #31322d;
+  border-bottom: 3px solid var(--folder-border-color);
   border-radius: 8px 8px 0 0;
-  background: #bebfb8;
+  background: var(--folder-title-bar-bg-color);
 
   user-select: none;
 
-  //cursor: move;
-
   .title {
     font-weight: 600;
-    color: #31322d;
+    color: var(--folder-title-bar-color);
   }
 
   &__buttons {
@@ -180,7 +171,7 @@ function closeWindow(): void {
       border: 2px solid #4d4d4d;
       border-radius: 50%;
 
-      background-color: #f5f5f5;
+      background-color: var(--folder-bg-color);
       transition: background-color .2s ease-in-out;
       cursor: pointer;
 
@@ -196,10 +187,6 @@ function closeWindow(): void {
           opacity: 1;
         }
       }
-
-      //&:first-of-type {
-      //  background-color: #4d4d4d;
-      //}
     }
   }
 }
@@ -245,9 +232,11 @@ function closeWindow(): void {
   align-items: center;
   height: 36px;
   padding: 0 18px;
-  border-top: 3px solid #31322d;
+  border-top: 3px solid var(--folder-border-color);
+  border-radius: 0 0 8px 8px;
 
+  background-color: var(--folder-status-bar-bg-color);
   font-weight: 600;
-  color: #31322d;
+  color: var(--folder-status-bar-color);
 }
 </style>
