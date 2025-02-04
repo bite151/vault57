@@ -1,25 +1,41 @@
 <script setup lang="ts">
 import EmptyFolder from "~/components/AppFolder/EmptyFolder.vue";
+import {useGalleryStore} from "~/store/galleryStore";
+import GalleryFile from "~/components/Pages/Gallery/GalleryFile.vue";
 
+const galleryStore = useGalleryStore()
+
+const images = computed(() => galleryStore.images)
+const previewer = ref<string | null>(null)
 </script>
 
-
 <template>
-  <EmptyFolder v-if="false">
+  <EmptyFolder v-if="!images.length">
     Папка пуста
   </EmptyFolder>
 
   <div class="files" v-else>
     <div class="file"
-      v-for="item in 14"
-      :key="item"
+      v-for="image in images"
+      :key="image.id"
+      @click="previewer = image.src"
     >
       <div class="img-wrapper">
-        <img :src="`/images/${item}.jpg`" alt="">
+        <img :src="`/images/${image.src}`" alt="">
       </div>
-      <p>{{ item }}.jpg</p>
+      <p>{{ image.title }}</p>
     </div>
   </div>
+
+  <ClientOnly>
+    <Teleport to="#main-content">
+      <GalleryFile
+        v-if="previewer"
+        v-model="previewer"
+        @handle-close="() => previewer = null"
+      />
+    </Teleport>
+  </ClientOnly>
 </template>
 
 <style scoped lang="scss">

@@ -14,6 +14,7 @@ onMounted(() => {
 <template>
   <main
     :class="{ loaded }"
+    id="main-content"
   >
     <AppFolder
       class="content-window"
