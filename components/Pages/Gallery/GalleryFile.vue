@@ -26,8 +26,6 @@ watch(
   () => setImageIndex()
 )
 
-$bus.$on('setFront', (flag: boolean) => cursorPointer.value = flag)
-
 function setImageIndex() {
   imageIndex.value = images.value.findIndex(img => img.src === model.value)
 }
@@ -80,11 +78,11 @@ function closeWindow(): void {
             <ChevronRight />
           </button>
         </div>
-
-
+<!--
         <footer class="status-bar">
           {{ location }}/images/{{ currentImage.src }}
         </footer>
+-->
       </div>
     </section>
   </div>
@@ -211,7 +209,7 @@ function closeWindow(): void {
   overflow: auto;
 
   img {
-    height: calc(90vh - 134px);
+    height: calc(90vh - 98px);
     border-radius: 8px;
   }
 }

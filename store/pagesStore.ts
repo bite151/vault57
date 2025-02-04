@@ -195,6 +195,7 @@ export const usePagesStore = defineStore('pages', () => {
       icon: 'MapPinned',
       content: [],
       contentComponent: 'MapComponent',
+      hideStatusBar: true,
     },
     {
       id: 21,
@@ -206,6 +207,7 @@ export const usePagesStore = defineStore('pages', () => {
       icon: 'Mail',
       content: [],
       contentComponent: 'FeedbackForm',
+      hideStatusBar: true
     },
     {
       id: 22,

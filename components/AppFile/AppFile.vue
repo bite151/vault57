@@ -38,7 +38,6 @@ function fullScreen(): void {
   isHidden.value = false
   isFullScreen.value = !isFullScreen.value
 }
-
 </script>
 
 <template>
@@ -69,15 +68,31 @@ function fullScreen(): void {
     </header>
 
     <section class="content-wrapper">
-      <div class="main-frame">
-        <div class="content">
-          <p>[content file component]</p>
-          <pre>{{ route.params }}</pre>
-          <pre>{{ currentPage }}</pre>
-          <slot></slot>
+      <div
+        class="main-frame"
+      >
+        <div
+          class="content"
+          :class="{'content_rounded': currentPage.hideStatusBar}"
+        >
+          <component
+            v-if="currentPage.contentComponent"
+            :is="defineAsyncComponent({
+              loader: () => import(`~/components/Pages/${currentPage.contentComponent}.vue`)
+            })"
+          />
+
+          <template v-else >
+            <p>[content file component]</p>
+            <pre>{{ route.params }}</pre>
+            <pre>{{ currentPage }}</pre>
+          </template>
         </div>
 
-        <footer class="status-bar">
+        <footer
+          class="status-bar"
+          v-if="!currentPage.hideStatusBar"
+        >
           {{ route.fullPath.replace('/file', '') }}
         </footer>
       </div>
@@ -199,9 +214,12 @@ function fullScreen(): void {
   flex-grow: 1;
 }
 .content {
-  padding: 18px;
+  //padding: 18px;
   flex-grow: 1;
   overflow: auto;
+  &_rounded {
+    border-radius: 0 0 8px 8px;
+  }
 }
 .status-bar {
   display: flex;

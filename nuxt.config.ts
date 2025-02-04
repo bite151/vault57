@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@pinia/nuxt', '@nuxt/image', '@nuxt/fonts'],
+  modules: ['@pinia/nuxt', '@nuxt/image', '@nuxt/fonts', 'vue-yandex-maps/nuxt'],
   
   app: {
     head: {
@@ -40,5 +40,9 @@ export default defineNuxtConfig({
         }
       }
     }
-  }
+  },
+  
+  yandexMaps: {
+    apikey: '49b703ae-b1f3-4b42-bc45-dc0860f1af3c',
+  },
 })

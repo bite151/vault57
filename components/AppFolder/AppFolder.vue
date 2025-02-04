@@ -44,7 +44,7 @@ function fullScreen(): void {
 }
 
 function toFront(): void {
-  if (route.params?.file) {
+  if (route.params?.file || route.path === '/gallery') {
     isOnFront.value = true
     $bus.$emit('setFront', true)
   }
