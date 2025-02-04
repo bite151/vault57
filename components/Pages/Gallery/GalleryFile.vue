@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {Maximize2, Minimize2, Minus, Plus, X, ChevronLeft, ChevronRight} from "lucide-vue-next";
+import {X, ChevronLeft, ChevronRight} from "lucide-vue-next";
 import {useGalleryStore} from "~/store/galleryStore";
 
-const {$bus} = useNuxtApp()
+const { $bus } = useNuxtApp()
 const emit = defineEmits(['handleClose'])
 const galleryStore = useGalleryStore()
 
@@ -13,16 +13,18 @@ const imageIndex = ref<number>(0)
 const currentImage = computed(() => imageIndex.value !== null ? images.value[imageIndex.value] : null)
 const location = computed(() => import.meta.client ? window.location.origin : null)
 
+const isFullScreen = ref<boolean>(false)
+const isHidden = ref<boolean>(false)
+const cursorPointer = ref<boolean>(false)
 
-onMounted(() => setImageIndex())
+onMounted(() => {
+  setImageIndex()
+})
+
 watch(
   () => model.value,
   () => setImageIndex()
 )
-
-const isFullScreen = ref<boolean>(false)
-const isHidden = ref<boolean>(false)
-const cursorPointer = ref<boolean>(false)
 
 $bus.$on('setFront', (flag: boolean) => cursorPointer.value = flag)
 
@@ -38,16 +40,6 @@ function changeImageIndex(n: number) {
 
 function closeWindow(): void {
   emit("handleClose", true)
-}
-
-function hideWindow(): void {
-  // isFullScreen.value = false
-  // isHidden.value = !isHidden.value
-}
-
-function fullScreen(): void {
-  // isHidden.value = false
-  // isFullScreen.value = !isFullScreen.value
 }
 
 </script>
@@ -67,14 +59,6 @@ function fullScreen(): void {
       <div class="title-bar__buttons">
         <div class="buttons__button" @click="closeWindow">
           <X :size="8" :strokeWidth="5" color="#31322d"/>
-        </div>
-        <div class="buttons__button" @click="hideWindow">
-          <Minus v-if="!isHidden" :size="8" :strokeWidth="5" color="#31322d"/>
-          <Plus v-else :size="8" :strokeWidth="5" color="#31322d"/>
-        </div>
-        <div class="buttons__button" @click="fullScreen">
-          <Maximize2 v-if="!isFullScreen" :size="8" :strokeWidth="5" color="#31322d"/>
-          <Minimize2 v-else :size="8" :strokeWidth="5" color="#31322d"/>
         </div>
       </div>
       <h1 class="title">{{ currentImage.title }}</h1>
@@ -126,7 +110,7 @@ function fullScreen(): void {
   //bottom: 0;
   //left: 148px;
 
-  z-index: 99;
+  z-index: 10;
 
   &_cursor-pointer {
     cursor: pointer;

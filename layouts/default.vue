@@ -7,6 +7,14 @@ const loaded = ref<boolean>(false)
 const route = useRoute()
 
 onMounted(() => {
+  // if (import.meta.client) {
+  //   const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  //   console.log('prefers-color-scheme: dark', darkModeMediaQuery.matches);
+  //   darkModeMediaQuery.addEventListener('change', (e) => {
+  //     const darkModeOn = e.matches;
+  //     console.log(`Dark mode is ${darkModeOn ? '🌒 on' : '☀️ off'}.`);
+  //   });
+  // }
   setTimeout(() => loaded.value = true, 500)
 })
 </script>
@@ -31,16 +39,20 @@ onMounted(() => {
       class="content-file"
       :class="{ 'content-file_visible': loaded }"
     />
+    <div class="background"></div>
   </main>
 </template>
 
 <style scoped lang="scss">
 main {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   background-color: #c0c2be;
+
+  overflow: hidden;
   //background-image: url("/images/vault57_b1.png");
   //background-repeat: no-repeat;
   //background-position: center center;
