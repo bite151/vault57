@@ -245,6 +245,8 @@ function toFront(): void {
   height: calc(100% - 36px);
   &:deep(div.simplebar-content) {
     padding-right: 0 !important;
+    height: 100%;
+    display: flex;
   }
 }
 
