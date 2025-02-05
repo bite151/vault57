@@ -11,7 +11,7 @@ const route = useRoute()
 const { parentPageId = 1 } = defineProps(['parentPageId'])
 
 const pages = computed(() => {
-  const pages = pagesStore.pages.filter(page => page.parentId === parentPageId && !page.url.includes('/file') && page.url !== '/desktop');
+  const pages = pagesStore.pages.filter(page => page.parentId === parentPageId && !page.url.includes('/file/') && page.showInFinder);
   if (parentPageId === 1) {
     return pages
   }

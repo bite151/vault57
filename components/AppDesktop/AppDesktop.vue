@@ -5,7 +5,7 @@ const icons = ref([
   {
     key: 1,
     title: 'My computer',
-    url: '/about',
+    url: '/my-computer',
     icon: 'Laptop2'
   },
   {

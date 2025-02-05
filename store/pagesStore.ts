@@ -16,7 +16,8 @@ export const usePagesStore = defineStore('pages', () => {
       title: 'About',
       h1: 'О клубе',
       metaDescription: '',
-      content: []
+      content: [],
+      showInFinder: true
     },
     {
       id: 7,
@@ -25,7 +26,8 @@ export const usePagesStore = defineStore('pages', () => {
       title: 'Услуги',
       h1: 'Услуги',
       metaDescription: '',
-      content: []
+      content: [],
+      showInFinder: true
     },
     {
       id: 3,
@@ -34,7 +36,8 @@ export const usePagesStore = defineStore('pages', () => {
       title: 'Эвенты',
       h1: 'События',
       metaDescription: '',
-      content: []
+      content: [],
+      showInFinder: true
     },
     {
       id: 9,
@@ -44,7 +47,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Фотографии',
       metaDescription: '',
       content: [],
-      icon: 'Camera'
+      icon: 'Camera',
+      showInFinder: true
     },
     {
       id: 4,
@@ -54,7 +58,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Игры',
       metaDescription: '',
       content: [],
-      icon: 'Computer'
+      icon: 'Computer',
+      showInFinder: true
     },
     {
       id: 5,
@@ -64,7 +69,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Приставки',
       metaDescription: '',
       content: [],
-      icon: 'Gamepad2'
+      icon: 'Gamepad2',
+      showInFinder: true
     },
     {
       id: 6,
@@ -74,7 +80,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Кинозал и VHS',
       metaDescription: '',
       content: [],
-      icon: 'Film'
+      icon: 'Film',
+      showInFinder: true
     },
     {
       id: 8,
@@ -83,7 +90,8 @@ export const usePagesStore = defineStore('pages', () => {
       title: 'Контакты',
       h1: 'Контакты',
       metaDescription: '',
-      content: []
+      content: [],
+      showInFinder: true
     },
     {
       id: 10,
@@ -218,7 +226,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'RPG',
       metaDescription: '',
       content: [],
-      icon: 'Folder'
+      icon: 'Folder',
+      showInFinder: true
     },
     {
       id: 23,
@@ -228,7 +237,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Action',
       metaDescription: '',
       content: [],
-      icon: 'Folder'
+      icon: 'Folder',
+      showInFinder: true
     },
     {
       id: 27,
@@ -238,7 +248,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Arcade',
       metaDescription: '',
       content: [],
-      icon: 'Folder'
+      icon: 'Folder',
+      showInFinder: true
     },
     {
       id: 28,
@@ -248,7 +259,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'FPS',
       metaDescription: '',
       content: [],
-      icon: 'Folder'
+      icon: 'Folder',
+      showInFinder: true
     },
     {
       id: 29,
@@ -258,7 +270,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Quest',
       metaDescription: '',
       content: [],
-      icon: 'Folder'
+      icon: 'Folder',
+      showInFinder: true
     },
     {
       id: 33,
@@ -268,7 +281,7 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'readme.txt',
       metaDescription: '',
       content: [],
-      icon: 'FileText'
+      icon: 'FileText',
     },
     {
       id: 30,
@@ -278,7 +291,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Racing',
       metaDescription: '',
       content: [],
-      icon: 'Folder'
+      icon: 'Folder',
+      showInFinder: true
     },
     {
       id: 31,
@@ -288,7 +302,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Simulator',
       metaDescription: '',
       content: [],
-      icon: 'Folder'
+      icon: 'Folder',
+      showInFinder: true
     },
     {
       id: 32,
@@ -298,7 +313,8 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Strategy',
       metaDescription: '',
       content: [],
-      icon: 'Folder'
+      icon: 'Folder',
+      showInFinder: true
     },
 
     {
@@ -328,7 +344,19 @@ export const usePagesStore = defineStore('pages', () => {
       title: 'Desktop',
       h1: 'Desktop',
       metaDescription: '',
-      content: []
+      content: [],
+      showInFinder: false
+    },
+    {
+      id: 36,
+      parentId: 1,
+      url: '/my-computer',
+      title: 'My computer',
+      h1: 'My computer',
+      metaDescription: '',
+      contentComponent: 'MyComputer',
+      content: [],
+      showInFinder: false
     },
   ])
 

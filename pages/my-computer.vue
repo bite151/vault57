@@ -1,60 +1,25 @@
 <script setup lang="ts">
+
+import FolderContent from "~/components/AppFolder/FolderContent.vue";
 import {usePagesStore} from "~/store/pagesStore";
-import EmptyFolder from "~/components/AppFolder/EmptyFolder.vue";
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 
-const { $bus } = useNuxtApp()
-const route = useRoute()
 const pagesStore = usePagesStore()
-
-const { currentPage } = defineProps(['currentPage']);
-const child = computed(() => pagesStore.pages
-  .filter(page => page.parentId === currentPage.id)
-  .sort((a, b) => {
-    if (a.title < b.title) return -1
-    if (a.title > b.title) return 1
-    return 0
-  })
-)
-
-function generateUrl(currentPage: any, url: string[] = []): string {
-  const child = pagesStore.pages.find(page => page.id === currentPage.parentId)
-  url.unshift(currentPage.url)
-  if (child) {
-    return generateUrl(child, url)
-  }
-  return url.filter(url => url !== '/').join('')
-}
-
-function resetFrontPosition() {
-  setTimeout(() =>
-    $bus.$emit('resetFront', false)
-  , 1)
-}
-
-function isActive(url: string) {
-  return url === route.path
-}
-
+const pages = computed(() => pagesStore.pages.filter(page => page.parentId === 1 && !page.url.includes('/file/') && page.showInFinder))
 </script>
 
 <template>
-  <EmptyFolder v-if="!child?.length">
-    Папка пуста
-  </EmptyFolder>
-
-  <div class="files" v-else>
+  <div class="files">
     <div class="file"
-       v-for="item in child"
-       :key="item.id"
+      v-for="item in pages"
+      :key="item.id"
     >
       <nuxt-link
-        :to="generateUrl(item)"
+        :to="item.url"
         active-class="file_active"
-        @click="resetFrontPosition()"
       >
         <AsyncIcon
-          :name="item.icon"
+          :name="item.icon || 'Folder'"
           :size="52"
           :strokeWidth="1.3"
         />
