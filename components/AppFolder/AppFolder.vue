@@ -16,20 +16,20 @@ const pagesStore = usePagesStore()
 const pages = computed(() => pagesStore.pages);
 const currentPage = computed(() => pages.value.find(page => {
   if (route.params.folder) {
-    return page.url.replace('/file', '') === '/' + route.params.folder
+    return page.url.replace('/file/', '/') === '/' + route.params.folder
   }
-  const routesArr = route.path.replace('/file', '').split('/')
+  const routesArr = route.path.replace('/file/', '/').split('/')
   const level = !route.params.file ? 1 : 2
-  return page.url.replace('/file', '') === '/' + routesArr[routesArr.length - level]
+  return page.url.replace('/file/', '/') === '/' + routesArr[routesArr.length - level]
 }));
 
 const breadCrumbs = computed(() => {
-  const routesArr = route.path.replace('/file', '').split('/')
+  const routesArr = route.path.replace('/file/', '/').split('/')
   if (route.params.file) {
     routesArr.splice(routesArr.length - 1, 1)
   }
   routesArr.splice(0, 1)
-  return routesArr.map(item => pages.value.find(page => page.url.replace('/file', '') === '/' + item).url).join('')
+  return routesArr.map(item => pages.value.find(page => page.url.replace('/file/', '/') === '/' + item).url).join('')
 })
 
 $bus.$on('resetFront', () => isOnFront.value = false)

@@ -13,7 +13,7 @@ const cursorPointer = ref<boolean>(false)
 
 const pages = computed(() => pagesStore.pages);
 const currentPage = computed(() => pages.value.find(page => {
-  return page.url.replace('/file', '') === '/' + route.path.split('/').pop()
+  return page.url.replace('/file/', '/') === '/' + route.path.split('/').pop()
 }));
 
 $bus.$on('setFront', (flag: boolean) => cursorPointer.value = flag)
@@ -24,7 +24,7 @@ watch(
 )
 
 function closeWindow(): void {
-  const routesArr = route.path.replace('/file', '').split('/')
+  const routesArr = route.path.replace('/file/', '/').split('/')
   routesArr.splice(routesArr.length - 1, 1)
   router.push(routesArr.join('/'))
 }
@@ -92,7 +92,7 @@ function fullScreen(): void {
           class="status-bar"
           v-if="!currentPage.hideStatusBar"
         >
-          {{ route.fullPath.replace('/file', '') }}
+          {{ route.fullPath.replace('/file/', '/') }}
         </footer>
       </div>
     </section>
