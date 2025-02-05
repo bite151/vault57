@@ -34,7 +34,7 @@ function openPreviewer(image) {
   </div>
 
   <ClientOnly>
-    <Teleport to="#main-content">
+    <Teleport to="#main-content-teleport">
       <GalleryFile
         v-if="previewer"
         v-model="previewer"
@@ -57,8 +57,8 @@ function openPreviewer(image) {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: calc((100% - 80px) / 5);
-  min-width: 170px;
+  width: calc((100% - 88px) / 5);
+  min-width: 166px;
   margin-bottom: 12px;
 
 

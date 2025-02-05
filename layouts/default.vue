@@ -36,7 +36,7 @@ useSeoMeta({
 <template>
   <main
     :class="{ loaded }"
-    id="main-content"
+    id="main-content-teleport"
   >
     <template v-if="route.fullPath !== '/desktop'">
       <AppFolder

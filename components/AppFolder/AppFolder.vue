@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {Maximize2, Minimize2, Minus, Plus, X} from "lucide-vue-next";
+import Simplebar from 'simplebar-vue';
+import '~/assets/scss/simplebar.css';
 import {usePagesStore} from "~/store/pagesStore";
 
 const isFullScreen = ref<boolean>(false)
@@ -84,12 +86,16 @@ function toFront(): void {
 
     <section class="content-wrapper">
       <aside class="task-bar">
-        <slot name="navigation"></slot>
+        <Simplebar class="scrollbar-task-bar">
+          <slot name="navigation"></slot>
+        </Simplebar>
       </aside>
       <div class="main-frame">
-        <div class="content">
-          <slot></slot>
-        </div>
+        <Simplebar class="scrollbar-folder">
+          <div class="content">
+            <slot></slot>
+          </div>
+        </Simplebar>
 
         <footer class="status-bar">
           {{ breadCrumbs }}
@@ -197,10 +203,14 @@ function toFront(): void {
           opacity: 1;
         }
       }
-      //&:first-of-type {
-      //  background-color: #4d4d4d;
-      //}
     }
+  }
+}
+
+.scrollbar-task-bar {
+  height: 100%;
+  &:deep(.simplebar-content-wrapper) {
+    padding: 18px 36px 18px 18px;
   }
 }
 
@@ -214,7 +224,6 @@ function toFront(): void {
   flex-shrink: 0;
   height: 100%;
   width: 300px;
-  padding: 18px 36px 18px 18px;
   border-right: 3px solid var(--folder-border-color);
   border-radius: 0 0 0 8px;
 
@@ -230,8 +239,21 @@ function toFront(): void {
 .content {
   padding: 18px;
   flex-grow: 1;
-  overflow: auto;
 }
+
+.scrollbar-folder {
+  height: calc(100% - 36px);
+  &:deep(div.simplebar-content) {
+    padding-right: 0 !important;
+  }
+}
+
+.scrollbar-folder.simplebar-scrollable-y{
+  &:deep(div.simplebar-content) {
+    padding-right: 26px !important;
+  }
+}
+
 .status-bar {
   display: flex;
   flex-shrink: 0;

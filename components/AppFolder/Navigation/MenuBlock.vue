@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { usePagesStore } from "~/store/pagesStore";
-import { File, Folder, FolderOpen } from 'lucide-vue-next';
+import { Folder, FolderOpen } from 'lucide-vue-next';
 import MenuBlock from "~/components/AppFolder/Navigation/MenuBlock.vue";
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 
@@ -84,12 +84,10 @@ function generateUrl(currentPage: any, url: string[] = []): string {
         {{ page.title }}
       </nuxt-link>
 
-
       <MenuBlock
         v-if="isActive(page.url) && hasChildren(page.id)"
         :parent-page-id="page.id"
       />
-
     </li>
   </ul>
 </template>
@@ -104,12 +102,39 @@ function generateUrl(currentPage: any, url: string[] = []): string {
     margin-bottom: 4px;
     width: 100%;
     & ul {
+      //position: relative;
       margin-top: 4px;
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       padding-left: 27px;
+
+      //&::before {
+      //  content: '';
+      //  position: absolute;
+      //  width: 2px;
+      //  //height: 100%;
+      //  background: rgba(0, 0, 0, 0.1);
+      //  left: 20px;
+      //  border-radius: 2px;
+      //  top: -4px;
+      //  bottom: 16px;
+      //}
+      //li {
+      //  position: relative;
+      //
+      //  &::before {
+      //    content: '';
+      //    position: absolute;
+      //    width: 16px;
+      //    height: 2px;
+      //    background: rgba(0, 0, 0, 0.1);
+      //    left: -6px;
+      //    top: 16px;
+      //    border-radius: 2px;
+      //  }
+      //}
     }
     &.opened {
       margin-bottom: 0;

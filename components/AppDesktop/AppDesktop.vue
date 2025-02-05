@@ -25,6 +25,12 @@ const icons = ref([
     title: 'Settings',
     url: '',
     icon: 'Settings'
+  },
+  {
+    key: 5,
+    title: 'Games',
+    url: '/games',
+    icon: 'Gamepad2'
   }
 ])
 </script>
@@ -83,4 +89,5 @@ const icons = ref([
 .block2 { grid-area: 2 / 1 / 3 / 2; }
 .block3 { grid-area: 7 / 12 / 8 / 13; }
 .block4 { grid-area: 1 / 12 / 2 / 13; }
+.block5 { grid-area: 1 / 11 / 2 / 12; }
 </style>

@@ -76,7 +76,7 @@ function isActive(url: string) {
   display: flex;
   justify-content: center;
   width: calc((100% - 80px) / 5);
-  min-width: 170px;
+  min-width: 166px;
   margin-bottom: 12px;
 
   a {
