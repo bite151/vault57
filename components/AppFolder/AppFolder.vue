@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Maximize2, Minimize2, Minus, Plus} from "lucide-vue-next";
+import {Maximize2, Minimize2, Minus, Plus, X} from "lucide-vue-next";
 import {usePagesStore} from "~/store/pagesStore";
 
 const isFullScreen = ref<boolean>(false)
@@ -7,6 +7,7 @@ const isHidden = ref<boolean>(false)
 const isOnFront = ref<boolean>(false)
 
 const route = useRoute()
+const router = useRouter()
 const { $bus } = useNuxtApp()
 const pagesStore = usePagesStore()
 
@@ -31,7 +32,9 @@ const breadCrumbs = computed(() => {
 
 $bus.$on('resetFront', () => isOnFront.value = false)
 
-function closeWindow(): void {}
+function closeWindow(): void {
+  router.push('/desktop')
+}
 
 function hideWindow(): void {
   isFullScreen.value = false
@@ -64,7 +67,9 @@ function toFront(): void {
   >
     <header class="title-bar">
       <div class="title-bar__buttons">
-        <div class="buttons__button"></div>
+        <div class="buttons__button" @click="closeWindow">
+          <X :size="8" :strokeWidth="5" color="#31322d"/>
+        </div>
         <div class="buttons__button" @click="hideWindow">
           <Minus v-if="!isHidden" :size="8" :strokeWidth="5" color="#31322d"/>
           <Plus v-else :size="8" :strokeWidth="5" color="#31322d"/>
@@ -192,9 +197,9 @@ function toFront(): void {
           opacity: 1;
         }
       }
-      &:first-of-type {
-        background-color: #4d4d4d;
-      }
+      //&:first-of-type {
+      //  background-color: #4d4d4d;
+      //}
     }
   }
 }

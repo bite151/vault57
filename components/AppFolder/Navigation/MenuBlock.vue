@@ -11,7 +11,7 @@ const route = useRoute()
 const { parentPageId = 1 } = defineProps(['parentPageId'])
 
 const pages = computed(() => {
-  const pages = pagesStore.pages.filter(page => page.parentId === parentPageId && !page.url.includes('/file'))
+  const pages = pagesStore.pages.filter(page => page.parentId === parentPageId && !page.url.includes('/file') && page.url !== '/desktop');
   if (parentPageId === 1) {
     return pages
   }
@@ -96,6 +96,7 @@ function generateUrl(currentPage: any, url: string[] = []): string {
 
 <style scoped lang="scss">
 .folder-navigation {
+  padding-left: 15px;
   li {
     display: flex;
     flex-direction: column;

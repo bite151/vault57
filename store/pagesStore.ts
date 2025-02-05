@@ -189,7 +189,7 @@ export const usePagesStore = defineStore('pages', () => {
       id: 20,
       parentId: 8,
       url: '/location',
-      title: 'Мы на карте',
+      title: 'Карта',
       h1: 'Карта',
       metaDescription: '',
       icon: 'MapPinned',
@@ -207,7 +207,8 @@ export const usePagesStore = defineStore('pages', () => {
       icon: 'Mail',
       content: [],
       contentComponent: 'FeedbackForm',
-      hideStatusBar: true
+      hideStatusBar: true,
+      resetWidth: true,
     },
     {
       id: 22,
@@ -319,6 +320,15 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'AppWindow'
+    },
+    {
+      id: 36,
+      parentId: 1,
+      url: '/desktop',
+      title: 'Desktop',
+      h1: 'Desktop',
+      metaDescription: '',
+      content: []
     },
   ])
 

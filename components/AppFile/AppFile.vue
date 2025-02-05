@@ -46,7 +46,8 @@ function fullScreen(): void {
     :class="{
       'content-file_full-screen': isFullScreen,
       'content-file_hidden': isHidden,
-      'content-file_cursor-pointer': cursorPointer
+      'content-file_cursor-pointer': cursorPointer,
+      'content-file_reset-width': currentPage?.resetWidth
     }"
     @click="() => { $bus.$emit('resetFront', false); cursorPointer = false }"
   >
@@ -68,9 +69,7 @@ function fullScreen(): void {
     </header>
 
     <section class="content-wrapper">
-      <div
-        class="main-frame"
-      >
+      <div class="main-frame">
         <div
           class="content"
           :class="{'content_rounded': currentPage.hideStatusBar}"
@@ -116,6 +115,10 @@ function fullScreen(): void {
 
   position: fixed;
 
+  &_reset-width {
+    width: auto;
+    max-width: none;
+  }
   &_cursor-pointer {
     cursor: pointer;
   }
@@ -126,7 +129,6 @@ function fullScreen(): void {
     max-width: 1320px;
     margin: 0 36px 0 16px;
   }
-
   &_hidden {
     position: fixed;
     bottom: 12px;
@@ -153,7 +155,7 @@ function fullScreen(): void {
   height: 44px;
 
   position: relative;
-  padding: 10px 12px 10px 84px;
+  padding: 10px 84px 10px 84px;
   border-bottom: 3px solid var(--folder-border-color);
   border-radius: 8px 8px 0 0;
   background: var(--folder-title-bar-bg-color);

@@ -205,22 +205,22 @@ function closeWindow(): void {
   display: flex;
   justify-content: center;
   flex-grow: 1;
-  padding: 8px 12px 0;
+  //padding: 8px 12px 0;
   overflow: auto;
 
   img {
     height: calc(90vh - 98px);
-    border-radius: 8px;
+    //border-radius: 8px;
   }
 }
 
 .controls {
   display: flex;
   justify-content: center;
-  height: 40px;
+  height: 48px;
   button {
     width: 36px;
-    margin: 0 4px;
+    margin: 0 12px;
   }
 }
 

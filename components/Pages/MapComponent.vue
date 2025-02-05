@@ -10,6 +10,17 @@ import {
 
 const map = shallowRef<null>(null);
 const location = ref(import.meta.client ? window.location.origin : null);
+const customization = shallowRef<VectorCustomization>([
+  {
+    elements: 'geometry',
+    stylers: [
+      {
+        opacity: 1,
+        saturation: -.9,
+      }
+    ],
+  },
+]);
 </script>
 
 <template>
@@ -26,19 +37,7 @@ const location = ref(import.meta.client ? window.location.origin : null);
     class="map"
   >
     <yandex-map-default-scheme-layer
-      :settings="{
-        customization: [
-          {
-            elements: 'geometry',
-            stylers: [
-              {
-                opacity: 1,
-                saturation: -.9,
-              }
-            ],
-          },
-        ]
-      }"
+      :settings="{ customization }"
     />
     <yandex-map-default-features-layer/>
     <yandex-map-marker
@@ -47,7 +46,7 @@ const location = ref(import.meta.client ? window.location.origin : null);
         coordinates: [36.079531, 52.969292]
       }"
     >
-      <img :src="`${location}/images/vault57_b1.png`" class="pin"/>
+      <img :src="`${location}/images/map-logo.png`" class="pin"/>
     </yandex-map-marker>
   </yandex-map>
 </template>
@@ -60,8 +59,8 @@ const location = ref(import.meta.client ? window.location.origin : null);
 .pin {
   cursor: pointer;
   max-width: unset;
-  width: 75px;
-  height: 75px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
 }
 </style>

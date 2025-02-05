@@ -2,9 +2,18 @@
 import Navigation from "~/components/AppFolder/Navigation/Navigation.vue";
 import AppFolder from "~/components/AppFolder/AppFolder.vue";
 import AppFile from "~/components/AppFile/AppFile.vue";
+import AppDesktop from "~/components/AppDesktop/AppDesktop.vue";
+import {usePagesStore} from "~/store/pagesStore";
 
 const loaded = ref<boolean>(false)
 const route = useRoute()
+const pagesStore = usePagesStore()
+
+const pages = computed(() => pagesStore.pages);
+const currentPage = computed(() => {
+  const routesArr = route.fullPath.replace('/file/', '/').split("/")
+  return pages.value.find(page => page.url.replace('/file/', '/') === '/' + routesArr[routesArr.length - 1])
+});
 
 onMounted(() => {
   // if (import.meta.client) {
@@ -17,6 +26,11 @@ onMounted(() => {
   // }
   setTimeout(() => loaded.value = true, 500)
 })
+
+useSeoMeta({
+  title: currentPage.value?.title,
+  description: currentPage.value?.metaDescription,
+})
 </script>
 
 <template>
@@ -24,22 +38,27 @@ onMounted(() => {
     :class="{ loaded }"
     id="main-content"
   >
-    <AppFolder
-      class="content-window"
-      :class="{ 'content-window_visible': loaded }"
-    >
-      <template #navigation>
-        <Navigation />
-      </template>
-      <NuxtPage />
-    </AppFolder>
+    <template v-if="route.fullPath !== '/desktop'">
+      <AppFolder
+        class="content-window"
+        :class="{ 'content-window_visible': loaded }"
+      >
+        <template #navigation>
+          <Navigation />
+        </template>
+        <NuxtPage />
+      </AppFolder>
 
-    <AppFile
-      v-if="route.params.file"
-      class="content-file"
-      :class="{ 'content-file_visible': loaded }"
-    />
-    <div class="background"></div>
+      <AppFile
+        v-if="route.params.file"
+        class="content-file"
+        :class="{ 'content-file_visible': loaded }"
+      />
+    </template>
+
+    <NuxtPage v-else/>
+
+    <AppDesktop />
   </main>
 </template>
 
@@ -70,6 +89,10 @@ main {
     opacity: 1;
     visibility: visible;
   }
+}
+
+.content-window {
+  position: fixed;
 }
 
 //.content-file{ transition-delay: 1s }
