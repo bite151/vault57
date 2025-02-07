@@ -55,7 +55,7 @@ const icons = ref([
 
 <style scoped lang="scss">
 .desktop-grid {
-  max-width: 1420px;
+  max-width: 1900px;
   width: 100%;
   min-width: 360px;
   height: 95vh;

@@ -238,4 +238,27 @@ function redirect(url) {
     }
   }
 }
+
+@media screen and (min-width: 1560px) {
+  .start-block {
+    .noise-line {
+      height: 2px;
+      margin-bottom: 6px;
+    }
+    p {
+      font-size: 110px;
+      line-height: 94px;
+      &.title {
+        font-size: 33px;
+        margin-top: -187px;
+      }
+      &.select {
+        font-size: 25px;
+      }
+      &.loader {
+        font-size: 25px;
+      }
+    }
+  }
+}
 </style>
