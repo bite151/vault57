@@ -11,6 +11,6 @@ const currentPage = computed(() => pages.value.find(page => page.url === '/' + r
 
 <template>
   <FolderContent
-    :current-page="currentPage"
+    :current-folder="currentPage"
   />
 </template>

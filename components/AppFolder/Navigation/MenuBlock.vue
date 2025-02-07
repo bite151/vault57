@@ -3,6 +3,7 @@ import { usePagesStore } from "~/store/pagesStore";
 import { Folder, FolderOpen } from 'lucide-vue-next';
 import MenuBlock from "~/components/AppFolder/Navigation/MenuBlock.vue";
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
+import type { Page } from "~/types/Page";
 
 
 const pagesStore = usePagesStore()
@@ -10,7 +11,7 @@ const route = useRoute()
 
 const { parentPageId = 1 } = defineProps(['parentPageId'])
 
-const pages = computed(() => {
+const pages = computed<Page[]>(() => {
   const pages = pagesStore.pages.filter(page => page.parentId === parentPageId && !page.url.includes('/file/') && page.showInFinder);
   if (parentPageId === 1) {
     return pages
@@ -37,14 +38,14 @@ function hasChildren (pageId: number): boolean {
   return pagesStore.pages.some(page => childIds.includes(page.parentId))
 }
 
-function itemIcon (page: any) {
+function itemIcon (page: Page) {
   // if (!hasChildren(page.id)) {
   //   return File
   // }
   return !isActive(page.url) ? Folder : FolderOpen
 }
 
-function generateUrl(currentPage: any, url: string[] = []): string {
+function generateUrl(currentPage: Page, url: string[] = []): string {
   const child = pagesStore.pages.find(page => page.id === currentPage.parentId)
   url.unshift(currentPage.url)
   if (child) {

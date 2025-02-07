@@ -10,7 +10,8 @@ export default defineNuxtConfig({
       titleTemplate: 'Vault57 - %s',
     }
   },
-
+  
+  
   fonts: {
     families: [
       { name: 'Play', global: true, src: '/fonts/Play/Play-Regular.ttf' },

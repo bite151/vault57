@@ -1,5 +1,7 @@
+import type { Page } from "~/types/Page";
+
 export const usePagesStore = defineStore('pages', () => {
-  const pages = ref<any[]>([
+  const pages = ref<Page[]>([
     {
       id: 1,
       parentId: 0,

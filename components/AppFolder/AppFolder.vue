@@ -108,7 +108,7 @@ function toFront(): void {
 <style scoped lang="scss">
 .content-folder {
   max-width: 1280px;
-  width: 1280px;
+  width: 100%;
   min-width: 360px;
   height: 90vh;
   min-height: 300px;
