@@ -6,19 +6,31 @@ import { useMouse, useWindowScroll } from "@vueuse/core";
 import FolderItem from "~/components/AppFolder/FolderItem.vue";
 import ContextMenu from "~/components/AppFolder/ContextMenu.vue";
 import EmptyFolder from "~/components/AppFolder/EmptyFolder.vue";
-import type {MenuItem, Page} from "~/types/Page";
+import ConfirmDialog from "~/components/common/Modals/ConfirmDialog.vue";
+import type { MenuItem, Page } from "~/types/Page";
+import type { ConfirmDialogProps } from "~/types/ConfirmDialog";
 
+const { currentFolder } = defineProps<{
+  currentFolder: Page | undefined
+}>();
 
-const { currentFolder } = defineProps(['currentFolder']);
+const route = useRoute()
+const router = useRouter()
 const pagesStore = usePagesStore()
-const files = computed(() => pagesStore.pages
-  .filter(page => page.parentId === currentFolder.id)
-  .sort((a, b) => {
-    if (a.title < b.title) return -1
-    if (a.title > b.title) return 1
-    return 0
-  })
-)
+
+const files = computed<Page[]>(() => {
+  if (route.path === '/my-computer') {
+    return pagesStore.pages.filter(page => page.parentId === 1 && !page.url.includes('/file/') && page.showInFinder)
+  }
+
+  return pagesStore.pages
+    .filter(page => page.parentId === currentFolder?.id)
+    .sort((a: Page, b: Page) => {
+      if (a.title < b.title) return -1
+      if (a.title > b.title) return 1
+      return 0
+    })
+})
 
 const { x, y } = useMouse()
 const { y: windowY } = useWindowScroll()
@@ -26,23 +38,27 @@ const { y: windowY } = useWindowScroll()
 const contextMenu = ref<Page | null>(null)
 const menuPosition = ref<{ top: number, left: number }>({ top: 0, left: 0 })
 
-const route = useRoute()
-const router = useRouter()
-
-const menuItems = ref<MenuItem[]>([
+const menuItemsList = ref<MenuItem[]>([
   {
+    key: 'open',
     title: 'Открыть',
     icon: null,
-    action: (page: Page) => router.push(route.path + page.url),
+    action: (page: Page) => openPage(page)
   },
   {
+    key: 'remove',
     title: 'Удалить',
     icon: null,
-    action: (page: Page) => {
-      console.log('delete', page)
-    }
+    action: (page: Page) => openConfirmDialog(page)
   },
   {
+    key: 'restore',
+    title: 'Восстановить',
+    icon: null,
+    action: (page: Page) => restorePage(page)
+  },
+  {
+    key: 'properties',
     title: 'Свойства',
     icon: null,
     action: (page: Page) => {
@@ -50,27 +66,73 @@ const menuItems = ref<MenuItem[]>([
     }
   },
 ])
+const menuItems = ref<MenuItem[]>([])
 
 function openContextMenu (page: Page) {
+  const itemsArr: string[] = (route.path === '/trash')
+    ? ['restore','properties']
+    : ['open','remove','properties']
+
+  menuItems.value = menuItemsList.value.filter((item: MenuItem) => itemsArr.includes(item.key))
+
   const top = unref(y) - unref(windowY)
   const left = unref(x)
   menuPosition.value = { top, left }
   contextMenu.value = page
 }
 
-function closeContextMenu() {
+function closeContextMenu(): void {
   contextMenu.value = null
 }
 
-function openPage (page: Page) {}
+function openPage (page: Page): void {
+  router.push(route.path + page.url)
+}
+
+function removePage (page: Page): void {
+  pagesStore.pages = pagesStore.pages.map((item: Page) => {
+    if (item.id === page.id) {
+      item.defaultParentId = page.parentId
+      item.parentId = 38
+    }
+    return item
+  })
+
+  closeConfirmDialog()
+}
+
+function restorePage (page: Page): void {
+  pagesStore.pages = pagesStore.pages.map((item: Page) => {
+    if (item.id === page.id) {
+      if (item.defaultParentId) {
+        page.parentId = item.defaultParentId
+        item.defaultParentId = null
+      }
+    }
+    return item
+  })
+}
+
+const confirmDialog = ref<Page | null>(null)
+
+function openConfirmDialog (page: Page): void {
+  confirmDialog.value = page
+}
+
+function closeConfirmDialog (): void {
+  confirmDialog.value = null
+}
 </script>
 
 <template>
   <EmptyFolder v-if="!files?.length">
-    Папка пуста
+    {{ route.path !== '/trash' ? 'Папка' : 'Корзина' }}  пуста
   </EmptyFolder>
 
-  <div class="files" v-else>
+  <div
+    v-else
+    class="files"
+  >
     <FolderItem
       v-for="folderItem in files"
       :key="folderItem.id"
@@ -84,6 +146,24 @@ function openPage (page: Page) {}
       :menuItems="menuItems"
       :menu-position="menuPosition"
       @on-close="closeContextMenu"
+    />
+
+    <ConfirmDialog
+      v-if="confirmDialog"
+      title="Подтвердите действие"
+      dialog="Переместить в корзину?"
+      :data="confirmDialog"
+      :buttons="[
+        {
+          text: 'Отмена',
+          action: () => closeConfirmDialog(),
+        },
+        {
+          text: 'Да',
+          action: (page) => removePage(<Page>page),
+        }
+      ]"
+      @on-close="closeConfirmDialog"
     />
   </div>
 </template>

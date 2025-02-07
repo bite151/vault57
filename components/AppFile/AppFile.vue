@@ -102,7 +102,7 @@ function fullScreen(): void {
 <style scoped lang="scss">
 .content-file {
   max-width: 1180px;
-  width: 1180px;
+  width: 100%;
   min-width: 360px;
   height: 90vh;
   min-height: 300px;

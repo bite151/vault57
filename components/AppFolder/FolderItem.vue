@@ -37,7 +37,7 @@ function resetFrontPosition() {
       @contextmenu.prevent="emit('onContextMenu', folderItem)"
     >
       <AsyncIcon
-        :name="folderItem.icon"
+        :name="folderItem.icon || 'Folder'"
         :size="52"
         :strokeWidth="1.3"
       />

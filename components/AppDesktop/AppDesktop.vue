@@ -11,19 +11,19 @@ const icons = ref([
   {
     key: 2,
     title: 'Network',
-    url: '',
+    url: '/#',
     icon: 'Network'
   },
   {
     key: 3,
     title: 'Trash',
-    url: '',
+    url: '/trash',
     icon: 'Trash2'
   },
   {
     key: 4,
     title: 'Settings',
-    url: '',
+    url: '/#',
     icon: 'Settings'
   },
   {
@@ -38,10 +38,9 @@ const icons = ref([
 <template>
   <div class="desktop-grid">
     <nuxt-link
-      v-for="(block, n) in icons"
+      v-for="block in icons"
       class="block"
       :class="`block${block.key}`"
-      :key="block.key"
       :to="block.url"
     >
       <AsyncIcon

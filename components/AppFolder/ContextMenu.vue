@@ -13,6 +13,10 @@ const emit = defineEmits(['onClose'])
 
 const contextMenu = ref(null)
 onClickOutside(contextMenu, event => emit('onClose'))
+function action({ action }: MenuItem) {
+  emit('onClose')
+  return action(folderItem)
+}
 </script>
 
 <template>
@@ -23,11 +27,10 @@ onClickOutside(contextMenu, event => emit('onClose'))
         class="context-menu"
         :style="`top:${menuPosition.top - 8}px; left:${menuPosition.left - 4}px;`"
       >
-<!--        {{ folderItem }}-->
         <button
           v-for="item in menuItems"
           class="menu-item"
-          @click="item.action(folderItem)"
+          @click="action(item)"
         >
           {{ item.title }}
         </button>

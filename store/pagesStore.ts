@@ -350,13 +350,23 @@ export const usePagesStore = defineStore('pages', () => {
       showInFinder: false
     },
     {
-      id: 36,
+      id: 37,
       parentId: 1,
       url: '/my-computer',
       title: 'My computer',
       h1: 'My computer',
       metaDescription: '',
       contentComponent: 'MyComputer',
+      content: [],
+      showInFinder: false
+    },
+    {
+      id: 38,
+      parentId: 1,
+      url: '/trash',
+      title: 'Trash',
+      h1: 'Trash',
+      metaDescription: '',
       content: [],
       showInFinder: false
     },
