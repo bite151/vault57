@@ -67,8 +67,11 @@ const menuItemsList = ref<MenuItem[]>([
   },
 ])
 const menuItems = ref<MenuItem[]>([])
+const isFolderItemActive = ref<boolean | number>(false)
 
 function openContextMenu (page: Page) {
+  isFolderItemActive.value = page.id
+
   const itemsArr: string[] = (route.path === '/trash')
     ? ['restore','properties']
     : ['open','remove','properties']
@@ -83,6 +86,7 @@ function openContextMenu (page: Page) {
 
 function closeContextMenu(): void {
   contextMenu.value = null
+  isFolderItemActive.value = false
 }
 
 function openPage (page: Page): void {
@@ -137,6 +141,7 @@ function closeConfirmDialog (): void {
       v-for="folderItem in files"
       :key="folderItem.id"
       :folder-item="folderItem"
+      :class="{'active': isFolderItemActive === folderItem.id}"
       @on-context-menu="openContextMenu"
     />
 

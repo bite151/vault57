@@ -29,7 +29,7 @@ function resetFrontPosition() {
 </script>
 
 <template>
-  <div class="file">
+  <div class="file activen">
     <nuxt-link
       :to="generateUrl(folderItem)"
       active-class="file_active"
@@ -53,6 +53,8 @@ function resetFrontPosition() {
   width: calc((100% - 80px) / 5);
   min-width: 166px;
   margin-bottom: 12px;
+
+
 
   a {
     display: flex;
@@ -80,22 +82,19 @@ function resetFrontPosition() {
     line-height: 1.3;
     transition: color .2s ease-in-out, background-color .2s ease-in-out, border-color .2s ease-in-out;
   }
-  &:hover, &_active {
-    p {
-      //color: #0164c6;
-      border-color: #e4e5e3;
-      background-color: #e4e5e3;
-    }
-
-    svg {
+  &:hover {
+    p, svg  {
       border-color: #e4e5e3;
       background-color: #e4e5e3;
     }
   }
 
-  &_active {
+  &_active,
+  &.active {
     p, svg {
       border: 1px dotted #aaa !important;
+      border-color: #e4e5e3;
+      background-color: #e4e5e3;
     }
   }
 }
