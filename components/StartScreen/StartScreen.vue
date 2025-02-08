@@ -77,7 +77,7 @@ function redirect(url) {
         />
         <RunningLine
           v-if="show2"
-          :text="['select a menu item to continue...']"
+          :text="['coming soon...']"
           :velocity="[30, 50]"
           :cursor="true"
           class="select glow"
@@ -91,11 +91,6 @@ function redirect(url) {
     v-else
     class="container"
   >
-    <Navigation
-      @onRedirect="redirect"
-      style="z-index: 2"
-      v-show="!changeScreenColor"
-    />
     <div class="wrapper">
       <div v-if="!changeScreenColor" class="start-block">
         <div class="noise">
@@ -103,7 +98,7 @@ function redirect(url) {
         </div>
         <p v-for="str in text" class="glow">{{ str }}</p>
         <p class="title glow">ретро компьютерный клуб</p>
-        <p class="select glow" v-if="!showLoader">выберите пункт меню для продолжения...</p>
+        <p class="select glow" v-if="!showLoader">уже совсем скоро...</p>
 
         <div v-if="showLoader" class="loader-wrapper">
           <p class="loader" style="text-align: center">идёт загрузка...</p>
