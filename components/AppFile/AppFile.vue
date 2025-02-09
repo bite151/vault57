@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {Maximize2, Minimize2, Minus, Plus, X} from "lucide-vue-next";
 import {usePagesStore} from "~/store/pagesStore";
+import type {Page} from "~/types/Page";
 
 const route = useRoute()
 const router = useRouter()
@@ -11,12 +12,16 @@ const isFullScreen = ref<boolean>(false)
 const isHidden = ref<boolean>(false)
 const cursorPointer = ref<boolean>(false)
 
-const pages = computed(() => pagesStore.pages);
-const currentPage = computed(() => pages.value.find(page => {
+const pages = computed<Page[]>(() => pagesStore.pages);
+const currentPage = computed<Page | undefined>(() => pages.value.find(page => {
   return page.url.replace('/file/', '/') === '/' + route.path.split('/').pop()
 }));
 
 $bus.$on('setFront', (flag: boolean) => cursorPointer.value = flag)
+$bus.$on('file:show', () => isHidden.value = false)
+$bus.$on('file:close', (id: number) => {
+  if (id === currentPage.value?.id) { closeWindow() }
+})
 
 watch(
   () => route.fullPath,
@@ -72,12 +77,12 @@ function fullScreen(): void {
       <div class="main-frame">
         <div
           class="content"
-          :class="{'content_rounded': currentPage.hideStatusBar}"
+          :class="{'content_rounded': currentPage?.hideStatusBar}"
         >
           <component
-            v-if="currentPage.contentComponent"
+            v-if="currentPage?.contentComponent"
             :is="defineAsyncComponent({
-              loader: () => import(`~/components/Pages/${currentPage.contentComponent}.vue`)
+              loader: () => import(`~/components/Pages/${currentPage?.contentComponent}.vue`)
             })"
           />
 
@@ -90,7 +95,7 @@ function fullScreen(): void {
 
         <footer
           class="status-bar"
-          v-if="!currentPage.hideStatusBar"
+          v-if="!currentPage?.hideStatusBar"
         >
           {{ route.fullPath.replace('/file/', '/') }}
         </footer>

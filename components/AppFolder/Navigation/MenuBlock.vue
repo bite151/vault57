@@ -4,6 +4,7 @@ import { Folder, FolderOpen } from 'lucide-vue-next';
 import MenuBlock from "~/components/AppFolder/Navigation/MenuBlock.vue";
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 import type { Page } from "~/types/Page";
+import { generateUrl } from "~/helpers/app.helpers";
 
 
 const pagesStore = usePagesStore()
@@ -43,15 +44,6 @@ function itemIcon (page: Page) {
   //   return File
   // }
   return !isActive(page.url) ? Folder : FolderOpen
-}
-
-function generateUrl(currentPage: Page, url: string[] = []): string {
-  const child = pagesStore.pages.find(page => page.id === currentPage.parentId)
-  url.unshift(currentPage.url)
-  if (child) {
-    return generateUrl(child, url)
-  }
-  return url.filter(url => url !== '/').join('')
 }
 
 </script>

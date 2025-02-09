@@ -9,7 +9,10 @@ export const usePagesStore = defineStore('pages', () => {
       title: 'Home',
       h1: 'Home',
       metaDescription: '',
-      content: []
+      content: [],
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-10-15 02:10:03',
+      updatedAt: '2024-10-16 02:30:03'
     },
     {
       id: 2,
@@ -19,7 +22,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'О клубе',
       metaDescription: '',
       content: [],
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-10-17 03:15:21',
+      updatedAt: '2024-10-18 04:25:18'
     },
     {
       id: 7,
@@ -29,7 +35,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Услуги',
       metaDescription: '',
       content: [],
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-10-19 05:50:03',
+      updatedAt: '2024-10-20 06:15:47'
     },
     {
       id: 3,
@@ -39,7 +48,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'События',
       metaDescription: '',
       content: [],
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-10-21 07:40:12',
+      updatedAt: '2024-10-22 08:30:03'
     },
     {
       id: 9,
@@ -50,7 +62,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Camera',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-10-23 09:10:53',
+      updatedAt: '2024-10-24 10:11:21'
     },
     {
       id: 4,
@@ -61,7 +76,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Computer',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-10-25 11:15:03',
+      updatedAt: '2024-10-26 12:23:45'
     },
     {
       id: 5,
@@ -72,7 +90,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Gamepad2',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-10-27 13:04:32',
+      updatedAt: '2024-10-28 14:30:23'
     },
     {
       id: 6,
@@ -83,7 +104,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Film',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-10-29 15:10:41',
+      updatedAt: '2024-10-30 16:20:12'
     },
     {
       id: 8,
@@ -93,7 +117,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Контакты',
       metaDescription: '',
       content: [],
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-10-31 17:00:03',
+      updatedAt: '2024-11-01 18:10:19'
     },
     {
       id: 10,
@@ -103,7 +130,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Retro Playground Party vol.1',
       metaDescription: '',
       content: [],
-      icon: 'Swords'
+      icon: 'Swords',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-02 19:15:43',
+      updatedAt: '2024-11-03 20:17:52'
     },
     {
       id: 11,
@@ -113,7 +143,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Retro Playground Party vol.2',
       metaDescription: '',
       content: [],
-      icon: 'Joystick'
+      icon: 'Joystick',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-04 21:30:14',
+      updatedAt: '2024-11-05 22:32:43'
     },
     {
       id: 12,
@@ -123,7 +156,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'История',
       metaDescription: '',
       content: [],
-      icon: 'FileType2'
+      icon: 'FileType2',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-06 23:45:01',
+      updatedAt: '2024-11-07 00:50:03'
     },
     {
       id: 13,
@@ -133,7 +169,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Правила',
       metaDescription: '',
       content: [],
-      icon: 'FileText'
+      icon: 'FileText',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-08 01:11:03',
+      updatedAt: '2024-11-09 02:20:15'
     },
     {
       id: 14,
@@ -143,7 +182,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Retro Playground Party vol.3',
       metaDescription: '',
       content: [],
-      icon: 'FileHeart'
+      icon: 'FileHeart',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-10 03:25:34',
+      updatedAt: '2024-11-11 04:30:42'
     },
     {
       id: 15,
@@ -153,7 +195,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Retro Playground Party vol.4',
       metaDescription: '',
       content: [],
-      icon: 'Atom'
+      icon: 'Atom',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-12 05:40:52',
+      updatedAt: '2024-11-13 06:10:23'
     },
     {
       id: 16,
@@ -163,7 +208,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Retro Playground Party vol.5',
       metaDescription: '',
       content: [],
-      icon: 'PartyPopper'
+      icon: 'PartyPopper',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-14 07:50:01',
+      updatedAt: '2024-11-15 08:30:35'
     },
     {
       id: 17,
@@ -173,7 +221,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Retro Playground Party vol.6',
       metaDescription: '',
       content: [],
-      icon: 'Gamepad'
+      icon: 'Gamepad',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-16 09:15:11',
+      updatedAt: '2024-11-17 10:05:27'
     },
     {
       id: 18,
@@ -183,7 +234,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Retro Playground Party vol.7',
       metaDescription: '',
       content: [],
-      icon: 'Dices'
+      icon: 'Dices',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-18 11:30:33',
+      updatedAt: '2024-11-19 12:20:11'
     },
     {
       id: 19,
@@ -193,7 +247,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Retro Playground Party vol.8',
       metaDescription: '',
       content: [],
-      icon: 'Gamepad2'
+      icon: 'Gamepad2',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-20 13:50:22',
+      updatedAt: '2024-11-21 14:30:09'
     },
     {
       id: 20,
@@ -206,6 +263,9 @@ export const usePagesStore = defineStore('pages', () => {
       content: [],
       contentComponent: 'MapComponent',
       hideStatusBar: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-22 15:10:45',
+      updatedAt: '2024-11-23 16:05:03'
     },
     {
       id: 21,
@@ -219,6 +279,9 @@ export const usePagesStore = defineStore('pages', () => {
       contentComponent: 'FeedbackForm',
       hideStatusBar: true,
       resetWidth: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-24 17:10:33',
+      updatedAt: '2024-11-25 18:20:29'
     },
     {
       id: 22,
@@ -229,7 +292,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Folder',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-26 19:05:03',
+      updatedAt: '2024-11-27 20:50:33'
     },
     {
       id: 23,
@@ -240,7 +306,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Folder',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-11-28 21:30:03',
+      updatedAt: '2024-11-29 22:45:19'
     },
     {
       id: 27,
@@ -251,7 +320,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Folder',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-01 23:10:23',
+      updatedAt: '2024-12-02 00:20:35'
     },
     {
       id: 28,
@@ -262,7 +334,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Folder',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-03 01:15:09',
+      updatedAt: '2024-12-04 02:10:45'
     },
     {
       id: 29,
@@ -273,7 +348,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Folder',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-04 07:33:21',
+      updatedAt: '2024-12-05 08:34:39'
     },
     {
       id: 33,
@@ -284,6 +362,9 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'FileText',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-06 09:14:25',
+      updatedAt: '2024-12-07 10:15:50'
     },
     {
       id: 30,
@@ -294,7 +375,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Folder',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-08 11:00:53',
+      updatedAt: '2024-12-09 12:11:23'
     },
     {
       id: 31,
@@ -305,7 +389,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Folder',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-10 13:10:34',
+      updatedAt: '2024-12-11 14:20:15'
     },
     {
       id: 32,
@@ -316,9 +403,11 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       content: [],
       icon: 'Folder',
-      showInFinder: true
+      showInFinder: true,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-12 15:30:12',
+      updatedAt: '2024-12-13 16:35:27'
     },
-
     {
       id: 34,
       parentId: 22,
@@ -327,7 +416,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Fallout',
       metaDescription: '',
       content: [],
-      icon: 'AppWindow'
+      icon: 'AppWindow',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-14 17:10:33',
+      updatedAt: '2024-12-15 18:30:03'
     },
     {
       id: 35,
@@ -337,7 +429,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Fallout 2',
       metaDescription: '',
       content: [],
-      icon: 'AppWindow'
+      icon: 'AppWindow',
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-16 19:30:03',
+      updatedAt: '2024-12-17 20:40:12'
     },
     {
       id: 36,
@@ -347,7 +442,10 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Desktop',
       metaDescription: '',
       content: [],
-      showInFinder: false
+      showInFinder: false,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-18 21:10:45',
+      updatedAt: '2024-12-19 22:15:17'
     },
     {
       id: 37,
@@ -358,7 +456,10 @@ export const usePagesStore = defineStore('pages', () => {
       metaDescription: '',
       contentComponent: 'MyComputer',
       content: [],
-      showInFinder: false
+      showInFinder: false,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-20 23:35:25',
+      updatedAt: '2024-12-21 00:50:15'
     },
     {
       id: 38,
@@ -368,10 +469,13 @@ export const usePagesStore = defineStore('pages', () => {
       h1: 'Trash',
       metaDescription: '',
       content: [],
-      showInFinder: false
-    },
+      showInFinder: false,
+      createdBy: 'Dmitry Bite',
+      createdAt: '2024-12-22 01:15:38',
+      updatedAt: '2024-12-23 02:05:19'
+    }
   ])
-
+  
   const isLoaded = ref<boolean>(false)
   const loading = ref<boolean>(false)
 

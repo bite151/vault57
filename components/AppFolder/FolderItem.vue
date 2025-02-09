@@ -1,26 +1,18 @@
 <script setup lang="ts">
-import {usePagesStore} from "~/store/pagesStore";
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 
 import type { Page } from "~/types/Page";
+import { generateUrl } from "~/helpers/app.helpers";
 
 const { folderItem } = defineProps<{
   folderItem: Page
 }>()
 
-const emit = defineEmits(['onContextMenu'])
-
+const emit = defineEmits(['onContextMenu', 'onShowProps'])
+const route = useRoute()
 const { $bus } = useNuxtApp()
-const pagesStore = usePagesStore()
 
-function generateUrl(currentPage: Page, url: string[] = []): string {
-  const child = pagesStore.pages.find(page => page.id === currentPage.parentId)
-  url.unshift(currentPage.url)
-  if (child) {
-    return generateUrl(child, url)
-  }
-  return url.filter(url => url !== '/').join('')
-}
+const isTrash = computed<boolean>(() => route.path === '/trash')
 
 function resetFrontPosition() {
   setTimeout(() => $bus.$emit('resetFront', false), 5)
@@ -29,11 +21,12 @@ function resetFrontPosition() {
 </script>
 
 <template>
-  <div class="file activen">
+  <div class="file">
     <nuxt-link
+      v-if="!isTrash"
       :to="generateUrl(folderItem)"
       active-class="file_active"
-      @click="resetFrontPosition()"
+      @click="() => { resetFrontPosition(); $bus.$emit('file:show') }"
       @contextmenu.prevent="emit('onContextMenu', folderItem)"
     >
       <AsyncIcon
@@ -43,6 +36,20 @@ function resetFrontPosition() {
       />
       <p>{{ folderItem.title }}</p>
     </nuxt-link>
+
+    <div
+      v-else
+      class="file-inner"
+      @click="() => { resetFrontPosition(); emit('onShowProps', folderItem) }"
+      @contextmenu.prevent="emit('onContextMenu', folderItem)"
+    >
+      <AsyncIcon
+        :name="folderItem.icon || 'Folder'"
+        :size="52"
+        :strokeWidth="1.3"
+      />
+      <p>{{ folderItem.title }}</p>
+    </div>
   </div>
 </template>
 
@@ -54,9 +61,7 @@ function resetFrontPosition() {
   min-width: 166px;
   margin-bottom: 12px;
 
-
-
-  a {
+  a, .file-inner {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -71,13 +76,14 @@ function resetFrontPosition() {
     padding: 3px;
     border-radius: 8px;
     flex-shrink: 0;
+    border: 1px dotted transparent;
     transition: background-color .2s ease-in-out;
   }
 
   p {
     padding: 2px 6px;
     border-radius: 4px;
-    border: 1px solid transparent;
+    border: 1px dotted transparent;
     text-align: center;
     line-height: 1.3;
     transition: color .2s ease-in-out, background-color .2s ease-in-out, border-color .2s ease-in-out;
@@ -92,8 +98,7 @@ function resetFrontPosition() {
   &_active,
   &.active {
     p, svg {
-      border: 1px dotted #aaa !important;
-      border-color: #e4e5e3;
+      border-color: #aaa;
       background-color: #e4e5e3;
     }
   }

@@ -12,6 +12,9 @@ export interface Page {
   contentComponent?: string;
   hideStatusBar?: boolean;
   resetWidth?: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: string;
 }
 
 export interface MenuItem {
