@@ -1,21 +1,73 @@
 <script setup lang="ts">
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
-
-import type { Page } from "~/types/Page";
 import { generateUrl } from "~/helpers/app.helpers";
+import { ref } from "vue";
+import { usePagesStore } from "~/store/pagesStore";
+import type { MenuItem, Page } from "~/types/Page";
 
 const { folderItem } = defineProps<{
   folderItem: Page
 }>()
 
-const emit = defineEmits(['onContextMenu', 'onShowProps'])
+const emit = defineEmits(['onContextMenu', 'onRemove', 'onShowProps'])
 const route = useRoute()
+const router = useRouter()
 const { $bus } = useNuxtApp()
+const pagesStore = usePagesStore()
 
 const isTrash = computed<boolean>(() => route.path === '/trash')
 
 function resetFrontPosition() {
   setTimeout(() => $bus.$emit('resetFront', false), 5)
+}
+
+const menuItemsList = ref<MenuItem[]>([
+  {
+    key: 'open',
+    title: 'Открыть',
+    icon: null,
+    action: (page: Page) => openPage(page)
+  },
+  {
+    key: 'remove',
+    title: 'Удалить',
+    icon: null,
+    action: (page: Page) => emit('onRemove', page)
+  },
+  {
+    key: 'restore',
+    title: 'Восстановить',
+    icon: null,
+    action: (page: Page) => restorePage(page)
+  },
+  {
+    key: 'properties',
+    title: 'Свойства',
+    icon: null,
+    action: (page: Page) => emit('onShowProps', page)
+  },
+])
+
+function getMenuItems(keys: string[]): MenuItem[] {
+  return menuItemsList.value.filter(item => keys.includes(item.key))
+}
+
+function openPage (page: Page): void {
+  $bus.$emit('file:show')
+  const url = generateUrl(page)
+  router.push(url)
+}
+
+function restorePage (page: Page): void {
+  pagesStore.pages = pagesStore.pages.map((item: Page) => {
+    if (item.id === page.id) {
+      if (item.defaultParentId) {
+        page.parentId = item.defaultParentId
+        item.defaultParentId = null
+      }
+    }
+    return item
+  })
 }
 
 </script>
@@ -27,7 +79,11 @@ function resetFrontPosition() {
       :to="generateUrl(folderItem)"
       active-class="file_active"
       @click="() => { resetFrontPosition(); $bus.$emit('file:show') }"
-      @contextmenu.prevent="emit('onContextMenu', folderItem, ['open','remove','properties'])"
+      @contextmenu.prevent="emit(
+        'onContextMenu',
+        folderItem,
+        getMenuItems(['open','remove','properties'])
+      )"
     >
       <AsyncIcon
         :name="folderItem.icon || 'Folder'"
@@ -41,7 +97,11 @@ function resetFrontPosition() {
       v-else
       class="file-inner"
       @click="() => { resetFrontPosition(); emit('onShowProps', folderItem) }"
-      @contextmenu.prevent.stop="emit('onContextMenu', folderItem, ['restore','properties'])"
+      @contextmenu.prevent.stop="emit(
+        'onContextMenu',
+        folderItem,
+        getMenuItems(['restore','properties'])
+      )"
     >
       <AsyncIcon
         :name="folderItem.icon || 'Folder'"

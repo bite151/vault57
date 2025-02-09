@@ -10,7 +10,6 @@ import ConfirmDialog from "~/components/common/Modals/ConfirmDialog.vue";
 import type { MenuItem, Page } from "~/types/Page";
 import type { ConfirmDialogProps } from "~/types/ConfirmDialog";
 import PropertiesModal from "~/components/AppFolder/PropertiesModal.vue";
-import { generateUrl } from "~/helpers/app.helpers";
 
 const { currentFolder } = defineProps<{
   currentFolder: Page | undefined
@@ -18,7 +17,6 @@ const { currentFolder } = defineProps<{
 
 const { $bus } = useNuxtApp()
 const route = useRoute()
-const router = useRouter()
 const pagesStore = usePagesStore()
 
 const files = computed<Page[]>(() => {
@@ -41,46 +39,13 @@ const { y: windowY } = useWindowScroll()
 const contextMenu = ref<Page | null>(null)
 const menuPosition = ref<{ top: number, left: number }>({ top: 0, left: 0 })
 
-const menuItemsList = ref<MenuItem[]>([
-  {
-    key: 'open',
-    title: 'Открыть',
-    icon: null,
-    action: (page: Page) => openPage(page)
-  },
-  {
-    key: 'remove',
-    title: 'Удалить',
-    icon: null,
-    action: (page: Page) => openConfirmDialog(page)
-  },
-  {
-    key: 'restore',
-    title: 'Восстановить',
-    icon: null,
-    action: (page: Page) => restorePage(page)
-  },
-  {
-    key: 'restore-all',
-    title: 'Восстановить все',
-    icon: null,
-    action: () => restoreAll()
-  },
-  {
-    key: 'properties',
-    title: 'Свойства',
-    icon: null,
-    action: (page: Page) => openPropertiesModal(page)
-  },
-])
-
 const menuItems = ref<MenuItem[]>([])
 const isFolderItemActive = ref<boolean | number>(false)
 
-function openContextMenu (page: Page, itemsArr: string[]) {
+function openContextMenu (page: Page, menuItemsArr: MenuItem[]) {
   isFolderItemActive.value = page.id
 
-  menuItems.value = menuItemsList.value.filter((item: MenuItem) => itemsArr.includes(item.key))
+  menuItems.value = menuItemsArr
 
   const top = unref(y) - unref(windowY)
   const left = unref(x)
@@ -91,12 +56,6 @@ function openContextMenu (page: Page, itemsArr: string[]) {
 function closeContextMenu(): void {
   contextMenu.value = null
   isFolderItemActive.value = false
-}
-
-function openPage (page: Page): void {
-  $bus.$emit('file:show')
-  const url = generateUrl(page)
-  router.push(url)
 }
 
 function removePage (page: Page): void {
@@ -112,24 +71,6 @@ function removePage (page: Page): void {
 
   $bus.$emit('file:close', page.id)
   closeConfirmDialog()
-}
-
-function restorePage (page: Page): void {
-  pagesStore.pages = pagesStore.pages.map((item: Page) => {
-    if (item.id === page.id) {
-      if (item.defaultParentId) {
-        page.parentId = item.defaultParentId
-        item.defaultParentId = null
-      }
-    }
-    return item
-  })
-}
-
-function restoreAll () {
-  const trashId: number = pagesStore.pages.find(page => page.url === '/trash')!.id
-  const trashItems = pagesStore.pages.filter(page => page.parentId === trashId)
-  trashItems.forEach(item => restorePage(item))
 }
 
 const confirmDialog = ref<Page | null>(null)
@@ -165,8 +106,24 @@ function onFolderClick (): void {
   const trash: Page = pagesStore.pages.find(page => page.url === '/trash')!
   const isTrashEmpty = !pagesStore.pages.some(page => page.parentId === trash.id)
   if (isTrash && !isTrashEmpty) {
-    openContextMenu(currentFolder!, ['restore-all'])
+    openContextMenu(currentFolder!, [{
+      key: 'restore-all',
+      title: 'Восстановить все',
+      icon: null,
+      action: () => restoreAll()
+    }])
   }
+}
+
+function restoreAll () {
+  const trashId: number = pagesStore.pages.find(page => page.url === '/trash')!.id
+  const trashItems = pagesStore.pages.filter(page => page.parentId === trashId)
+  trashItems.forEach(item => {
+    item.parentId = item.defaultParentId!
+    item.defaultParentId = null
+
+    pagesStore.pages = pagesStore.pages.map(page => page.id === item.id ? item : page)
+  })
 }
 </script>
 
@@ -189,6 +146,7 @@ function onFolderClick (): void {
         :folder-item="folderItem"
         :class="{'active': isFolderItemActive === folderItem.id}"
         @on-context-menu="openContextMenu"
+        @on-remove="openConfirmDialog"
         @on-show-props="openPropertiesModal"
       />
 
