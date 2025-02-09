@@ -61,6 +61,12 @@ const menuItemsList = ref<MenuItem[]>([
     action: (page: Page) => restorePage(page)
   },
   {
+    key: 'restore-all',
+    title: 'Восстановить все',
+    icon: null,
+    action: () => restoreAll()
+  },
+  {
     key: 'properties',
     title: 'Свойства',
     icon: null,
@@ -71,12 +77,8 @@ const menuItemsList = ref<MenuItem[]>([
 const menuItems = ref<MenuItem[]>([])
 const isFolderItemActive = ref<boolean | number>(false)
 
-function openContextMenu (page: Page) {
+function openContextMenu (page: Page, itemsArr: string[]) {
   isFolderItemActive.value = page.id
-
-  const itemsArr: string[] = (route.path === '/trash')
-    ? ['restore','properties']
-    : ['open','remove','properties']
 
   menuItems.value = menuItemsList.value.filter((item: MenuItem) => itemsArr.includes(item.key))
 
@@ -124,6 +126,12 @@ function restorePage (page: Page): void {
   })
 }
 
+function restoreAll () {
+  const trashId: number = pagesStore.pages.find(page => page.url === '/trash')!.id
+  const trashItems = pagesStore.pages.filter(page => page.parentId === trashId)
+  trashItems.forEach(item => restorePage(item))
+}
+
 const confirmDialog = ref<Page | null>(null)
 const confirmDialogProps = ref<ConfirmDialogProps<Page>>({
   title: 'Подтвердите действие',
@@ -150,50 +158,70 @@ function openPropertiesModal (page: Page): void {
 function closePropertiesModal (): void {
   propertiesModal.value = null
 }
+
+function onFolderClick (): void {
+  const isTrash = route.path === '/trash'
+
+  const trash: Page = pagesStore.pages.find(page => page.url === '/trash')!
+  const isTrashEmpty = !pagesStore.pages.some(page => page.parentId === trash.id)
+  if (isTrash && !isTrashEmpty) {
+    openContextMenu(currentFolder!, ['restore-all'])
+  }
+}
 </script>
 
 <template>
-  <EmptyFolder v-if="!files?.length">
-    {{ route.path !== '/trash' ? 'Папка' : 'Корзина' }} пуста
-  </EmptyFolder>
-
   <div
-    v-else
-    class="files"
+    class="content"
+    @contextmenu.prevent="onFolderClick"
   >
-    <FolderItem
-      v-for="folderItem in files"
-      :key="folderItem.id"
-      :folder-item="folderItem"
-      :class="{'active': isFolderItemActive === folderItem.id}"
-      @on-context-menu="openContextMenu"
-      @on-show-props="openPropertiesModal"
-    />
+    <EmptyFolder v-if="!files?.length">
+      {{ route.path !== '/trash' ? 'Папка' : 'Корзина' }} пуста
+    </EmptyFolder>
 
-    <ContextMenu
-      v-if="contextMenu"
-      :folder-item="contextMenu"
-      :menuItems="menuItems"
-      :menu-position="menuPosition"
-      @on-close="closeContextMenu"
-    />
+    <div
+      v-else
+      class="files"
+    >
+      <FolderItem
+        v-for="folderItem in files"
+        :key="folderItem.id"
+        :folder-item="folderItem"
+        :class="{'active': isFolderItemActive === folderItem.id}"
+        @on-context-menu="openContextMenu"
+        @on-show-props="openPropertiesModal"
+      />
 
-    <ConfirmDialog
-      v-if="confirmDialog"
-      v-bind="confirmDialogProps"
-      :data="confirmDialog"
-      @on-close="closeConfirmDialog"
-    />
+      <ContextMenu
+        v-if="contextMenu"
+        :folder-item="contextMenu"
+        :menuItems="menuItems"
+        :menu-position="menuPosition"
+        @on-close="closeContextMenu"
+      />
 
-    <PropertiesModal
-      v-if="propertiesModal"
-      :data="propertiesModal"
-      @on-close="closePropertiesModal"
-    />
+      <ConfirmDialog
+        v-if="confirmDialog"
+        v-bind="confirmDialogProps"
+        :data="confirmDialog"
+        @on-close="closeConfirmDialog"
+      />
+
+      <PropertiesModal
+        v-if="propertiesModal"
+        :data="propertiesModal"
+        @on-close="closePropertiesModal"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.content {
+  padding: 18px;
+  flex-grow: 1;
+}
+
 .files {
   display: flex;
   flex-direction: row;

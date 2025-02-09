@@ -29,7 +29,7 @@ const breadCrumbs = computed(() => {
     routesArr.splice(routesArr.length - 1, 1)
   }
   routesArr.splice(0, 1)
-  return routesArr.map(item => pages.value.find(page => page.url.replace('/file/', '/') === '/' + item).url).join('')
+  return routesArr.map(item => pages.value.find(page => page.url.replace('/file/', '/') === '/' + item)!.url).join('')
 })
 
 $bus.$on('resetFront', () => isOnFront.value = false)
@@ -92,11 +92,8 @@ function toFront(): void {
       </aside>
       <div class="main-frame">
         <Simplebar class="scrollbar-folder">
-          <div class="content">
-            <slot></slot>
-          </div>
+          <slot></slot>
         </Simplebar>
-
         <footer class="status-bar">
           {{ breadCrumbs }}
         </footer>
@@ -234,10 +231,6 @@ function toFront(): void {
 .main-frame {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-}
-.content {
-  padding: 18px;
   flex-grow: 1;
 }
 

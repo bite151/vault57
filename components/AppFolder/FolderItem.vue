@@ -27,7 +27,7 @@ function resetFrontPosition() {
       :to="generateUrl(folderItem)"
       active-class="file_active"
       @click="() => { resetFrontPosition(); $bus.$emit('file:show') }"
-      @contextmenu.prevent="emit('onContextMenu', folderItem)"
+      @contextmenu.prevent="emit('onContextMenu', folderItem, ['open','remove','properties'])"
     >
       <AsyncIcon
         :name="folderItem.icon || 'Folder'"
@@ -41,7 +41,7 @@ function resetFrontPosition() {
       v-else
       class="file-inner"
       @click="() => { resetFrontPosition(); emit('onShowProps', folderItem) }"
-      @contextmenu.prevent="emit('onContextMenu', folderItem)"
+      @contextmenu.prevent.stop="emit('onContextMenu', folderItem, ['restore','properties'])"
     >
       <AsyncIcon
         :name="folderItem.icon || 'Folder'"
@@ -87,6 +87,7 @@ function resetFrontPosition() {
     text-align: center;
     line-height: 1.3;
     transition: color .2s ease-in-out, background-color .2s ease-in-out, border-color .2s ease-in-out;
+    user-select: none;
   }
   &:hover {
     p, svg  {
