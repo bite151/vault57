@@ -42,15 +42,21 @@ const animate = (text, letterNumber = 0) => {
   }
 }
 
-function redirect(url) {
+function redirect(url: string): void {
   if (isLoaded.value) {
     router.push(url)
   } else {
-    appStatesStore.isLoaded = true
     showLoader.value = true
     setTimeout(() => changeScreenColor.value = true, 1500)
     setTimeout(() => router.push(url), 1800)
+    setTimeout(() => appStatesStore.isLoaded = true, 3000)
   }
+}
+
+function loadingCompleted(): void {
+  appStatesStore.setLoading(true);
+  showLoader.value = true;
+  redirect('/my-computer')
 }
 </script>
 
@@ -73,15 +79,7 @@ function redirect(url) {
           :velocity="[20, 70]"
           :cursor="true"
           class="title glow"
-          @onCompleted="show2 = true"
-        />
-        <RunningLine
-          v-if="show2"
-          :text="['select a menu item to continue...']"
-          :velocity="[30, 50]"
-          :cursor="true"
-          class="select glow"
-          @onCompleted="appStatesStore.setLoading(true)"
+          @onCompleted="loadingCompleted()"
         />
       </div>
     </div>
@@ -94,16 +92,21 @@ function redirect(url) {
     <Navigation
       @onRedirect="redirect"
       style="z-index: 2"
-      v-show="!changeScreenColor"
+      v-show="isLoaded"
     />
     <div class="wrapper">
-      <div v-if="!changeScreenColor" class="start-block">
+      <div
+        v-if="!changeScreenColor"
+        class="start-block"
+        :class="{'pt': isLoaded}"
+      >
         <div class="noise">
           <div class="noise-line" v-for="i in 100"></div>
         </div>
         <p v-for="str in text" class="glow">{{ str }}</p>
         <p class="title glow">ретро компьютерный клуб</p>
-        <p class="select glow" v-if="!showLoader">выберите пункт меню для продолжения...</p>
+
+        <p class="select glow" v-if="isLoaded">г. Орёл, ул. Московская, 17</p>
 
         <div v-if="showLoader" class="loader-wrapper">
           <p class="loader" style="text-align: center">идёт загрузка...</p>
@@ -147,6 +150,9 @@ function redirect(url) {
 .start-block {
   position: relative;
   text-align: center;
+  &.pt {
+    padding-top: 6vw;
+  }
   .noise {
     position: absolute;
     top: -2px;
@@ -184,8 +190,8 @@ function redirect(url) {
     }
     &.select {
       font-size: 1.6vw;
-      margin-top: 2vw;
-      padding-bottom: 2vw;
+      //margin-top: 2vw;
+      //padding-bottom: 2vw;
     }
     &.loader {
       text-align: left;
