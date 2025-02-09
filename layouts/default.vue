@@ -5,9 +5,10 @@ import AppFile from "~/components/AppFile/AppFile.vue";
 import AppDesktop from "~/components/AppDesktop/AppDesktop.vue";
 import {usePagesStore} from "~/store/pagesStore";
 
-const loaded = ref<boolean>(false)
 const route = useRoute()
 const pagesStore = usePagesStore()
+
+const loaded = ref<boolean>(false)
 
 const pages = computed(() => pagesStore.pages);
 const currentPage = computed(() => {
@@ -15,13 +16,13 @@ const currentPage = computed(() => {
   return pages.value.find(page => page.url.replace('/file/', '/') === '/' + routesArr[routesArr.length - 1])
 });
 
-onMounted(() => {
-  setTimeout(() => loaded.value = true, 0)
-})
-
 useSeoMeta({
   title: currentPage.value?.title,
   description: currentPage.value?.metaDescription,
+})
+
+onMounted(() => {
+  setTimeout(() => loaded.value = true, 0)
 })
 </script>
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
+import AlertDialog from "~/components/common/Modals/AlertDialog.vue";
 
 const icons = ref([
   {
@@ -11,7 +12,7 @@ const icons = ref([
   {
     key: 2,
     title: 'Network',
-    url: '/#',
+    url: '#',
     icon: 'Network'
   },
   {
@@ -23,7 +24,7 @@ const icons = ref([
   {
     key: 4,
     title: 'Settings',
-    url: '/#',
+    url: '#',
     icon: 'Settings'
   },
   {
@@ -33,23 +34,46 @@ const icons = ref([
     icon: 'Gamepad2'
   }
 ])
+const showAlertDialog = ref<boolean>(false)
 </script>
 
 <template>
   <div class="desktop-grid">
-    <nuxt-link
-      v-for="block in icons"
-      class="block"
-      :class="`block${block.key}`"
-      :to="block.url"
-    >
-      <AsyncIcon
-        :name="block.icon"
-        :stroke-width="1.4"
-      />
-      <span>{{ block.title }}</span>
-    </nuxt-link>
+    <template v-for="block in icons">
+      <nuxt-link
+        v-if="block.url !== '#'"
+        :key="block.key"
+        class="block"
+        :class="`block${block.key}`"
+        :to="block.url"
+      >
+        <AsyncIcon
+          :name="block.icon"
+          :stroke-width="1.4"
+        />
+        <span>{{ block.title }}</span>
+      </nuxt-link>
+      <div
+        v-else
+        class="block"
+        :class="`block${block.key}`"
+        @click="() => showAlertDialog = true"
+      >
+        <AsyncIcon
+          :name="block.icon"
+          :stroke-width="1.4"
+        />
+        <span>{{ block.title }}</span>
+      </div>
+    </template>
   </div>
+
+  <AlertDialog
+    v-if="showAlertDialog"
+    title="Error"
+    message="A component in development"
+    @on-close="() => showAlertDialog = false"
+  />
 </template>
 
 <style scoped lang="scss">
@@ -73,6 +97,8 @@ const icons = ref([
   justify-content: center;
   align-items: center;
   gap: 6px;
+  cursor: pointer;
+  user-select: none;
 
   span {
     font-weight: 400;
