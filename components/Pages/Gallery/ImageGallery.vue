@@ -16,20 +16,22 @@ function openPreviewer(image) {
 </script>
 
 <template>
-  <EmptyFolder v-if="!images.length">
-    Папка пуста
-  </EmptyFolder>
+  <div class="content">
+    <EmptyFolder v-if="!images.length">
+      Папка пуста
+    </EmptyFolder>
 
-  <div class="files" v-else>
-    <div class="file"
-      v-for="image in images"
-      :key="image.id"
-      @click="openPreviewer(image)"
-    >
-      <div class="img-wrapper">
-        <img :src="`/images/${image.src}`" alt="">
+    <div class="files" v-else>
+      <div class="file"
+           v-for="image in images"
+           :key="image.id"
+           @click="openPreviewer(image)"
+      >
+        <div class="img-wrapper">
+          <img :src="`/images/${image.src}`" alt="">
+        </div>
+        <p>{{ image.title }}</p>
       </div>
-      <p>{{ image.title }}</p>
     </div>
   </div>
 
@@ -45,6 +47,11 @@ function openPreviewer(image) {
 </template>
 
 <style scoped lang="scss">
+.content {
+  padding: 18px;
+  flex-grow: 1;
+}
+
 .files {
   display: flex;
   flex-direction: row;

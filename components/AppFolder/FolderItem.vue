@@ -21,7 +21,7 @@ function resetFrontPosition() {
   setTimeout(() => $bus.$emit('resetFront', false), 5)
 }
 
-const menuItemsList = ref<MenuItem[]>([
+const menuItemsList: MenuItem[] = [
   {
     key: 'open',
     title: 'Открыть',
@@ -46,14 +46,17 @@ const menuItemsList = ref<MenuItem[]>([
     icon: null,
     action: (page: Page) => emit('onShowProps', page)
   },
-])
+] as const
 
-function getMenuItems(keys: string[]): MenuItem[] {
-  return menuItemsList.value.filter(item => keys.includes(item.key))
+type ActionKey = (typeof menuItemsList)[number]['key']
+
+function getMenuItems(keys: ActionKey[]): MenuItem[] {
+  return menuItemsList.filter(item => keys.includes(item.key))
 }
 
 function openPage (page: Page): void {
   $bus.$emit('file:show')
+  $bus.$emit('resetFront', false)
   const url = generateUrl(page)
   router.push(url)
 }
