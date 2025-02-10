@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <p v-show="false"></p>
+<!-- fix -->
 </template>
 
 <style scoped lang="scss">
