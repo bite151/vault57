@@ -1,17 +1,65 @@
 <script setup lang="ts">
 import { X } from "lucide-vue-next";
 import { ref } from "vue";
-import { onClickOutside } from "@vueuse/core";
+import {onClickOutside, useMouse } from "@vueuse/core";
+import { useMousePressed } from '@vueuse/core'
 
 interface AlertDialogProps {
   title: string;
   message: string;
 }
+
 const emits = defineEmits(['on-close'])
 const { title, message } = defineProps<AlertDialogProps>()
 
 const alertDialog = ref(null)
 onClickOutside(alertDialog, event => emits('on-close'))
+
+const header = ref(null)
+const { pressed } = useMousePressed({ target: header })
+const { x, y } = useMouse()
+const resetMargin = ref<boolean>(false)
+
+onMounted(() =>  document.addEventListener('mousemove', moveListener))
+onBeforeUnmount(() => document.removeEventListener('mousemove', moveListener))
+
+const moveListener = (e: MouseEvent) => {
+  if (pressed.value) {
+    if(!resetMargin.value) resetMargin.value = true
+
+    let top = y.value - clickPosition.value.top
+    let left = x.value - clickPosition.value.left
+
+    const xMin = clickPosition.value.left
+    const xMax = window.innerWidth - (header.value.offsetWidth - clickPosition.value.left + 6)
+    if (xMin >= x.value) {
+      left = xMin - clickPosition.value.left
+    } else if (xMax <= x.value) {
+      left = xMax - clickPosition.value.left
+    }
+
+    const yMin = clickPosition.value.top
+    const yMax = window.innerHeight - alertDialog.value.offsetHeight + clickPosition.value.top
+    if (yMin >= y.value) {
+      top = yMin - clickPosition.value.top
+    } else if (yMax <= y.value) {
+      top = yMax - clickPosition.value.top
+    }
+
+    movePosition.value = {
+      top,
+      left,
+    }
+  }
+}
+
+const movePosition = ref<{ top: number, left: number }>({ top: 0, left: 0 })
+const clickPosition = ref<{ top: number, left: number }>({ top: 0, left: 0 })
+
+function onStartMove(e : MouseEvent) {
+  clickPosition.value = { top: e.layerY, left: e.layerX }
+}
+
 </script>
 
 <template>
@@ -20,8 +68,17 @@ onClickOutside(alertDialog, event => emits('on-close'))
       <div
         ref="alertDialog"
         class="alert-dialog"
+        :class="{'alert-dialog_reset-margin': resetMargin}"
+        :style="`
+          top: ${movePosition.top}px;
+          left: ${movePosition.left}px;
+        `"
       >
-        <header class="title-bar">
+        <header
+          ref="header"
+          class="title-bar"
+          @mousedown="onStartMove"
+        >
           <div class="title-bar__buttons">
             <div class="buttons__button" @click="emits('on-close')">
               <X :size="8" :strokeWidth="5" color="#31322d"/>
@@ -44,7 +101,6 @@ onClickOutside(alertDialog, event => emits('on-close'))
       </div>
     </Teleport>
   </ClientOnly>
-
 </template>
 
 <style scoped lang="scss">
@@ -75,6 +131,10 @@ onClickOutside(alertDialog, event => emits('on-close'))
     width: auto;
     max-width: none;
   }
+
+  &_reset-margin{
+    margin: 0;
+  }
 }
 
 .title-bar {
@@ -91,7 +151,7 @@ onClickOutside(alertDialog, event => emits('on-close'))
 
   user-select: none;
 
-  //cursor: move;
+  cursor: move;
 
   .title {
     font-weight: 600;

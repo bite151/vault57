@@ -31,25 +31,31 @@ onMounted(() => {
     :class="{ loaded }"
     id="main-content-teleport"
   >
-    <template v-if="route.fullPath !== '/desktop'">
-      <AppFolder
-        class="content-window"
-        :class="{ 'content-window_visible': loaded }"
-      >
-        <template #navigation>
-          <Navigation />
-        </template>
-        <NuxtPage />
-      </AppFolder>
+    <template v-if="currentPage" >
+      <template v-if="route.fullPath !== '/desktop'">
+        <AppFolder
+          class="content-window"
+          :class="{ 'content-window_visible': loaded }"
+        >
+          <template #navigation>
+            <Navigation />
+          </template>
+          <NuxtPage />
+        </AppFolder>
 
-      <AppFile
-        v-if="route.params.file"
-        class="content-file"
-        :class="{ 'content-file_visible': loaded }"
-      />
+        <AppFile
+          v-if="route.params.file"
+          class="content-file"
+          :class="{ 'content-file_visible': loaded }"
+        />
+      </template>
+
+      <NuxtPage v-else/>
+
     </template>
 
     <NuxtPage v-else/>
+
 
     <AppDesktop />
   </main>
