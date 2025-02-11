@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { X } from "lucide-vue-next";
 import { ref } from "vue";
-import {onClickOutside, useMouse } from "@vueuse/core";
+import { onClickOutside, useMouse } from "@vueuse/core";
 import { useMousePressed } from '@vueuse/core'
 
 interface AlertDialogProps {
@@ -13,53 +13,52 @@ const emits = defineEmits(['on-close'])
 const { title, message } = defineProps<AlertDialogProps>()
 
 const alertDialog = ref(null)
-onClickOutside(alertDialog, event => emits('on-close'))
-
 const header = ref(null)
 const { pressed } = useMousePressed({ target: header })
 const { x, y } = useMouse()
+const clickPosition = ref<{ y: number, x: number }>({ y: 0, x: 0 })
 const resetMargin = ref<boolean>(false)
+
+onClickOutside(alertDialog, event => emits('on-close'))
 
 onMounted(() =>  document.addEventListener('mousemove', moveListener))
 onBeforeUnmount(() => document.removeEventListener('mousemove', moveListener))
 
 const moveListener = (e: MouseEvent) => {
   if (pressed.value) {
-    let top = y.value - clickPosition.value.top
-    let left = x.value - clickPosition.value.left
+    let top = y.value - clickPosition.value.y
+    let left = x.value - clickPosition.value.x
 
-    const xMin = clickPosition.value.left
-    const xMax = window.innerWidth - (header.value.offsetWidth - clickPosition.value.left + 6)
+    const xMin = clickPosition.value.x
+    const xMax = window.innerWidth - (header.value.offsetWidth - clickPosition.value.x + 6)
     if (xMin >= x.value) {
-      left = xMin - clickPosition.value.left
+      left = xMin - clickPosition.value.x
     } else if (xMax <= x.value) {
-      left = xMax - clickPosition.value.left
+      left = xMax - clickPosition.value.x
     }
 
-    const yMin = clickPosition.value.top
-    const yMax = window.innerHeight - alertDialog.value.offsetHeight + clickPosition.value.top
+    const yMin = clickPosition.value.y
+    const yMax = window.innerHeight - alertDialog.value.offsetHeight + clickPosition.value.y
     if (yMin >= y.value) {
-      top = yMin - clickPosition.value.top
+      top = yMin - clickPosition.value.y
     } else if (yMax <= y.value) {
-      top = yMax - clickPosition.value.top
+      top = yMax - clickPosition.value.y
     }
 
-    movePosition.value = {
-      top,
-      left,
-    }
+    alertDialog.value.style.top = `${top}px`
+    alertDialog.value.style.left = `${left}px`
   }
 }
 
-const movePosition = ref<{ top: number, left: number }>({ top: 0, left: 0 })
-const clickPosition = ref<{ top: number, left: number }>({ top: 0, left: 0 })
-
 function onStartMove(e : MouseEvent) {
-  clickPosition.value = { top: e.layerY, left: e.layerX }
-  movePosition.value = {
-    top: y.value - clickPosition.value.top,
-    left: x.value - clickPosition.value.left
-  }
+  clickPosition.value = { y: e.layerY, x: e.layerX }
+
+  const top = y.value - clickPosition.value.y
+  const left = x.value - clickPosition.value.x
+
+  alertDialog.value.style.top = `${top}px`
+  alertDialog.value.style.left = `${left}px`
+
   resetMargin.value = true
 }
 </script>
@@ -74,22 +73,20 @@ function onStartMove(e : MouseEvent) {
           'alert-dialog_reset-margin': resetMargin,
           'alert-dialog_shift-shadow': pressed
         }"
-        :style="`
-          top: ${movePosition.top}px;
-          left: ${movePosition.left}px;
-        `"
       >
-        <header
-          ref="header"
-          class="title-bar"
-          @mousedown="onStartMove"
-        >
+        <header class="title-bar">
           <div class="title-bar__buttons">
             <div class="buttons__button" @click="emits('on-close')">
               <X :size="8" :strokeWidth="5" color="#31322d"/>
             </div>
           </div>
           <h1 class="title">{{ title }}</h1>
+
+          <div
+            class="move-handle"
+            ref="header"
+            @mousedown="onStartMove"
+          />
         </header>
 
         <div class="content content_rounded">
@@ -164,7 +161,6 @@ function onStartMove(e : MouseEvent) {
   background: var(--folder-title-bar-bg-color);
 
   user-select: none;
-
   cursor: grab;
 
   .title {
@@ -172,11 +168,21 @@ function onStartMove(e : MouseEvent) {
     color: var(--folder-title-bar-color);
   }
 
+  .move-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 8px 8px 0 0;
+    z-index: 1;
+  }
   &__buttons {
     position: absolute;
     display: flex;
     gap: 6px;
     left: 12px;
+    z-index: 2;
 
     .buttons__button {
       width: 16px;
@@ -221,6 +227,8 @@ function onStartMove(e : MouseEvent) {
     font-weight: 600;
     font-size: 17px;
     padding: 8px;
+
+    user-select: none;
   }
 
   &__buttons {
