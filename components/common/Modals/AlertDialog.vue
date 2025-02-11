@@ -25,8 +25,6 @@ onBeforeUnmount(() => document.removeEventListener('mousemove', moveListener))
 
 const moveListener = (e: MouseEvent) => {
   if (pressed.value) {
-    if(!resetMargin.value) resetMargin.value = true
-
     let top = y.value - clickPosition.value.top
     let left = x.value - clickPosition.value.left
 
@@ -58,8 +56,12 @@ const clickPosition = ref<{ top: number, left: number }>({ top: 0, left: 0 })
 
 function onStartMove(e : MouseEvent) {
   clickPosition.value = { top: e.layerY, left: e.layerX }
+  movePosition.value = {
+    top: y.value - clickPosition.value.top,
+    left: x.value - clickPosition.value.left
+  }
+  resetMargin.value = true
 }
-
 </script>
 
 <template>
@@ -68,7 +70,10 @@ function onStartMove(e : MouseEvent) {
       <div
         ref="alertDialog"
         class="alert-dialog"
-        :class="{'alert-dialog_reset-margin': resetMargin}"
+        :class="{
+          'alert-dialog_reset-margin': resetMargin,
+          'alert-dialog_shift-shadow': pressed
+        }"
         :style="`
           top: ${movePosition.top}px;
           left: ${movePosition.left}px;
@@ -135,6 +140,15 @@ function onStartMove(e : MouseEvent) {
   &_reset-margin{
     margin: 0;
   }
+
+  &_shift-shadow {
+    margin: -5px 0 0 -5px;
+    box-shadow: 30px 30px 0 0 var(--folder-shadow-color);
+
+    .title-bar {
+      cursor: grabbing
+    }
+  }
 }
 
 .title-bar {
@@ -151,7 +165,7 @@ function onStartMove(e : MouseEvent) {
 
   user-select: none;
 
-  cursor: move;
+  cursor: grab;
 
   .title {
     font-weight: 600;
