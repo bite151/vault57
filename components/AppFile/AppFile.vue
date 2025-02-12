@@ -2,15 +2,33 @@
 import {Maximize2, Minimize2, Minus, Plus, X} from "lucide-vue-next";
 import {usePagesStore} from "~/store/pagesStore";
 import type {Page} from "~/types/Page";
+import {ref} from "vue";
+import FinderHeader from "~/components/common/Finder/FinderHeader.vue";
 
 const route = useRoute()
 const router = useRouter()
 const { $bus } = useNuxtApp()
 const pagesStore = usePagesStore()
 
+const fileWindow = ref(null)
+provide('parentElement', fileWindow);
+
 const isFullScreen = ref<boolean>(false)
 const isHidden = ref<boolean>(false)
 const cursorPointer = ref<boolean>(false)
+
+const windowButtons = ref([
+  {
+    icon: 'X',
+    action: closeWindow
+  }, {
+    icon: !isHidden.value ? 'Minus' : 'Plus',
+    action: hideWindow
+  }, {
+    icon: !isFullScreen.value ? 'Maximize2' : 'Minimize2',
+    action: fullScreen
+  }
+])
 
 const pages = computed<Page[]>(() => pagesStore.pages);
 const currentPage = computed<Page | undefined>(() => pages.value.find(page => {
@@ -47,6 +65,7 @@ function fullScreen(): void {
 
 <template>
   <div
+    ref="fileWindow"
     class="content-file"
     :class="{
       'content-file_full-screen': isFullScreen,
@@ -56,22 +75,12 @@ function fullScreen(): void {
     }"
     @click="() => { $bus.$emit('resetFront', false); cursorPointer = false }"
   >
-    <header class="title-bar">
-      <div class="title-bar__buttons">
-        <div class="buttons__button" @click="closeWindow">
-          <X :size="8" :strokeWidth="5" color="#31322d"/>
-        </div>
-        <div class="buttons__button" @click="hideWindow">
-          <Minus v-if="!isHidden" :size="8" :strokeWidth="5" color="#31322d"/>
-          <Plus v-else :size="8" :strokeWidth="5" color="#31322d"/>
-        </div>
-        <div class="buttons__button" @click="fullScreen">
-          <Maximize2 v-if="!isFullScreen" :size="8" :strokeWidth="5" color="#31322d"/>
-          <Minimize2 v-else :size="8" :strokeWidth="5" color="#31322d"/>
-        </div>
-      </div>
-      <h1 class="title">{{ currentPage?.title }}</h1>
-    </header>
+    <FinderHeader
+      :moveable="true"
+      :buttons="windowButtons"
+    >
+      <h1>{{ currentPage?.title }}</h1>
+    </FinderHeader>
 
     <section class="content-wrapper">
       <div class="main-frame">
@@ -132,7 +141,14 @@ function fullScreen(): void {
     height: 100vh;
     width: 100%;
     max-width: 1320px;
-    margin: 0 36px 0 16px;
+
+
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    //margin: 0 36px 0 16px !important;
+    margin: auto !important;
   }
   &_hidden {
     position: fixed;
@@ -151,60 +167,17 @@ function fullScreen(): void {
       display: none;
     }
   }
-}
 
-.title-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 44px;
-
-  position: relative;
-  padding: 10px 84px 10px 84px;
-  border-bottom: 3px solid var(--folder-border-color);
-  border-radius: 8px 8px 0 0;
-  background: var(--folder-title-bar-bg-color);
-
-  user-select: none;
-
-  //cursor: move;
-
-  .title {
-    font-weight: 600;
-    color: var(--folder-title-bar-color);
+  &_reset-margin{
+    margin: 0;
   }
 
-  &__buttons {
-    position: absolute;
-    display: flex;
-    gap: 6px;
-    left: 12px;
+  &.is-move {
+    box-shadow: 30px 30px 0 0 var(--folder-shadow-color);
+    transform: translateY(-5px) translateX(-5px) scale(1.01);
 
-    .buttons__button {
-      width: 16px;
-      height: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: 2px solid #4d4d4d;
-      border-radius: 50%;
-
-      background-color: var(--folder-bg-color);
-      transition: background-color .2s ease-in-out;
-      cursor: pointer;
-
-      svg {
-        transition: opacity .2s ease-in-out;
-        opacity: 0.6;
-      }
-
-      &:hover {
-        background-color: rgba(#4d4d4d, 0.3);
-
-        svg {
-          opacity: 1;
-        }
-      }
+    .title-bar {
+      cursor: grabbing
     }
   }
 }

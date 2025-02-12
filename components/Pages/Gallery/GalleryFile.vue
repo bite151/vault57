@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {X, ChevronLeft, ChevronRight} from "lucide-vue-next";
 import {useGalleryStore} from "~/store/galleryStore";
+import {ref} from "vue";
+import FinderHeader from "~/components/common/Finder/FinderHeader.vue";
 
 const { $bus } = useNuxtApp()
 const emit = defineEmits(['handleClose'])
@@ -16,6 +18,9 @@ const location = computed(() => import.meta.client ? window.location.origin : nu
 const isFullScreen = ref<boolean>(false)
 const isHidden = ref<boolean>(false)
 const cursorPointer = ref<boolean>(false)
+
+const imageWindow = ref(null)
+provide('parentElement', imageWindow);
 
 onMounted(() => {
   setImageIndex()
@@ -45,6 +50,7 @@ function closeWindow(): void {
 <template>
   <div
     v-if="currentImage"
+    ref="imageWindow"
     class="content-file"
     :class="{
       'content-file_full-screen': isFullScreen,
@@ -53,6 +59,16 @@ function closeWindow(): void {
     }"
     @click="() => { $bus.$emit('resetFront', false); cursorPointer = false }"
   >
+    <FinderHeader
+      :moveable="true"
+      :buttons="[{
+        icon: 'X',
+        action: closeWindow
+      }]"
+    >
+      {{ currentImage.title }}
+    </FinderHeader>
+<!--
     <header class="title-bar">
       <div class="title-bar__buttons">
         <div class="buttons__button" @click="closeWindow">
@@ -61,7 +77,7 @@ function closeWindow(): void {
       </div>
       <h1 class="title">{{ currentImage.title }}</h1>
     </header>
-
+-->
     <section class="content-wrapper">
       <div class="main-frame">
         <div class="content">
@@ -133,58 +149,17 @@ function closeWindow(): void {
       display: none;
     }
   }
-}
 
-.title-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 44px;
-
-  position: relative;
-  padding: 10px 12px 10px 84px;
-  border-bottom: 3px solid var(--folder-border-color);
-  border-radius: 8px 8px 0 0;
-  background: var(--folder-title-bar-bg-color);
-
-  user-select: none;
-
-  .title {
-    font-weight: 600;
-    color: var(--folder-title-bar-color);
+  &_reset-margin{
+    margin: 0;
   }
 
-  &__buttons {
-    position: absolute;
-    display: flex;
-    gap: 6px;
-    left: 12px;
+  &.is-move {
+    box-shadow: 30px 30px 0 0 var(--folder-shadow-color);
+    transform: translateY(-5px) translateX(-5px) scale(1.01);
 
-    .buttons__button {
-      width: 16px;
-      height: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: 2px solid #4d4d4d;
-      border-radius: 50%;
-
-      background-color: var(--folder-bg-color);
-      transition: background-color .2s ease-in-out;
-      cursor: pointer;
-
-      svg {
-        transition: opacity .2s ease-in-out;
-        opacity: 0.6;
-      }
-
-      &:hover {
-        background-color: rgba(#4d4d4d, 0.3);
-
-        svg {
-          opacity: 1;
-        }
-      }
+    .title-bar {
+      cursor: grabbing
     }
   }
 }

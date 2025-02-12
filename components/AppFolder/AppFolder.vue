@@ -3,10 +3,28 @@ import {Maximize2, Minimize2, Minus, Plus, X} from "lucide-vue-next";
 import Simplebar from 'simplebar-vue';
 import '~/assets/scss/simplebar.css';
 import {usePagesStore} from "~/store/pagesStore";
+import FinderHeader from "~/components/common/Finder/FinderHeader.vue";
+import {ref} from "vue";
+
+const folderWindow = ref(null)
+provide('parentElement', folderWindow);
 
 const isFullScreen = ref<boolean>(false)
 const isHidden = ref<boolean>(false)
 const isOnFront = ref<boolean>(false)
+
+const windowButtons = ref([
+  {
+    icon: 'X',
+    action: closeWindow
+  }, {
+    icon: !isHidden.value ? 'Minus' : 'Plus',
+    action: hideWindow
+  }, {
+    icon: !isFullScreen.value ? 'Maximize2' : 'Minimize2',
+    action: fullScreen
+  }
+])
 
 const route = useRoute()
 const router = useRouter()
@@ -58,6 +76,7 @@ function toFront(): void {
 
 <template>
   <div
+    ref='folderWindow'
     class="content-folder"
     :class="{
       'content-folder_full-screen': isFullScreen,
@@ -67,22 +86,12 @@ function toFront(): void {
     }"
     @click="toFront()"
   >
-    <header class="title-bar">
-      <div class="title-bar__buttons">
-        <div class="buttons__button" @click="closeWindow">
-          <X :size="8" :strokeWidth="5" color="#31322d"/>
-        </div>
-        <div class="buttons__button" @click="hideWindow">
-          <Minus v-if="!isHidden" :size="8" :strokeWidth="5" color="#31322d"/>
-          <Plus v-else :size="8" :strokeWidth="5" color="#31322d"/>
-        </div>
-        <div class="buttons__button" @click="fullScreen">
-          <Maximize2 v-if="!isFullScreen" :size="8" :strokeWidth="5" color="#31322d"/>
-          <Minimize2 v-else :size="8" :strokeWidth="5" color="#31322d"/>
-        </div>
-      </div>
-      <h1 class="title">{{ currentPage?.title }}</h1>
-    </header>
+    <FinderHeader
+      :moveable="true"
+      :buttons="windowButtons"
+    >
+      <h1>{{ currentPage?.title }}</h1>
+    </FinderHeader>
 
     <section class="content-wrapper">
       <aside class="task-bar">
@@ -124,6 +133,12 @@ function toFront(): void {
     height: 100vh;
     width: 100%;
     max-width: 1320px;
+
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: auto !important;
   }
 
   &_hidden {
@@ -148,58 +163,17 @@ function toFront(): void {
     position: fixed;
     z-index: 11;
   }
-}
 
-.title-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 44px;
-
-  position: relative;
-  padding: 10px 12px 10px 84px;
-  border-bottom: 3px solid var(--folder-border-color);
-  border-radius: 8px 8px 0 0;
-  background: var(--folder-title-bar-bg-color);
-
-  user-select: none;
-
-  .title {
-    font-weight: 600;
-    color: var(--folder-title-bar-color);
+  &_reset-margin{
+    margin: 0;
   }
 
-  &__buttons {
-    position: absolute;
-    display: flex;
-    gap: 6px;
-    left: 12px;
+  &.is-move {
+    box-shadow: 30px 30px 0 0 var(--folder-shadow-color);
+    transform: translateY(-5px) translateX(-5px) scale(1.01);
 
-    .buttons__button {
-      width: 16px;
-      height: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: 2px solid #4d4d4d;
-      border-radius: 50%;
-
-      background-color: var(--folder-bg-color);
-      transition: background-color .2s ease-in-out;
-      cursor: pointer;
-
-      svg {
-        transition: opacity .2s ease-in-out;
-        opacity: 0.6;
-      }
-
-      &:hover {
-        background-color: rgba(#4d4d4d, 0.3);
-
-        svg {
-          opacity: 1;
-        }
-      }
+    .title-bar {
+      cursor: grabbing
     }
   }
 }

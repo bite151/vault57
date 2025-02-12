@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { X } from "lucide-vue-next";
 import type { ConfirmDialogProps } from "~/types/ConfirmDialog";
 import type {Page} from "~/types/Page";
 import {ref} from "vue";
 import {onClickOutside} from "@vueuse/core";
+import FinderHeader from "~/components/common/Finder/FinderHeader.vue";
 
 const emits = defineEmits(['on-close'])
 const { title, dialog, buttons, data } = defineProps<ConfirmDialogProps<Page>>()
 
 const confirmDialog = ref(null)
+provide('parentElement', confirmDialog);
+
 onClickOutside(confirmDialog, event => emits('on-close'))
 </script>
 
@@ -19,14 +21,15 @@ onClickOutside(confirmDialog, event => emits('on-close'))
         ref="confirmDialog"
         class="confirm-dialog"
       >
-        <header class="title-bar">
-          <div class="title-bar__buttons">
-            <div class="buttons__button" @click="emits('on-close')">
-              <X :size="8" :strokeWidth="5" color="#31322d"/>
-            </div>
-          </div>
-          <h1 class="title">{{ title }}</h1>
-        </header>
+        <FinderHeader
+          :moveable="true"
+          :buttons="[{
+            icon: 'X',
+            action: () => emits('on-close'),
+          }]"
+        >
+          {{ title }}
+        </FinderHeader>
 
         <div class="content content_rounded">
           <p>{{ dialog }}</p>
@@ -40,7 +43,6 @@ onClickOutside(confirmDialog, event => emits('on-close'))
             </button>
           </div>
         </div>
-
       </div>
     </Teleport>
   </ClientOnly>
@@ -75,60 +77,17 @@ onClickOutside(confirmDialog, event => emits('on-close'))
     width: auto;
     max-width: none;
   }
-}
 
-.title-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 44px;
-
-  position: relative;
-  padding: 10px 84px 10px 84px;
-  border-bottom: 3px solid var(--folder-border-color);
-  border-radius: 8px 8px 0 0;
-  background: var(--folder-title-bar-bg-color);
-
-  user-select: none;
-
-  //cursor: move;
-
-  .title {
-    font-weight: 600;
-    color: var(--folder-title-bar-color);
+  &_reset-margin{
+    margin: 0;
   }
 
-  &__buttons {
-    position: absolute;
-    display: flex;
-    gap: 6px;
-    left: 12px;
+  &.is-move {
+    box-shadow: 30px 30px 0 0 var(--folder-shadow-color);
+    transform: translateY(-5px) translateX(-5px) scale(1.01);
 
-    .buttons__button {
-      width: 16px;
-      height: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: 2px solid #4d4d4d;
-      border-radius: 50%;
-
-      background-color: var(--folder-bg-color);
-      transition: background-color .2s ease-in-out;
-      cursor: pointer;
-
-      svg {
-        transition: opacity .2s ease-in-out;
-        opacity: 0.6;
-      }
-
-      &:hover {
-        background-color: rgba(#4d4d4d, 0.3);
-
-        svg {
-          opacity: 1;
-        }
-      }
+    .title-bar {
+      cursor: grabbing
     }
   }
 }
