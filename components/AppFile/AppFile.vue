@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {Maximize2, Minimize2, Minus, Plus, X} from "lucide-vue-next";
 import {usePagesStore} from "~/store/pagesStore";
 import type {Page} from "~/types/Page";
 import {ref} from "vue";
 import FinderHeader from "~/components/common/Finder/FinderHeader.vue";
+import FinderStatusBar from "~/components/common/Finder/FinderStatusBar.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -21,13 +21,15 @@ const windowButtons = ref([
   {
     icon: 'X',
     action: closeWindow
-  }, {
+  },
+  {
     icon: !isHidden.value ? 'Minus' : 'Plus',
     action: hideWindow
-  }, {
-    icon: !isFullScreen.value ? 'Maximize2' : 'Minimize2',
-    action: fullScreen
-  }
+  },
+  // {
+  //   icon: !isFullScreen.value ? 'Maximize2' : 'Minimize2',
+  //   action: fullScreen
+  // }
 ])
 
 const pages = computed<Page[]>(() => pagesStore.pages);
@@ -102,12 +104,11 @@ function fullScreen(): void {
           </template>
         </div>
 
-        <footer
-          class="status-bar"
+        <FinderStatusBar
           v-if="!currentPage?.hideStatusBar"
         >
           {{ route.fullPath.replace('/file/', '/') }}
-        </footer>
+        </FinderStatusBar>
       </div>
     </section>
   </div>
@@ -115,11 +116,12 @@ function fullScreen(): void {
 
 <style scoped lang="scss">
 .content-file {
-  max-width: 1180px;
+  max-width: 980px;
   width: 100%;
-  min-width: 360px;
+  min-width: 720px !important;
   height: 90vh;
-  min-height: 300px;
+  max-height: 980px !important;
+  min-height: 430px !important;
   margin: -40px -166px 0 16px;
 
   background-color: var(--folder-bg-color);
@@ -174,7 +176,7 @@ function fullScreen(): void {
   }
 
   &.is-move {
-    box-shadow: 30px 30px 0 0 var(--folder-shadow-color);
+    box-shadow: 30px 30px 0 0 var(--folder-shadow-light-color);
     transform: translateY(-5px) translateX(-5px) scale(1.01);
 
     .title-bar {

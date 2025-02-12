@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {Maximize2, Minimize2, Minus, Plus, X} from "lucide-vue-next";
 import Simplebar from 'simplebar-vue';
 import '~/assets/scss/simplebar.css';
 import {usePagesStore} from "~/store/pagesStore";
 import FinderHeader from "~/components/common/Finder/FinderHeader.vue";
 import {ref} from "vue";
+import FinderStatusBar from "~/components/common/Finder/FinderStatusBar.vue";
 
 const folderWindow = ref(null)
 provide('parentElement', folderWindow);
@@ -103,9 +103,11 @@ function toFront(): void {
         <Simplebar class="scrollbar-folder">
           <slot></slot>
         </Simplebar>
-        <footer class="status-bar">
+
+        <FinderStatusBar>
           {{ breadCrumbs }}
-        </footer>
+        </FinderStatusBar>
+
       </div>
     </section>
   </div>
@@ -115,9 +117,10 @@ function toFront(): void {
 .content-folder {
   max-width: 1280px;
   width: 100%;
-  min-width: 360px;
+  min-width: 720px !important;
   height: 90vh;
-  min-height: 300px;
+  max-height: 980px !important;
+  min-height: 430px !important;
   margin: 0 36px 0 16px;
 
   background-color: var(--folder-bg-color);
@@ -170,7 +173,7 @@ function toFront(): void {
   }
 
   &.is-move {
-    box-shadow: 30px 30px 0 0 var(--folder-shadow-color);
+    box-shadow: 30px 30px 0 0 var(--folder-shadow-light-color);
     transform: translateY(-5px) translateX(-5px) scale(1.01);
 
     .title-bar {
@@ -222,19 +225,5 @@ function toFront(): void {
   &:deep(div.simplebar-content) {
     padding-right: 26px !important;
   }
-}
-
-.status-bar {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  height: 36px;
-  padding: 0 18px;
-  border-top: 3px solid var(--folder-border-color);
-  border-radius: 0 0 8px 0;
-
-  background-color: var(--folder-status-bar-bg-color);
-  font-weight: 600;
-  color: var(--folder-status-bar-color);
 }
 </style>

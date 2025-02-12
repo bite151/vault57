@@ -155,7 +155,7 @@ function closeWindow(): void {
   }
 
   &.is-move {
-    box-shadow: 30px 30px 0 0 var(--folder-shadow-color);
+    box-shadow: 30px 30px 0 0 var(--folder-shadow-light-color);
     transform: translateY(-5px) translateX(-5px) scale(1.01);
 
     .title-bar {

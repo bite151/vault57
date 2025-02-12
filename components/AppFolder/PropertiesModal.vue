@@ -5,6 +5,7 @@ import { onClickOutside } from "@vueuse/core";
 import type { Page } from "~/types/Page";
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 import { generateUrl } from "~/helpers/app.helpers";
+import FinderHeader from "~/components/common/Finder/FinderHeader.vue";
 
 interface PropField {
   name: string;
@@ -14,6 +15,8 @@ const emits = defineEmits(['on-close'])
 const { data } = defineProps<{ data: Page }>()
 
 const propertiesModal = ref(null)
+provide('parentElement', propertiesModal);
+
 const propFields = ref<PropField[]>([
   { name: 'Имя', key: 'title' },
   { name: 'Путь', key: 'url' },
@@ -32,17 +35,16 @@ onClickOutside(propertiesModal, event => emits('on-close'))
         ref="propertiesModal"
         class="properties-modal"
       >
-        <header class="title-bar">
-          <div class="title-bar__buttons">
-            <div class="buttons__button" @click="emits('on-close')">
-              <X :size="8" :strokeWidth="5" color="#31322d"/>
-            </div>
-          </div>
-          <p class="title">
-            <span>{{ data.title }}</span>
-            — Свойства
-          </p>
-        </header>
+        <FinderHeader
+          :moveable="true"
+          :buttons="[{
+            icon: 'X',
+            action: () => emits('on-close'),
+          }]"
+        >
+          <span>{{ data.title }}</span>
+          — Свойства
+        </FinderHeader>
 
         <div class="content content_rounded">
           <div class="icon-wrapper">
@@ -91,75 +93,24 @@ onClickOutside(propertiesModal, event => emits('on-close'))
   left: 0;
   z-index: 1001;
 
+  &:deep(.title) {
+    font-weight: 300;
+  }
   &_reset-width {
     width: auto;
     max-width: none;
   }
-}
 
-.title-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 44px;
-
-  position: relative;
-  padding: 10px 40px;
-  border-bottom: 3px solid var(--folder-border-color);
-  border-radius: 8px 8px 0 0;
-  background: var(--folder-title-bar-bg-color);
-
-  user-select: none;
-
-  //cursor: move;
-
-  .title {
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    font-weight: 600;
-    color: var(--folder-title-bar-color);
-    span {
-      max-width: 252px;
-      margin-right: 4px;
-      display: inline-block;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
+  &_reset-margin{
+    margin: 0;
   }
 
-  &__buttons {
-    position: absolute;
-    display: flex;
-    gap: 6px;
-    left: 12px;
+  &.is-move {
+    box-shadow: 30px 30px 0 0 var(--folder-shadow-light-color);
+    transform: translateY(-5px) translateX(-5px) scale(1.01);
 
-    .buttons__button {
-      width: 16px;
-      height: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: 2px solid #4d4d4d;
-      border-radius: 50%;
-
-      background-color: var(--folder-bg-color);
-      transition: background-color .2s ease-in-out;
-      cursor: pointer;
-
-      svg {
-        transition: opacity .2s ease-in-out;
-        opacity: 0.6;
-      }
-
-      &:hover {
-        background-color: rgba(#4d4d4d, 0.3);
-
-        svg {
-          opacity: 1;
-        }
-      }
+    .title-bar {
+      cursor: grabbing
     }
   }
 }

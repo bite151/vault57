@@ -71,7 +71,7 @@ const showAlertDialog = ref<boolean>(false)
   <AlertDialog
     v-if="showAlertDialog"
     title="Error"
-    message="A component in development"
+    message="This component in the development stage"
     @on-close="() => showAlertDialog = false"
   />
 </template>

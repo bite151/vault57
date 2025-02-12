@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue';
-
 import {
   YandexMap,
   YandexMapDefaultSchemeLayer,
   YandexMapDefaultFeaturesLayer,
   YandexMapMarker,
 } from 'vue-yandex-maps';
+import type {VectorCustomization} from "@yandex/ymaps3-types";
 
 const map = shallowRef<null>(null);
 const location = ref(import.meta.client ? window.location.origin : null);
