@@ -154,6 +154,7 @@ function fullScreen(): void {
     position: fixed;
     bottom: 12px;
     left: 88px;
+    //top: inherit !important;
     width: 200px;
     height: 48px;
     min-height: 46px;

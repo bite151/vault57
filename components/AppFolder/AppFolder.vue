@@ -143,7 +143,8 @@ function toFront(): void {
 
   &_hidden {
     position: fixed;
-    bottom: 22px;
+    //bottom: 22px !important;
+    //top: inherit !important;
     left: 0;
     width: 200px;
     height: 48px;

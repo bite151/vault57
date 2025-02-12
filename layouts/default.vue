@@ -31,31 +31,25 @@ onMounted(() => {
     :class="{ loaded }"
     id="main-content-teleport"
   >
-    <template v-if="currentPage" >
-      <template v-if="route.fullPath !== '/desktop'">
-        <AppFolder
-          class="content-window"
-          :class="{ 'content-window_visible': loaded }"
-        >
-          <template #navigation>
-            <Navigation />
-          </template>
-          <NuxtPage />
-        </AppFolder>
+    <template v-if="currentPage || route.fullPath !== '/desktop'" >
+      <AppFolder
+        class="content-window"
+        :class="{ 'content-window_visible': loaded }"
+      >
+        <template #navigation>
+          <Navigation />
+        </template>
+        <NuxtPage />
+      </AppFolder>
 
-        <AppFile
-          v-if="route.params.file"
-          class="content-file"
-          :class="{ 'content-file_visible': loaded }"
-        />
-      </template>
-
-      <NuxtPage v-else/>
-
+      <AppFile
+        v-if="route.params.file"
+        class="content-file"
+        :class="{ 'content-file_visible': loaded }"
+      />
     </template>
 
     <NuxtPage v-else/>
-
 
     <AppDesktop />
   </main>
@@ -81,7 +75,7 @@ main {
   opacity: 0;
   visibility: hidden;
 
-  transition: transform .3s ease-in-out, opacity .4s ease-in-out,  visibility .4s ease-in-out;
+  //transition: transform .3s ease-in-out, opacity .4s ease-in-out,  visibility .4s ease-in-out;
 
   &_visible {
     transform: translateY(0) scale(1);

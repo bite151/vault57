@@ -22,14 +22,14 @@ const { pressed } = useMousePressed({ target: header })
 const { x, y } = useMouse()
 const clickPosition = ref<{ y: number, x: number }>({ y: 0, x: 0 })
 
-onMounted(() => document.addEventListener('mousemove', moveListener))
-onBeforeUnmount(() => document.removeEventListener('mousemove', moveListener))
 watch(
   () => pressed.value,
   () => {
     if (pressed.value) {
+      document.addEventListener('mousemove', moveListener)
       parentElement.value.classList.add('is-move')
     } else {
+      document.removeEventListener('mousemove', moveListener)
       parentElement.value.classList.remove('is-move')
     }
   }
