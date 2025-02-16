@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { X } from "lucide-vue-next";
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import type { Page } from "~/types/Page";
@@ -49,7 +48,7 @@ onClickOutside(propertiesModal, event => emits('on-close'))
         <div class="content content_rounded">
           <div class="icon-wrapper">
             <AsyncIcon
-              :name="data.icon"
+              :name="data.icon!"
               :size="72"
               :stroke-width="1"
             />
@@ -61,7 +60,7 @@ onClickOutside(propertiesModal, event => emits('on-close'))
               :key="field.key"
             >
               {{ field.name }}:
-              <span>{{ field.key !== 'url' ? data[field.key] : generateUrl(data) }}</span>
+              <span>{{ field.key !== 'url' ? data[field.key] : generateUrl(data).replace('/file/', '/') }}</span>
             </p>
           </div>
         </div>
