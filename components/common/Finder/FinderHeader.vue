@@ -2,10 +2,11 @@
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 import {ref} from "vue";
 import {useMouse, useMousePressed} from "@vueuse/core";
+import type { WindowPosition } from "~/types/Window";
 
-interface Button<T = void> {
+interface Button<T = MouseEvent> {
   icon: string,
-  action: () => T
+  action: (arg: T) => void
 }
 
 defineProps<{
@@ -13,63 +14,68 @@ defineProps<{
   moveable: boolean,
 }>()
 
-// !!! Don't forget add: provide('parentElement', elRef)
-// !!! in parent component
-const parentElement = inject('parentElement');
+const emits = defineEmits(['onMoveEnd'])
+const parentElement = inject<Ref<HTMLElement> | undefined>('parentElement');
 
-const header = ref(null)
+const header = ref<HTMLElement | null>(null)
 const { pressed } = useMousePressed({ target: header })
 const { x, y } = useMouse()
-const clickPosition = ref<{ y: number, x: number }>({ y: 0, x: 0 })
+const clickPosition = ref<WindowPosition>({ y: 0, x: 0 })
 
 watch(
   () => pressed.value,
   () => {
     if (pressed.value) {
       document.addEventListener('mousemove', moveListener)
-      parentElement.value.classList.add('is-move')
+      parentElement?.value.classList.add('is-move')
     } else {
       document.removeEventListener('mousemove', moveListener)
-      parentElement.value.classList.remove('is-move')
+      parentElement?.value.classList.remove('is-move')
+
+      emits('onMoveEnd')
     }
   }
 )
 
-const moveListener = (e: MouseEvent) => {
+const moveListener = () => {
   if (pressed.value) {
     let top = y.value - clickPosition.value.y
     let left = x.value - clickPosition.value.x
+    if (parentElement) {
+      const xMin = clickPosition.value.x
+      const xMax = window.innerWidth - (header.value!.offsetWidth - clickPosition.value.x + parentElement.value.clientLeft*2)
+      if (xMin >= x.value) {
+        left = xMin - clickPosition.value.x
+      } else if (xMax <= x.value) {
+        left = xMax - clickPosition.value.x
+      }
 
-    const xMin = clickPosition.value.x
-    const xMax = window.innerWidth - (header.value.offsetWidth - clickPosition.value.x + parentElement.value.clientLeft*2)
-    if (xMin >= x.value) {
-      left = xMin - clickPosition.value.x
-    } else if (xMax <= x.value) {
-      left = xMax - clickPosition.value.x
+      const yMin = clickPosition.value.y
+      const yMax = window.innerHeight - parentElement.value.offsetHeight + clickPosition.value.y
+      if (yMin >= y.value) {
+        top = yMin - clickPosition.value.y
+      } else if (yMax <= y.value) {
+        top = yMax - clickPosition.value.y
+      }
+
+      parentElement.value.style.top = `${top}px`
+      parentElement.value.style.left = `${left}px`
     }
-
-    const yMin = clickPosition.value.y
-    const yMax = window.innerHeight - parentElement.value.offsetHeight + clickPosition.value.y
-    if (yMin >= y.value) {
-      top = yMin - clickPosition.value.y
-    } else if (yMax <= y.value) {
-      top = yMax - clickPosition.value.y
-    }
-
-    parentElement.value.style.top = `${top}px`
-    parentElement.value.style.left = `${left}px`
   }
 }
 
 function onStartMove(e : MouseEvent) {
-  clickPosition.value = { y: e.layerY, x: e.layerX }
+  clickPosition.value = {  x: e.layerX, y: e.layerY }
+  if (parentElement) {
+    const top = y.value - clickPosition.value.y - parentElement.value.clientTop
+    const left = x.value - clickPosition.value.x - parentElement.value.clientLeft
 
-  const top = y.value - clickPosition.value.y - parentElement.value.clientTop
-  const left = x.value - clickPosition.value.x - parentElement.value.clientLeft
-
-  parentElement.value.style.top = `${top}px`
-  parentElement.value.style.left = `${left}px`
-  parentElement.value.style.margin = 0
+    parentElement.value.style.top = `${top}px`
+    parentElement.value.style.left = `${left}px`
+    parentElement.value.style.right = `inherit`
+    parentElement.value.style.bottom = `inherit`
+    parentElement.value.style.margin = '0'
+  }
 }
 </script>
 

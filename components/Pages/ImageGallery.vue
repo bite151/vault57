@@ -3,7 +3,6 @@ import EmptyFolder from "~/components/AppFolder/EmptyFolder.vue";
 import {useGalleryStore} from "~/store/galleryStore";
 import GalleryFile from "~/components/Pages/Gallery/GalleryFile.vue";
 
-const { $bus } = useNuxtApp()
 const galleryStore = useGalleryStore()
 
 const images = computed(() => galleryStore.images)
@@ -11,7 +10,6 @@ const previewer = ref<string | null>(null)
 
 function openPreviewer(image) {
   previewer.value = image.src
-  setTimeout(() => $bus.$emit('resetFront'),5)
 }
 </script>
 
@@ -22,10 +20,11 @@ function openPreviewer(image) {
     </EmptyFolder>
 
     <div class="files" v-else>
-      <div class="file"
-           v-for="image in images"
-           :key="image.id"
-           @click="openPreviewer(image)"
+      <div
+        class="file"
+        v-for="image in images"
+        :key="image.id"
+        @click.stop="openPreviewer(image)"
       >
         <div class="img-wrapper">
           <img :src="`/images/${image.src}`" alt="">

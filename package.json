@@ -13,7 +13,6 @@
   "dependencies": {
     "@nuxt/fonts": "^0.7.0",
     "@nuxt/image": "^1.7.0",
-    "@nuxt/ui": "2.21.0",
     "@pinia/nuxt": "^0.5.1",
     "class-variance-authority": "^0.7.0",
     "click-outside-vue3": "^4.0.1",

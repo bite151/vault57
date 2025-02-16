@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { usePagesStore } from "~/store/pagesStore";
 import { Folder, FolderOpen } from 'lucide-vue-next';
+import { usePagesStore } from "~/store/pagesStore";
+import { useWindowsStore } from "~/store/windowsStore";
 import MenuBlock from "~/components/AppFolder/Navigation/MenuBlock.vue";
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 import type { Page } from "~/types/Page";
+import type { PageWindow } from "~/types/Window";
 import { generateUrl } from "~/helpers/app.helpers";
 
+const currentWindow: PageWindow | undefined = inject('currentWindow')
+const windowsStore = useWindowsStore()
 
+const router = useRouter()
 const pagesStore = usePagesStore()
-const route = useRoute()
 
 const { parentPageId = 1 } = defineProps(['parentPageId'])
 
@@ -25,12 +29,12 @@ const pages = computed<Page[]>(() => {
 })
 
 function isActive (url: string): boolean {
-  return route.path.includes(url)
+  return currentWindow!.fullUrl.includes(url)
 }
 
 function activeClassName (url: string): boolean {
-  const routesArr = route.path.split('/')
-  const level = (!route.params.file) ? 1 : 2
+  const routesArr = currentWindow!.fullUrl.split('/')
+  const level = (!currentWindow?.routeParams?.file) ? 1 : 2
   return url === '/' + routesArr[routesArr.length - level]
 }
 
@@ -40,12 +44,17 @@ function hasChildren (pageId: number): boolean {
 }
 
 function itemIcon (page: Page) {
-  // if (!hasChildren(page.id)) {
-  //   return File
-  // }
   return !isActive(page.url) ? Folder : FolderOpen
 }
 
+function redirectTo(page: Page) {
+  const windowId = windowsStore.openedWindows.find(item => item.isOnFront)?.windowId ?? null;
+  if (windowId && currentWindow!.windowId !== windowId) {
+    windowsStore.setWindowToFront(currentWindow!.windowId)
+  }
+  const url = generateUrl(page)
+  router.push(url)
+}
 </script>
 
 <template>
@@ -57,6 +66,7 @@ function itemIcon (page: Page) {
       <nuxt-link
         :to="generateUrl(page)"
         :class="{ active: activeClassName(page.url) }"
+        @click.stop="redirectTo(page)"
       >
         <AsyncIcon
           v-if="page.icon && page.icon !== 'Folder'"
@@ -149,6 +159,9 @@ function itemIcon (page: Page) {
     transition: background-color 0.2s;
 
     white-space: nowrap;
+
+    cursor: pointer;
+    user-select: none;
 
     svg {
       stroke: var(--folder-navigation-color);

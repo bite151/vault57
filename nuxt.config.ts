@@ -14,6 +14,36 @@ export default defineNuxtConfig({
     }
   },
   
+  hooks: {
+    "pages:extend"(pages) {
+      pages.push(
+        {
+          name: "games-folder",
+          path: "/games/:folder",
+          file: "~/pages/page.vue",
+        },
+        {
+          name: "games-file-1",
+          path: "/games/:folder/file/:file",
+          file: "~/pages/page.vue",
+        },
+        {
+          name: "games-file-2",
+          path: "/games/:folder/:file",
+          file: "~/pages/page.vue",
+        },
+        {
+          name: "level-1",
+          path: "/:folder",
+          file: "~/pages/page.vue",
+        }, {
+          name: "level-2",
+          path: "/:folder/:file",
+          file: "~/pages/page.vue",
+        },
+      );
+    },
+  },
   
   fonts: {
     families: [

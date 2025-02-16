@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {usePagesStore} from "~/store/pagesStore";
 import {ref} from "vue";
 import {useMouse, useMousePressed} from "@vueuse/core";
 
+const emits = defineEmits(['onResizeEnd'])
 const resizer = ref(null)
 const parentElement = inject('parentElement');
 const { pressed } = useMousePressed({ target: resizer })
@@ -18,6 +18,8 @@ watch(
     } else {
       document.removeEventListener('mousemove', resizeListener)
       document.body.classList.remove('nwse-resize')
+
+      emits('onResizeEnd')
     }
   }
 )
@@ -62,7 +64,7 @@ const resizeListener = () => {
   position: relative;
   padding: 0 18px;
   border-top: 3px solid var(--folder-border-color);
-  border-radius: 0 0 8px 0;
+  border-radius: 0 0 10px 0;
 
   background-color: var(--folder-status-bar-bg-color);
   font-weight: 600;

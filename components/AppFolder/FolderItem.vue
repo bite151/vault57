@@ -1,25 +1,23 @@
 <script setup lang="ts">
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
-import { generateUrl } from "~/helpers/app.helpers";
-import { ref } from "vue";
 import { usePagesStore } from "~/store/pagesStore";
+import { useWindowsStore } from "~/store/windowsStore";
+import { generateUrl } from "~/helpers/app.helpers";
 import type { MenuItem, Page } from "~/types/Page";
+import type {PageWindow} from "~/types/Window";
 
-const { folderItem } = defineProps<{
-  folderItem: Page
+const { folderItem, windowId } = defineProps<{
+  folderItem: Page,
+  windowId: number | undefined
 }>()
 
 const emit = defineEmits(['onContextMenu', 'onRemove', 'onShowProps'])
-const route = useRoute()
 const router = useRouter()
-const { $bus } = useNuxtApp()
 const pagesStore = usePagesStore()
+const windowsStore = useWindowsStore()
 
-const isTrash = computed<boolean>(() => route.path === '/trash')
-
-function resetFrontPosition() {
-  setTimeout(() => $bus.$emit('resetFront', false), 5)
-}
+const currentWindow = computed<PageWindow | undefined>(() => windowsStore.openedWindows.find(item => item.windowId === windowId))
+const isTrash = computed<boolean>(() => currentWindow.value?.fullUrl === '/trash')
 
 const menuItemsList: MenuItem[] = [
   {
@@ -55,8 +53,11 @@ function getMenuItems(keys: ActionKey[]): MenuItem[] {
 }
 
 function openPage (page: Page): void {
-  $bus.$emit('file:show')
-  $bus.$emit('resetFront', false)
+  const frontWindowId = windowsStore.openedWindows.find(item => item.isOnFront)?.windowId ?? null;
+  if (windowId && frontWindowId !== windowId) {
+    windowsStore.setWindowToFront(windowId)
+  }
+
   const url = generateUrl(page)
   router.push(url)
 }
@@ -81,7 +82,7 @@ function restorePage (page: Page): void {
       v-if="!isTrash"
       :to="generateUrl(folderItem)"
       active-class="file_active"
-      @click="() => { resetFrontPosition(); $bus.$emit('file:show') }"
+      @click.stop="openPage(folderItem)"
       @contextmenu.prevent="emit(
         'onContextMenu',
         folderItem,
@@ -99,7 +100,7 @@ function restorePage (page: Page): void {
     <div
       v-else
       class="file-inner"
-      @click="() => { resetFrontPosition(); emit('onShowProps', folderItem) }"
+      @click="() => { emit('onShowProps', folderItem) }"
       @contextmenu.prevent.stop="emit(
         'onContextMenu',
         folderItem,

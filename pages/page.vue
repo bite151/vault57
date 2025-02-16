@@ -3,7 +3,7 @@
 </script>
 
 <template>
-Oooooops....
+  <MainAppComponent/>
 </template>
 
 <style scoped lang="scss">

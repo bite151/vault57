@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import {usePagesStore} from "~/store/pagesStore";
-import type {Page} from "~/types/Page";
-import {ref} from "vue";
+import { ref } from "vue";
+import { useWindowsStore } from "~/store/windowsStore";
 import FinderHeader from "~/components/common/Finder/FinderHeader.vue";
 import FinderStatusBar from "~/components/common/Finder/FinderStatusBar.vue";
+import type { PageWindow } from "~/types/Window";
+import {generateUrl} from "~/helpers/app.helpers";
 
-const route = useRoute()
-const router = useRouter()
-const { $bus } = useNuxtApp()
-const pagesStore = usePagesStore()
+const { currentWindow } = defineProps<{
+  currentWindow: PageWindow
+}>()
 
-const fileWindow = ref(null)
-provide('parentElement', fileWindow);
-
-const isFullScreen = ref<boolean>(false)
-const isHidden = ref<boolean>(false)
-const cursorPointer = ref<boolean>(false)
+const fileWindowElement = ref<HTMLElement | null>(null)
+provide('parentElement', fileWindowElement);
 
 const windowButtons = ref([
   {
@@ -23,91 +19,143 @@ const windowButtons = ref([
     action: closeWindow
   },
   {
-    icon: !isHidden.value ? 'Minus' : 'Plus',
+    icon: 'Minus',
     action: hideWindow
   },
-  // {
-  //   icon: !isFullScreen.value ? 'Maximize2' : 'Minimize2',
-  //   action: fullScreen
-  // }
+  {
+    icon: !currentWindow.isFullScreen ? 'Maximize2' : 'Minimize2',
+    action: fullScreen
+  }
 ])
 
-const pages = computed<Page[]>(() => pagesStore.pages);
-const currentPage = computed<Page | undefined>(() => pages.value.find(page => {
-  return page.url.replace('/file/', '/') === '/' + route.path.split('/').pop()
-}));
+const windowsStore = useWindowsStore()
+const openedWindows = computed(() => windowsStore.openedWindows.filter(item => !item.isHidden))
+const breadCrumbs = generateUrl(currentWindow)
 
-$bus.$on('setFront', (flag: boolean) => cursorPointer.value = flag)
-$bus.$on('file:show', () => isHidden.value = false)
-$bus.$on('file:close', (id: number) => {
-  if (id === currentPage.value?.id) { closeWindow() }
-})
-
-watch(
-  () => route.fullPath,
-  () => isHidden.value = false
-)
-
-function closeWindow(): void {
-  const routesArr = route.path.replace('/file/', '/').split('/')
-  routesArr.splice(routesArr.length - 1, 1)
-  router.push(routesArr.join('/'))
+function toFront(): void {
+  windowsStore.setWindowToFront(currentWindow.windowId)
 }
 
-function hideWindow(): void {
-  isFullScreen.value = false
-  isHidden.value = !isHidden.value
+function closeWindow(): void {
+  windowsStore.closeWindow(currentWindow.windowId)
+
+  updateWindowsPosition()
+}
+
+function hideWindow(e: MouseEvent): void {
+  const checkMatches = windowsStore.openedWindows
+    .filter(item => item.isHidden)
+    .some(item => item.id === currentWindow.id)
+  if (checkMatches) {
+    // if there is already such a window in the dock,
+    // then the duplicate is closed.
+    closeWindow()
+  } else {
+    windowsStore.updateWindowParams({
+      windowId: currentWindow.windowId,
+      isHidden: true,
+      hiddenAt: Math.round(new Date().getTime() / 1000)
+    })
+  }
+
+  updateWindowsPosition()
+  e.stopPropagation()
+}
+
+function updateWindowsPosition() {
+  const nextWindow = openedWindows.value[openedWindows.value.length - 1]
+  if (nextWindow) {
+    windowsStore.setWindowToFront(nextWindow.windowId)
+    return
+  }
+  window.history.pushState({}, '', '/desktop')
 }
 
 function fullScreen(): void {
-  isHidden.value = false
-  isFullScreen.value = !isFullScreen.value
+  const isFullScreen = !openedWindows.value.find(item => item.windowId === currentWindow.windowId)?.isFullScreen
+  windowsStore.updateWindowParams({
+    windowId: currentWindow.windowId,
+    isHidden: false,
+    isFullScreen
+  })
+}
+
+function onMoveEnd(): void {
+  windowsStore.updateWindowParams({
+    windowId: currentWindow.windowId,
+    position: {
+      x: fileWindowElement.value!.offsetLeft,
+      y: fileWindowElement.value!.offsetTop,
+      margin: '0'
+    },
+  })
+}
+
+function onResizeEnd(): void {
+  windowsStore.updateWindowParams({
+    windowId: currentWindow.windowId,
+    size: {
+      width: fileWindowElement.value!.clientWidth,
+      height: fileWindowElement.value!.clientHeight,
+    },
+    position: {
+      x: fileWindowElement.value!.offsetLeft,
+      y: fileWindowElement.value!.offsetTop,
+      margin: '0'
+    }
+  })
 }
 </script>
 
 <template>
   <div
-    ref="fileWindow"
+    ref="fileWindowElement"
     class="content-file"
     :class="{
-      'content-file_full-screen': isFullScreen,
-      'content-file_hidden': isHidden,
-      'content-file_cursor-pointer': cursorPointer,
-      'content-file_reset-width': currentPage?.resetWidth
+      'content-file_full-screen': currentWindow.isFullScreen,
+      'content-file_hidden': currentWindow.isHidden,
+      'content-file_front': currentWindow.isOnFront,
     }"
-    @click="() => { $bus.$emit('resetFront', false); cursorPointer = false }"
+    :style="`
+    top: ${currentWindow?.position?.y}px;
+    left: ${currentWindow?.position?.x}px;
+    margin: ${currentWindow?.position?.margin || '0'};
+    width: ${currentWindow?.size?.width}px;
+    height: ${currentWindow?.size?.height}px;`"
+    @click="toFront()"
   >
     <FinderHeader
       :moveable="true"
       :buttons="windowButtons"
+      @on-move-end="onMoveEnd"
     >
-      <h1>{{ currentPage?.title }}</h1>
+      <h1>{{ currentWindow?.title }}</h1>
     </FinderHeader>
 
     <section class="content-wrapper">
       <div class="main-frame">
         <div
           class="content"
-          :class="{'content_rounded': currentPage?.hideStatusBar}"
+          :class="{'content_rounded': currentWindow?.hideStatusBar}"
         >
           <component
-            v-if="currentPage?.contentComponent"
+            v-if="currentWindow?.contentComponent"
             :is="defineAsyncComponent({
-              loader: () => import(`~/components/Pages/${currentPage?.contentComponent}.vue`)
+              loader: () => import(`~/components/Pages/${currentWindow?.contentComponent?.component}.vue`)
             })"
           />
 
           <template v-else >
             <p>[content file component]</p>
-            <pre>{{ route.params }}</pre>
-            <pre>{{ currentPage }}</pre>
+            <pre>{{ currentWindow }}</pre>
           </template>
         </div>
 
         <FinderStatusBar
-          v-if="!currentPage?.hideStatusBar"
+          v-if="!currentWindow?.hideStatusBar"
+          @on-resize-end="onResizeEnd"
         >
-          {{ route.fullPath.replace('/file/', '/') }}
+          {{ breadCrumbs.replace('/file/', '/') }}
         </FinderStatusBar>
       </div>
     </section>
@@ -119,10 +167,10 @@ function fullScreen(): void {
   max-width: 980px;
   width: 100%;
   min-width: 720px !important;
-  height: 90vh;
+  height: 80vh;
   max-height: 980px !important;
   min-height: 430px !important;
-  margin: -40px -166px 0 16px;
+  //margin: -40px -166px 0 16px;
 
   background-color: var(--folder-bg-color);
   border: 3px solid var(--folder-border-color);
@@ -130,6 +178,13 @@ function fullScreen(): void {
   box-shadow: 20px 20px 0 0 var(--folder-shadow-color);
 
   position: fixed;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  z-index: 1;
 
   &_reset-width {
     width: auto;
@@ -169,6 +224,10 @@ function fullScreen(): void {
     .content-wrapper {
       display: none;
     }
+  }
+  &_front {
+    position: fixed;
+    z-index: 11;
   }
 
   &_reset-margin{
@@ -211,7 +270,7 @@ function fullScreen(): void {
   height: 36px;
   padding: 0 18px;
   border-top: 3px solid var(--folder-border-color);
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 10px 10px;
 
   background-color: var(--folder-status-bar-bg-color);
   font-weight: 600;

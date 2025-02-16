@@ -1,28 +1,75 @@
 <script setup lang="ts">
-import Navigation from "~/components/AppFolder/Navigation/Navigation.vue";
-import AppFolder from "~/components/AppFolder/AppFolder.vue";
-import AppFile from "~/components/AppFile/AppFile.vue";
-import AppDesktop from "~/components/AppDesktop/AppDesktop.vue";
+import {useWindowsStore} from "~/store/windowsStore";
 import {usePagesStore} from "~/store/pagesStore";
+import {watchDebounced} from "@vueuse/shared";
+import AppDesktop from "~/components/AppDesktop/AppDesktop.vue";
+import type {PageWindow} from "~/types/Window";
+import {findPageByUrl} from "~/helpers/app.helpers";
 
 const route = useRoute()
+const windowsStore = useWindowsStore()
 const pagesStore = usePagesStore()
 
 const loaded = ref<boolean>(false)
+const windows = computed<PageWindow[]>(() => windowsStore.openedWindows)
 
-const pages = computed(() => pagesStore.pages);
-const currentPage = computed(() => {
-  const routesArr = route.fullPath.replace('/file/', '/').split('/')
-  return pages.value.find(page => page.url.replace('/file/', '/') === '/' + routesArr[routesArr.length - 1])
-});
+watchDebounced(
+  () => windowsStore.openedWindows,
+  () => {
+    const data = windows.value.map((item) => {
+      const { content, ...rest } = item;
+      return rest;
+    });
 
-useSeoMeta({
-  title: currentPage.value?.title,
-  description: currentPage.value?.metaDescription,
-})
+    localStorage.setItem('openedWindows', JSON.stringify({
+      dataCreatedAt: Math.round(new Date().getTime() / 1000),
+      data
+    }))
+  },
+  { debounce: 1000, maxWait: 2000 }
+)
 
 onMounted(() => {
-  setTimeout(() => loaded.value = true, 0)
+  const str = localStorage.getItem('openedWindows')
+  if (!str) {
+    windowsStore.isLoaded = true
+    return
+  }
+
+  const storage = JSON.parse(str);
+  if (!storage.data?.length) {
+    windowsStore.isLoaded = true
+    return
+  }
+
+  const session: PageWindow[] = storage.data.map((item: PageWindow) => {
+    item.content = pagesStore.pages.find(page => page.id === item.id)?.content || []
+    return item
+  })
+
+  if (route.path.includes('/desktop')) {
+    windowsStore.openedWindows = session
+    const topWindowId = session.find(item => item.isOnFront)?.windowId ?? null
+    if (topWindowId) {
+      windowsStore.setWindowToFront(topWindowId)
+    }
+    windowsStore.isLoaded = true
+    return
+  }
+
+  const currentPage = findPageByUrl(route.path)
+  if (currentPage) {
+    windowsStore.openedWindows = session.map((item: PageWindow) => {
+      item.content = pagesStore.pages.find(page => page.id === item.id)?.content || []
+      return item
+    })
+    const windowId = session.find(item => item.pageId === currentPage.id)?.windowId ?? null
+    if (windowId) {
+      windowsStore.setWindowToFront(windowId)
+    }
+  }
+
+  windowsStore.isLoaded = true
 })
 </script>
 
@@ -31,28 +78,7 @@ onMounted(() => {
     :class="{ loaded }"
     id="main-content-teleport"
   >
-    <template v-if="currentPage" >
-      <template v-if="route.fullPath !== '/desktop'">
-        <AppFolder
-          class="content-window"
-          :class="{ 'content-window_visible': loaded }"
-        >
-          <template #navigation>
-            <Navigation />
-          </template>
-          <NuxtPage />
-        </AppFolder>
-
-        <AppFile
-          v-if="route.params.file"
-          class="content-file"
-          :class="{ 'content-file_visible': loaded }"
-        />
-      </template>
-      <NuxtPage v-else/>
-    </template>
-    <NuxtPage v-else/>
-
+    <NuxtPage/>
     <AppDesktop />
   </main>
 </template>
@@ -65,30 +91,11 @@ main {
   align-items: center;
   height: 100vh;
   background-color: var(--desctop-bg-color);
-
-  overflow: hidden;
   //background-image: url("/images/vault57_b1.png");
   //background-repeat: no-repeat;
   //background-position: center center;
 }
 
-.content-window, .content-file {
-  transform: translateY(100vh) scale(.5);
-  opacity: 0;
-  visibility: hidden;
-
-  //transition: transform .3s ease-in-out, opacity .4s ease-in-out,  visibility .4s ease-in-out;
-
-  &_visible {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-    visibility: visible;
-  }
-}
-
-.content-window {
-  position: fixed;
-}
 
 //.content-file{ transition-delay: 1s }
 </style>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 import AlertDialog from "~/components/common/Modals/AlertDialog.vue";
+import {useWindowsStore} from "~/store/windowsStore";
+import Dock from "~/components/AppDesktop/Dock.vue";
 
 const icons = ref([
   {
@@ -35,6 +37,8 @@ const icons = ref([
   }
 ])
 const showAlertDialog = ref<boolean>(false)
+
+const windowsStore = useWindowsStore()
 </script>
 
 <template>
@@ -46,6 +50,7 @@ const showAlertDialog = ref<boolean>(false)
         class="block"
         :class="`block${block.key}`"
         :to="block.url"
+        @click.prevent="windowsStore.setWindow(block.url)"
       >
         <AsyncIcon
           :name="block.icon"
@@ -67,6 +72,8 @@ const showAlertDialog = ref<boolean>(false)
       </div>
     </template>
   </div>
+
+  <Dock />
 
   <AlertDialog
     v-if="showAlertDialog"

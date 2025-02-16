@@ -117,7 +117,7 @@ function closeWindow(): void {
 
   position: fixed;
 
-  z-index: 10;
+  z-index: 999;
 
   &_cursor-pointer {
     cursor: pointer;

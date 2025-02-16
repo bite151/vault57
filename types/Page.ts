@@ -3,13 +3,17 @@ export interface Page {
   parentId: number;
   defaultParentId?: number | null;
   url: string;
+  fullUrl?: string;
   title: string;
   h1: string;
   metaDescription: string;
   content: string[];
-  icon?: string;
+  icon: string | null;
   showInFinder?: boolean;
-  contentComponent?: string;
+  contentComponent?: {
+    directory: string;
+    component: string;
+  } | null;
   hideStatusBar?: boolean;
   resetWidth?: boolean;
   createdAt: string;

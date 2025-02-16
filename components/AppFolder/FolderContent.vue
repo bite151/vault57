@@ -2,25 +2,23 @@
 import { ref } from 'vue'
 import { usePagesStore } from "~/store/pagesStore";
 import { useMouse, useWindowScroll } from "@vueuse/core";
-
 import FolderItem from "~/components/AppFolder/FolderItem.vue";
 import ContextMenu from "~/components/AppFolder/ContextMenu.vue";
 import EmptyFolder from "~/components/AppFolder/EmptyFolder.vue";
 import ConfirmDialog from "~/components/common/Modals/ConfirmDialog.vue";
-import type { MenuItem, Page } from "~/types/Page";
-import type { ConfirmDialogProps } from "~/types/ConfirmDialog";
 import PropertiesModal from "~/components/AppFolder/PropertiesModal.vue";
+import type { ConfirmDialogProps } from "~/types/ConfirmDialog";
+import type { MenuItem, Page } from "~/types/Page";
+import type { PageWindow } from "~/types/Window";
 
 const { currentFolder } = defineProps<{
-  currentFolder: Page | undefined
+  currentFolder?: PageWindow | undefined
 }>();
 
-const { $bus } = useNuxtApp()
-const route = useRoute()
 const pagesStore = usePagesStore()
 
 const files = computed<Page[]>(() => {
-  if (route.path === '/my-computer') {
+  if (currentFolder?.fullUrl === '/my-computer') {
     return pagesStore.pages.filter(page => page.parentId === 1 && !page.url.includes('/file/') && page.showInFinder)
   }
 
@@ -68,8 +66,6 @@ function removePage (page: Page): void {
     }
     return item
   })
-
-  $bus.$emit('file:close', page.id)
   closeConfirmDialog()
 }
 
@@ -101,8 +97,7 @@ function closePropertiesModal (): void {
 }
 
 function onFolderClick (): void {
-  const isTrash = route.path === '/trash'
-
+  const isTrash = currentFolder?.fullUrl === '/trash'
   const trash: Page = pagesStore.pages.find(page => page.url === '/trash')!
   const isTrashEmpty = !pagesStore.pages.some(page => page.parentId === trash.id)
   if (isTrash && !isTrashEmpty) {
@@ -132,8 +127,15 @@ function restoreAll () {
     class="content"
     @contextmenu.prevent="onFolderClick"
   >
-    <EmptyFolder v-if="!files?.length">
-      {{ route.path !== '/trash' ? 'Папка' : 'Корзина' }} пуста
+    <component
+      v-if="currentFolder?.contentComponent"
+      :is="defineAsyncComponent({
+        loader: () => import(`~/components/Pages/${currentFolder?.contentComponent?.component}.vue`)
+      })"
+    />
+
+    <EmptyFolder v-else-if="!files?.length">
+      {{ currentFolder?.fullUrl !== '/trash' ? 'Папка' : 'Корзина' }} пуста
     </EmptyFolder>
 
     <div
@@ -144,6 +146,7 @@ function restoreAll () {
         v-for="folderItem in files"
         :key="folderItem.id"
         :folder-item="folderItem"
+        :window-id="currentFolder?.windowId"
         :class="{'active': isFolderItemActive === folderItem.id}"
         @on-context-menu="openContextMenu"
         @on-remove="openConfirmDialog"

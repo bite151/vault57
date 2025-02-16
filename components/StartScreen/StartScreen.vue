@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useAppStatesStore } from "~/store/appStatesStore";
+import { useWindowsStore } from "~/store/windowsStore";
 import Navigation from "~/components/StartScreen/Navigation.vue";
 import RunningLine from "~/components/StartScreen/RunningLine.vue";
 
 const appStatesStore = useAppStatesStore();
+const windowsStore = useWindowsStore();
 const router = useRouter();
 
 const isLoading = computed<boolean>(() => appStatesStore.startLoading);
@@ -23,13 +25,22 @@ const loader = ref<string[]>([
 ]);
 const string = ref<string[]>([]);
 const show = ref<boolean>(false);
-const show2 = ref<boolean>(false);
 const showLoader = ref<boolean>(false);
 const changeScreenColor = ref<boolean>(false);
+const hasOldSession = ref<boolean>(false)
 
 onMounted(() => {
   animate(text.value)
+  hasOldSession.value = checkOldSession()
 })
+
+function checkOldSession(): boolean {
+  const str = localStorage.getItem('openedWindows')
+  if (!str) return false
+
+  const storage = JSON.parse(str);
+  return storage.data?.length;
+}
 
 const animate = (text, letterNumber = 0) => {
   string.value.push(text[letterNumber])
@@ -46,6 +57,7 @@ function redirect(url: string): void {
   if (isLoaded.value) {
     router.push(url)
   } else {
+    windowsStore.setWindow(url)
     showLoader.value = true
     setTimeout(() => changeScreenColor.value = true, 1500)
     setTimeout(() => router.push(url), 1800)
@@ -56,7 +68,8 @@ function redirect(url: string): void {
 function loadingCompleted(): void {
   appStatesStore.setLoading(true);
   showLoader.value = true;
-  redirect('/my-computer')
+  const path = hasOldSession.value ? '/desktop' : '/my-computer'
+  redirect(path)
 }
 </script>
 
