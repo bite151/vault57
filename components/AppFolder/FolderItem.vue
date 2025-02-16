@@ -121,9 +121,6 @@ function restorePage (page: Page): void {
 .file {
   display: flex;
   justify-content: center;
-  width: calc((100% - 80px) / 5);
-  min-width: 166px;
-  margin-bottom: 12px;
 
   a, .file-inner {
     display: flex;

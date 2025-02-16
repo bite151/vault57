@@ -52,10 +52,10 @@ function openPreviewer(image) {
 }
 
 .files {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 20px;
+  display: grid;
+  grid-row-gap: 32px;
+  grid-column-gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
 }
 
 .file {
@@ -63,14 +63,10 @@ function openPreviewer(image) {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: calc((100% - 88px) / 5);
-  min-width: 166px;
-  margin-bottom: 12px;
-
 
   .img-wrapper {
-    height: 100px;
-    width: 80%;
+    height: 120px;
+    width: 100%;
     margin-bottom: 4px;
     cursor: pointer;
   }

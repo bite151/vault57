@@ -184,9 +184,9 @@ function restoreAll () {
 }
 
 .files {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 20px;
+  display: grid;
+  grid-row-gap: 32px;
+  grid-column-gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
 }
 </style>
