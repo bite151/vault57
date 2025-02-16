@@ -31,6 +31,7 @@ const windowButtons = ref([
   }
 ])
 
+const router = useRouter()
 const windowsStore = useWindowsStore()
 const openedWindows = computed(() => windowsStore.openedWindows.filter(item => !item.isHidden))
 const breadCrumbs = generateUrl(currentWindow)
@@ -69,6 +70,7 @@ function updateWindowsPosition() {
   const nextWindow = openedWindows.value[openedWindows.value.length - 1]
   if (nextWindow) {
     windowsStore.setWindowToFront(nextWindow.windowId)
+    router.push(nextWindow.fullUrl)
     return
   }
   window.history.pushState({}, '', '/desktop')
