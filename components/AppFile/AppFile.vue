@@ -138,12 +138,13 @@ function onResizeEnd(): void {
           class="content"
           :class="{'content_rounded': currentWindow?.hideStatusBar}"
         >
-          <component
-            v-if="currentWindow?.contentComponent"
-            :is="defineAsyncComponent({
+          <div class="component-wrapper" v-if="currentWindow?.contentComponent">
+            <component
+              :is="defineAsyncComponent({
               loader: () => import(`~/components/Pages/${currentWindow?.contentComponent?.component}.vue`)
             })"
-          />
+            />
+          </div>
 
           <template v-else >
             <p>[content file component]</p>
@@ -257,10 +258,17 @@ function onResizeEnd(): void {
 }
 .content {
   //padding: 18px;
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
   overflow: auto;
-  &_rounded {
+  &_rounded,
+  &_rounded .component-wrapper{
     border-radius: 0 0 8px 8px;
+  }
+
+  .component-wrapper {
+    flex-grow: 1;
   }
 }
 .status-bar {
