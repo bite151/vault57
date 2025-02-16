@@ -5,6 +5,9 @@ import FinderHeader from "~/components/common/Finder/FinderHeader.vue";
 import FinderStatusBar from "~/components/common/Finder/FinderStatusBar.vue";
 import type { PageWindow } from "~/types/Window";
 import {generateUrl} from "~/helpers/app.helpers";
+import Simplebar from "simplebar-vue";
+// import 'simplebar-vue/dist/simplebar.min.css';
+import '~/assets/scss/simplebar.css';
 
 const { currentWindow } = defineProps<{
   currentWindow: PageWindow
@@ -135,22 +138,26 @@ function onResizeEnd(): void {
     <section class="content-wrapper">
       <div class="main-frame">
         <div
-          class="content"
-          :class="{'content_rounded': currentWindow?.hideStatusBar}"
+          v-if="currentWindow?.contentComponent"
+          class="component-wrapper"
+          :class="{'component-wrapper_rounded': currentWindow?.hideStatusBar}"
         >
-          <div class="component-wrapper" v-if="currentWindow?.contentComponent">
-            <component
-              :is="defineAsyncComponent({
+          <component
+            :is="defineAsyncComponent({
               loader: () => import(`~/components/Pages/${currentWindow?.contentComponent?.component}.vue`)
             })"
-            />
-          </div>
+          />
+        </div>
 
-          <template v-else >
+        <Simplebar class="scrollbar-file" v-else>
+          <div
+            class="content"
+            :class="{'content_rounded': currentWindow?.hideStatusBar}"
+          >
             <p>[content file component]</p>
             <pre>{{ currentWindow }}</pre>
-          </template>
-        </div>
+          </div>
+        </Simplebar>
 
         <FinderStatusBar
           v-if="!currentWindow?.hideStatusBar"
@@ -255,9 +262,15 @@ function onResizeEnd(): void {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+
+  overflow: auto;
 }
+
+.scrollbar-file {
+  height: calc(100% - 36px);
+}
+
 .content {
-  //padding: 18px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -266,11 +279,18 @@ function onResizeEnd(): void {
   &_rounded .component-wrapper{
     border-radius: 0 0 8px 8px;
   }
-
-  .component-wrapper {
-    flex-grow: 1;
-  }
 }
+
+.component-wrapper {
+  height: 100%;
+  flex-grow: 1;
+}
+
+.component-wrapper_rounded {
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
 .status-bar {
   display: flex;
   flex-shrink: 0;

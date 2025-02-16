@@ -6,6 +6,7 @@ import FinderStatusBar from "~/components/common/Finder/FinderStatusBar.vue";
 import Navigation from "~/components/AppFolder/Navigation/Navigation.vue";
 import FolderContent from "~/components/AppFolder/FolderContent.vue";
 import Simplebar from 'simplebar-vue';
+// import 'simplebar-vue/dist/simplebar.min.css';
 import '~/assets/scss/simplebar.css';
 import type { PageWindow } from "~/types/Window";
 import { generateUrl } from "~/helpers/app.helpers";
@@ -275,7 +276,7 @@ function onResizeEnd(): void {
 
 .scrollbar-folder.simplebar-scrollable-y{
   &:deep(div.simplebar-content) {
-    padding-right: 26px !important;
+    padding-right: 12px !important;
   }
 }
 </style>
