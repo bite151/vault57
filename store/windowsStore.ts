@@ -59,6 +59,11 @@ export const useWindowsStore = defineStore('windowsStore', () => {
   }
   
   function setWindowToFront(windowId: number) {
+    const checkArray = !openedWindows.value.some(i => i.windowId === windowId && !i.isHidden)
+    if (checkArray) {
+      return false
+    }
+    
     if (!openedWindows.value.length) {
       if (import.meta.browser) {
         window.history.pushState({}, '', '/desktop')
@@ -70,7 +75,6 @@ export const useWindowsStore = defineStore('windowsStore', () => {
         if (import.meta.browser) {
           window.history.pushState({}, '', item.fullUrl)
         }
-        
         return {
           ...item,
           isOnFront: true,
@@ -93,6 +97,11 @@ export const useWindowsStore = defineStore('windowsStore', () => {
   
   function closeWindow(windowId: number): void {
     openedWindows.value = openedWindows.value.filter(item => item.windowId !== windowId)
+    
+    if (openedWindows.value.length) {
+      const { windowId } = openedWindows.value[openedWindows.value.length - 1]
+      setWindowToFront(windowId)
+    }
   }
   
   return { openedWindows, isLoaded, setWindow, updateWindowContent, updateWindowParams, setWindowToFront, closeWindow}

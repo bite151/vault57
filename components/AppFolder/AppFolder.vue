@@ -69,7 +69,9 @@ function hideWindow(e: MouseEvent): void {
 
 function closeWindow(): void {
   windowsStore.closeWindow(currentWindow.windowId)
-  updateWindowsPosition()
+  if (!openedWindows.value.length) {
+    window.history.pushState({}, '', '/desktop')
+  }
 }
 
 function updateWindowsPosition() {
