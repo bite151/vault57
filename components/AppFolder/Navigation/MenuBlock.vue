@@ -84,7 +84,7 @@ function redirectTo(page: Page) {
           :strokeWidth="2"
           color="#31322d"
         />
-        {{ page.title }}
+        <span>{{ page.title }}</span>
       </nuxt-link>
 
       <MenuBlock
@@ -164,9 +164,15 @@ function redirectTo(page: Page) {
     user-select: none;
 
     svg {
+      flex-shrink: 0;
       stroke: var(--folder-navigation-color);
     }
 
+    span {
+      flex-grow: 1;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
     &:hover {
       background-color: rgba(0, 0, 0, 0.04);
     }

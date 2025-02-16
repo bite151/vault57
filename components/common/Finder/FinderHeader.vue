@@ -124,6 +124,20 @@ function onStartMove(e : MouseEvent) {
   user-select: none;
   cursor: grab;
 
+  .title {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+
+    & > * {
+      max-width: calc(100% - 104px);
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
   .title, .title > * {
     font-weight: 600;
     color: var(--folder-title-bar-color);

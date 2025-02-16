@@ -158,6 +158,12 @@ function restorePage (page: Page): void {
     border: 1px dotted transparent;
     text-align: center;
     line-height: 1.3;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
     transition: color .2s ease-in-out, background-color .2s ease-in-out, border-color .2s ease-in-out;
     user-select: none;
   }

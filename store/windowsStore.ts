@@ -59,8 +59,8 @@ export const useWindowsStore = defineStore('windowsStore', () => {
   }
   
   function setWindowToFront(windowId: number) {
-    const checkArray = !openedWindows.value.some(i => i.windowId === windowId && !i.isHidden)
-    if (checkArray) {
+    const checkArray = openedWindows.value.some(i => i.windowId === windowId && !i.isHidden)
+    if (!checkArray) {
       return false
     }
     
