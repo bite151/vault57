@@ -26,6 +26,12 @@ const menuItemsList: MenuItem[] = [
     icon: null,
     action: (page: Page) => openPage(page)
   },
+  // {
+  //   key: 'open',
+  //   title: 'Открыть в новом окне',
+  //   icon: null,
+  //   action: (page: Page) => openPageInNewWindow(page)
+  // },
   {
     key: 'remove',
     title: 'Удалить',
@@ -61,6 +67,11 @@ function openPage (page: Page): void {
   const url = generateUrl(page)
   router.push(url)
 }
+
+// function openPageInNewWindow(page: Page): void {
+//   const url = generateUrl(page)
+//   windowsStore.setWindow(url)
+// }
 
 function restorePage (page: Page): void {
   pagesStore.pages = pagesStore.pages.map((item: Page) => {
