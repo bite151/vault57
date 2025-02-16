@@ -4,9 +4,10 @@ import {usePagesStore} from "~/store/pagesStore";
 import {watchDebounced} from "@vueuse/shared";
 import AppDesktop from "~/components/AppDesktop/AppDesktop.vue";
 import type {PageWindow} from "~/types/Window";
-import {findPageByUrl} from "~/helpers/app.helpers";
+// import {findPageByUrl} from "~/helpers/app.helpers";
 
 const route = useRoute()
+const router = useRouter()
 const windowsStore = useWindowsStore()
 const pagesStore = usePagesStore()
 
@@ -57,17 +58,22 @@ onMounted(() => {
     return
   }
 
-  const currentPage = findPageByUrl(route.path)
-  if (currentPage) {
-    windowsStore.openedWindows = session.map((item: PageWindow) => {
-      item.content = pagesStore.pages.find(page => page.id === item.id)?.content || []
-      return item
-    })
-    const windowId = session.find(item => item.pageId === currentPage.id)?.windowId ?? null
-    if (windowId) {
-      windowsStore.setWindowToFront(windowId)
-    }
-  }
+  // const currentPage = findPageByUrl(route.path)
+  // console.log(currentPage)
+  // if (currentPage) {
+  //   const filteredSession = windowsStore.openedWindows = session
+  //     // .filter(item => !item.isOnFront)
+  //     .map((item: PageWindow) => {
+  //       item.content = pagesStore.pages.find(page => page.id === item.id)?.content || []
+  //       return item
+  //     })
+  // windowsStore.openedWindows = filteredSession
+  // router.push(currentPage.fullUrl!)
+  // const windowId = session.find(item => item.pageId === currentPage.id)?.windowId ?? null
+  // if (windowId) {
+  //   windowsStore.setWindowToFront(windowId)
+  // }
+  // }
 
   windowsStore.isLoaded = true
 })
