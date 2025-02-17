@@ -5,9 +5,9 @@ export interface Page {
   url: string;
   fullUrl?: string;
   title: string;
-  h1: string;
+  fileName: string;
   metaDescription: string;
-  content: string[];
+  content: any;
   icon: string | null;
   showInFinder?: boolean;
   contentComponent?: {

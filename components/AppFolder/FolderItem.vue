@@ -59,13 +59,19 @@ function getMenuItems(keys: ActionKey[]): MenuItem[] {
 }
 
 function openPage (page: Page): void {
-  const frontWindowId = windowsStore.openedWindows.find(item => item.isOnFront)?.windowId ?? null;
+  const hiddenWindow = windowsStore.openedWindows.find(item => item.pageId === page.id && item.isHidden)
+  if (hiddenWindow) {
+    windowsStore.updateWindowParams({ windowId: hiddenWindow.windowId, isHidden: false })
+    return
+  }
+
+  const frontWindowId = windowsStore.openedWindows.find(item => item.isOnFront)?.windowId ?? null
   if (windowId && frontWindowId !== windowId) {
     windowsStore.setWindowToFront(windowId)
   }
 
-  const url = generateUrl(page)
-  router.push(url)
+  // const url = generateUrl(page)
+  // router.push(url)
 }
 
 // function openPageInNewWindow(page: Page): void {
@@ -105,7 +111,7 @@ function restorePage (page: Page): void {
         :size="52"
         :strokeWidth="1.3"
       />
-      <p>{{ folderItem.title }}</p>
+      <p>{{ folderItem.fileName }}</p>
     </nuxt-link>
 
     <div
@@ -123,7 +129,7 @@ function restorePage (page: Page): void {
         :size="52"
         :strokeWidth="1.3"
       />
-      <p>{{ folderItem.title }}</p>
+      <p>{{ folderItem.fileName }}</p>
     </div>
   </div>
 </template>
@@ -153,6 +159,7 @@ function restorePage (page: Page): void {
   }
 
   p {
+    width: min-content;
     padding: 2px 6px;
     border-radius: 4px;
     border: 1px dotted transparent;

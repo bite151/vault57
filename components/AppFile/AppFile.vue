@@ -8,6 +8,7 @@ import {generateUrl} from "~/helpers/app.helpers";
 import Simplebar from "simplebar-vue";
 // import 'simplebar-vue/dist/simplebar.min.css';
 import '~/assets/scss/simplebar.css';
+import FileContent from "~/components/AppFile/FileContent.vue";
 
 const { currentWindow } = defineProps<{
   currentWindow: PageWindow
@@ -120,6 +121,7 @@ function onResizeEnd(): void {
       'content-file_full-screen': currentWindow.isFullScreen,
       'content-file_hidden': currentWindow.isHidden,
       'content-file_front': currentWindow.isOnFront,
+      'content-file_reset-width': currentWindow?.resetWidth
     }"
     :style="`
     top: ${currentWindow?.position?.y}px;
@@ -156,8 +158,9 @@ function onResizeEnd(): void {
             class="content"
             :class="{'content_rounded': currentWindow?.hideStatusBar}"
           >
-            <p>[content file component]</p>
-            <pre>{{ currentWindow }}</pre>
+<!--            <p>[content file component]</p>-->
+<!--            <pre>{{ currentWindow }}</pre>-->
+            <FileContent :content="currentWindow?.content" />
           </div>
         </Simplebar>
 
@@ -205,8 +208,8 @@ function onResizeEnd(): void {
   }
   &_full-screen {
     box-shadow: none;
-    height: 100vh;
-    width: 100%;
+    height: 100vh !important;
+    width: 100% !important;
     max-width: 1320px;
 
 

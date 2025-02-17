@@ -71,6 +71,12 @@ onMounted(() => {
     const isWindowOpen = updatedSession.find(item => item.id === currentPage.id)
 
     if (isWindowOpen) {
+      updatedSession.map((item: PageWindow) => {
+        if (item.windowId === isWindowOpen.windowId) {
+          item.isHidden = false
+        }
+        return item
+      })
       windowsStore.openedWindows = updatedSession
       windowsStore.setWindowToFront(isWindowOpen.windowId)
       windowsStore.isLoaded = true
