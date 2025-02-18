@@ -43,3 +43,10 @@ export interface PageContent {
   h1: string;
   blocks: Block[];
 }
+
+export interface DesktopItem {
+  key: number;
+  title: string;
+  url: string;
+  icon: string | null;
+}

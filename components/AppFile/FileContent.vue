@@ -8,7 +8,6 @@ defineProps<({
 </script>
 
 <template>
-  {{ content}}
   <div
     v-if="content"
     class="article"
