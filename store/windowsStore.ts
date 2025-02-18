@@ -70,20 +70,22 @@ export const useWindowsStore = defineStore('windowsStore', () => {
       }
     }
     
-    openedWindows.value = openedWindows.value.map((item) => {
-      if (item.windowId === windowId) {
-        if (import.meta.browser) {
-          window.history.pushState({}, '', item.fullUrl)
+    openedWindows.value = openedWindows.value
+      .map((item) => {
+        if (item.windowId === windowId) {
+          if (import.meta.browser) {
+            window.history.pushState({}, '', item.fullUrl)
+          }
+          return {
+            ...item,
+            isOnFront: true,
+            isHidden: false
+          }
         }
-        return {
-          ...item,
-          isOnFront: true,
-          isHidden: false
-        }
-      }
-      item.isOnFront = false
-      return item
-    })
+        item.isOnFront = false
+        return item
+      })
+      .sort((a, b) => Number(a.isOnFront) - Number(b.isOnFront))
   }
   
   function updateWindowParams<T extends Partial<WindowParams>>(params: { windowId: number } & T): void {

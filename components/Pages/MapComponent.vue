@@ -35,7 +35,6 @@ const customization = shallowRef<VectorCustomization>([
         behaviors: ['scrollZoom', 'drag'],
       }"
     class="map"
-    @click.stop
   >
     <yandex-map-default-scheme-layer
       :settings="{ customization }"

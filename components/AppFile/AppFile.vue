@@ -189,8 +189,8 @@ function onResizeEnd(): void {
 
 <style scoped lang="scss">
 .content-file {
-  max-width: 980px;
-  width: 100%;
+  max-width: 1320px;
+  width: 946px;
   min-width: 720px !important;
   height: 80vh;
   max-height: 980px !important;
@@ -212,7 +212,8 @@ function onResizeEnd(): void {
   z-index: 1;
 
   &_reset-width {
-    width: auto;
+    min-width: 430px !important;
+    width: fit-content;
     max-width: none;
   }
   &_cursor-pointer {

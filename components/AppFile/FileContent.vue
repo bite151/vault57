@@ -95,6 +95,10 @@ defineProps<({
         grid-template-columns: repeat(#{$i}, minmax(auto, 1fr));
       }
     }
+
+    img {
+      width: 100%;
+    }
   }
 
   p {
