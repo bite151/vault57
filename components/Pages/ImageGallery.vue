@@ -4,10 +4,12 @@ import EmptyFolder from "~/components/AppFolder/EmptyFolder.vue";
 import GalleryFile from "~/components/Pages/Gallery/GalleryFile.vue";
 import type {GalleryImage} from "~/types/Gallery";
 
+interface Images { images: Ref<GalleryImage[]> }
+
 const config = useRuntimeConfig()
 const galleryStore = useGalleryStore()
+const { images }: Images = storeToRefs(galleryStore);
 
-const images = computed(() => galleryStore.images)
 const previewer = ref<string | null>(null)
 
 function openPreviewer(image: GalleryImage) {

@@ -144,6 +144,7 @@ function onResizeEnd(): void {
       <div class="main-frame">
         <Simplebar class="scrollbar-folder">
           <FolderContent
+            :key="currentWindow.windowId"
             :current-folder="currentWindow!"
           />
         </Simplebar>

@@ -17,6 +17,19 @@ const { currentWindow } = defineProps<{
 const fileWindowElement = ref<HTMLElement | null>(null)
 provide('parentElement', fileWindowElement);
 
+const currentComponent = shallowRef(null);
+watch(
+  () => currentWindow?.contentComponent?.component,
+  (componentName) => {
+    if (componentName) {
+      currentComponent.value = defineAsyncComponent(() =>
+        import(`~/components/Pages/${componentName}.vue`)
+      );
+    }
+  },
+  { immediate: true }
+);
+
 const windowButtons = ref([
   {
     icon: 'X',
@@ -147,9 +160,8 @@ function onResizeEnd(): void {
           :class="{'component-wrapper_rounded': currentWindow?.hideStatusBar}"
         >
           <component
-            :is="defineAsyncComponent({
-              loader: () => import(`~/components/Pages/${currentWindow?.contentComponent?.component}.vue`)
-            })"
+            v-if="currentComponent"
+            :is="currentComponent"
           />
         </div>
 

@@ -15,6 +15,19 @@ const { currentFolder } = defineProps<{
   currentFolder?: PageWindow | undefined
 }>();
 
+const currentComponent = shallowRef(null);
+watch(
+  () => currentFolder?.contentComponent?.component,
+  (componentName) => {
+    if (componentName) {
+      currentComponent.value = defineAsyncComponent(() =>
+        import(`~/components/Pages/${componentName}.vue`)
+      );
+    }
+  },
+  { immediate: true }
+);
+
 const pagesStore = usePagesStore()
 
 const files = computed<Page[]>(() => {
@@ -127,12 +140,12 @@ function restoreAll () {
     class="content"
     @contextmenu.prevent="onFolderClick"
   >
-    <component
-      v-if="currentFolder?.contentComponent"
-      :is="defineAsyncComponent({
-        loader: () => import(`~/components/Pages/${currentFolder?.contentComponent?.component}.vue`)
-      })"
-    />
+    <template v-if="currentFolder?.contentComponent">
+      <component
+        v-if="currentComponent"
+        :is="currentComponent"
+      />
+    </template>
 
     <EmptyFolder v-else-if="!files?.length">
       {{ currentFolder?.fullUrl !== '/trash' ? 'Папка' : 'Корзина' }} пуста
