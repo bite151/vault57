@@ -3,6 +3,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@pinia/nuxt', '@nuxt/image', '@nuxt/fonts', 'vue-yandex-maps/nuxt'],
   
+  runtimeConfig: {
+    public: {
+      MEDIA_URL: process.env.MEDIA_URL,
+    },
+  },
+  
   app: {
     head: {
       charset: 'utf-8',

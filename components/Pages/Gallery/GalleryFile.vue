@@ -4,6 +4,7 @@ import {useGalleryStore} from "~/store/galleryStore";
 import {ref} from "vue";
 import FinderHeader from "~/components/common/Finder/FinderHeader.vue";
 
+const config = useRuntimeConfig()
 const { $bus } = useNuxtApp()
 const emit = defineEmits(['handleClose'])
 const galleryStore = useGalleryStore()
@@ -82,7 +83,7 @@ function closeWindow(): void {
       <div class="main-frame">
         <div class="content">
           <img
-            :src="`/images/${currentImage.src}`"
+            :src="`${config.public.MEDIA_URL}${currentImage.src}`"
             alt=""
           >
         </div>

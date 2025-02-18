@@ -7,7 +7,7 @@ export interface Page {
   title: string;
   fileName: string;
   metaDescription: string;
-  content: any;
+  content: PageContent | null;
   icon: string | null;
   showInFinder?: boolean;
   contentComponent?: {
@@ -26,4 +26,20 @@ export interface MenuItem {
   title: string;
   icon: string | null;
   action: (page: Page) => void | null;
+}
+
+export interface Block {
+  id: number;
+  type: 'text' | 'image' | 'video' | string; // можно расширить под другие типы блоков
+  title: string;
+  img?: string;
+  p: string[];
+  images?: string[];
+}
+
+export interface PageContent {
+  id: number;
+  pageId: number;
+  h1: string;
+  blocks: Block[];
 }

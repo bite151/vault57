@@ -43,7 +43,9 @@ onMounted(() => {
   }
 
   const session: PageWindow[] = storage.data.map((item: PageWindow) => {
-    item.content = pagesStore.pages.find(page => page.id === item.id)?.content || []
+    const page = pagesStore.pages.find(page => page.id === item.id)
+    item.content = page?.content || null
+    item.pageId = page!.id
     return item
   })
 
@@ -60,31 +62,23 @@ onMounted(() => {
   const currentPage = findPageByUrl(route.path)
 
   if (currentPage) {
-    const updatedSession = session
-      .map((item: PageWindow) => {
-        const page = pagesStore.pages.find(page => page.id === item.id)
-        item.content = page?.content || []
-        item.pageId = page!.id
-        return item
-      })
-
-    const isWindowOpen = updatedSession.find(item => item.id === currentPage.id)
+    const isWindowOpen = session.find(item => item.id === currentPage.id)
 
     if (isWindowOpen) {
-      updatedSession.map((item: PageWindow) => {
+      session.map((item: PageWindow) => {
         if (item.windowId === isWindowOpen.windowId) {
           item.isHidden = false
         }
         return item
       })
-      windowsStore.openedWindows = updatedSession
+      windowsStore.openedWindows = session
       windowsStore.setWindowToFront(isWindowOpen.windowId)
       windowsStore.isLoaded = true
       return
     }
 
     windowsStore.openedWindows = [
-      ...updatedSession,
+      ...session,
       ...windowsStore.openedWindows
     ]
   }

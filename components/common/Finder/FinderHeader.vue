@@ -58,6 +58,10 @@ const moveListener = () => {
         top = yMax - clickPosition.value.y
       }
 
+      if (top < 0) {
+        top = 0
+      }
+
       parentElement.value.style.top = `${top}px`
       parentElement.value.style.left = `${left}px`
     }

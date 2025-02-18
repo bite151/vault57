@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { shallowRef } from 'vue';
+import { shallowRef } from 'vue'
 import {
   YandexMap,
   YandexMapDefaultSchemeLayer,
   YandexMapDefaultFeaturesLayer,
   YandexMapMarker,
-} from 'vue-yandex-maps';
-import type {VectorCustomization} from "@yandex/ymaps3-types";
+} from 'vue-yandex-maps'
+import type {VectorCustomization} from "@yandex/ymaps3-types"
 
-const map = shallowRef<null>(null);
-const location = ref(import.meta.client ? window.location.origin : null);
+const config = useRuntimeConfig()
+const map = shallowRef<null>(null)
 const customization = shallowRef<VectorCustomization>([
   {
     elements: 'geometry',
@@ -35,6 +35,7 @@ const customization = shallowRef<VectorCustomization>([
         behaviors: ['scrollZoom', 'drag'],
       }"
     class="map"
+    @click.stop
   >
     <yandex-map-default-scheme-layer
       :settings="{ customization }"
@@ -46,7 +47,7 @@ const customization = shallowRef<VectorCustomization>([
         coordinates: [36.079531, 52.969292]
       }"
     >
-      <img :src="`${location}/images/map-logo.png`" class="pin"/>
+      <img :src="`${config.public.MEDIA_URL}/images/brand/map-logo.png`" class="pin"/>
     </yandex-map-marker>
   </yandex-map>
 </template>

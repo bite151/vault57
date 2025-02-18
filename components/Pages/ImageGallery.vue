@@ -3,6 +3,7 @@ import EmptyFolder from "~/components/AppFolder/EmptyFolder.vue";
 import {useGalleryStore} from "~/store/galleryStore";
 import GalleryFile from "~/components/Pages/Gallery/GalleryFile.vue";
 
+const config = useRuntimeConfig()
 const galleryStore = useGalleryStore()
 
 const images = computed(() => galleryStore.images)
@@ -27,7 +28,7 @@ function openPreviewer(image) {
         @click.stop="openPreviewer(image)"
       >
         <div class="img-wrapper">
-          <img :src="`/images/${image.src}`" alt="">
+          <img :src="`${config.public.MEDIA_URL}${image.src}`" alt="">
         </div>
         <p>{{ image.title }}</p>
       </div>
