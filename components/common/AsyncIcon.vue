@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  name: string
+  name: string | null
   size?: number
   color?: string
   strokeWidth?: number

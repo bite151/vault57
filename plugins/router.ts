@@ -1,6 +1,7 @@
 import {useWindowsStore} from "~/store/windowsStore";
 import {usePagesStore} from "~/store/pagesStore";
 import {useGalleryStore} from "~/store/galleryStore";
+import type {RouteLocationNormalizedGeneric} from "vue-router";
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   const windowsStore = useWindowsStore()
@@ -11,11 +12,14 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     await pagesStore.fetchPages()
   }
   
-  if (pagesStore.desktopItems.length) {
+  if (!pagesStore.desktopItems.length) {
     await pagesStore.fetchDesktopItems()
   }
   
-  addRouteMiddleware('routeWatcher', async (to, from) => {
+  addRouteMiddleware('routeWatcher', async (
+    to: RouteLocationNormalizedGeneric,
+    from: RouteLocationNormalizedGeneric
+  ): Promise<void> => {
       if (to.params.folder === 'gallery' && !galleryStore.images.length) {
         await galleryStore.fetchImages()
       }

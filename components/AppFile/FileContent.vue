@@ -18,11 +18,13 @@ defineProps<({
       :key="block.id"
       class="article__block"
     >
-      <img
+      <NuxtImg
         v-if="block.img"
         :src="config.public.MEDIA_URL + block.img"
+        :placeholder="[50, 25, 75, 5]"
+        format="webp"
         class="cover"
-        alt=""
+        loading="lazy"
       />
       <h1 v-if="i === 0">{{ content.h1 }}</h1>
       <h2 v-if="block.title">{{ block.title }}</h2>
@@ -32,10 +34,12 @@ defineProps<({
         class="images"
         :class="'images__col-' + block.images.length"
       >
-        <img
+        <NuxtImg
           v-for="img in block.images"
           :src="config.public.MEDIA_URL + img"
-          alt=""
+          :placeholder="[50, 25, 75, 5]"
+          format="webp"
+          loading="lazy"
         />
       </div>
     </div>

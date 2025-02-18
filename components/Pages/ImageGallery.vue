@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import EmptyFolder from "~/components/AppFolder/EmptyFolder.vue";
 import {useGalleryStore} from "~/store/galleryStore";
+import EmptyFolder from "~/components/AppFolder/EmptyFolder.vue";
 import GalleryFile from "~/components/Pages/Gallery/GalleryFile.vue";
+import type {GalleryImage} from "~/types/Gallery";
 
 const config = useRuntimeConfig()
 const galleryStore = useGalleryStore()
@@ -9,7 +10,7 @@ const galleryStore = useGalleryStore()
 const images = computed(() => galleryStore.images)
 const previewer = ref<string | null>(null)
 
-function openPreviewer(image) {
+function openPreviewer(image: GalleryImage) {
   previewer.value = image.src
 }
 </script>
@@ -28,7 +29,12 @@ function openPreviewer(image) {
         @click.stop="openPreviewer(image)"
       >
         <div class="img-wrapper">
-          <img :src="`${config.public.MEDIA_URL}${image.src}`" alt="">
+          <NuxtImg
+            :src="config.public.MEDIA_URL + image.src"
+            format="webp"
+            :placeholder="[50, 25, 75, 5]"
+            loading="lazy"
+          />
         </div>
         <p>{{ image.title }}</p>
       </div>

@@ -2,10 +2,9 @@ import type {DesktopItem, Page} from "~/types/Page";
 
 export const usePagesStore = defineStore('pages', () => {
   const config = useRuntimeConfig()
-  const pages = ref<Page[]>([])
-  
   const loading = ref<boolean>(false)
   
+  const pages = ref<Page[]>([])
   const desktopItems = ref<DesktopItem[]>([])
   
   async function fetchDesktopItems(): Promise<DesktopItem[]> {

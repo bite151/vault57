@@ -3,42 +3,13 @@ import AsyncIcon from "~/components/common/AsyncIcon.vue";
 import AlertDialog from "~/components/common/Modals/AlertDialog.vue";
 import {useWindowsStore} from "~/store/windowsStore";
 import Dock from "~/components/AppDesktop/Dock.vue";
-
-const icons = ref([
-  {
-    key: 1,
-    title: 'My computer',
-    url: '/my-computer',
-    icon: 'Laptop2'
-  },
-  {
-    key: 2,
-    title: 'Network',
-    url: '#',
-    icon: 'Network'
-  },
-  {
-    key: 3,
-    title: 'Trash',
-    url: '/trash',
-    icon: 'Trash2'
-  },
-  {
-    key: 4,
-    title: 'Settings',
-    url: '#',
-    icon: 'Settings'
-  },
-  {
-    key: 5,
-    title: 'Games',
-    url: '/games',
-    icon: 'Gamepad2'
-  }
-])
-const showAlertDialog = ref<boolean>(false)
+import {usePagesStore} from "~/store/pagesStore";
 
 const windowsStore = useWindowsStore()
+const pagesStore = usePagesStore()
+
+const icons = computed(() => pagesStore.desktopItems)
+const showAlertDialog = ref<boolean>(false)
 </script>
 
 <template>
