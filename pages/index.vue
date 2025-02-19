@@ -3,7 +3,7 @@ import { definePageMeta } from "#imports";
 import StartScreen from "~/components/StartScreen/StartScreen.vue";
 
 useSeoMeta({
-  title: 'Vault57',
+  title: 'Ретро компьютерный клуб',
   description: '',
 })
 

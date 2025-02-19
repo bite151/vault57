@@ -18,7 +18,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     await pagesStore.fetchDesktopItems()
   }
   
-  addRouteMiddleware('routeWatcher', async (
+  addRouteMiddleware('router', async (
     to: RouteLocationNormalizedGeneric,
     from: RouteLocationNormalizedGeneric
   ): Promise<void> => {
@@ -34,6 +34,11 @@ export default defineNuxtPlugin(async (nuxtApp) => {
           fatal: true
         })
       }
+
+      useSeoMeta({
+        title: page?.title ?? '',
+        description: page?.metaDescription ?? '',
+      });
 
       if (to.path === from.path) {
         windowsStore.setWindow(to.path, to.params)

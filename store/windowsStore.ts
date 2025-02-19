@@ -73,6 +73,10 @@ export const useWindowsStore = defineStore('windowsStore', () => {
     openedWindows.value = openedWindows.value
       .map((item) => {
         if (item.windowId === windowId) {
+          useSeoMeta({
+            title: item.title,
+            description: item.metaDescription
+          })
           if (import.meta.browser) {
             window.history.pushState({}, '', item.fullUrl)
           }
