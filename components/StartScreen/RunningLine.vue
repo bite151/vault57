@@ -1,43 +1,47 @@
 <script setup lang="ts">
+const props = defineProps<{
+  text: string[]
+  velocity: [number, number]
+  cursor?: boolean
+  delay?: number
+}>()
 
-const props = defineProps<{ text:string[], velocity: number[], cursor: boolean }>()
-const emit = defineEmits(['onCompleted'])
+const emit = defineEmits<{
+  (event: 'onCompleted'): void
+}>()
 
-const { text, velocity, cursor = true } = props
 const string = ref<string>('')
 const completed = ref<boolean>(false)
 
-const getRandomArbitrary = (min, max) => {
-  return Math.random() * (max - min) + min;
+const getRandomArbitrary = (min: number, max: number): number => {
+  return Math.random() * (max - min) + min
 }
 
-const startRunningString = (text, letterNumber = 0) => {
-  const timeout = getRandomArbitrary(...velocity)
-  string.value += text[letterNumber]
-  letterNumber++
-
-  if (letterNumber < text.length) {
-    setTimeout(() => startRunningString(text, letterNumber), timeout)
-  } else {
+const startRunningString = (text: string, letterNumber = 0): void => {
+  if (letterNumber >= text.length) {
     completed.value = true
     setTimeout(() => {
-
       emit('onCompleted')
     }, 1000)
+    return
   }
+
+  const timeout = getRandomArbitrary(...props.velocity)
+  string.value += text[letterNumber]
+
+  setTimeout(() => startRunningString(text, letterNumber + 1), timeout)
 }
 
-onMounted(async () => {
-  if(text.length) {
-    startRunningString(text[0])
-  }
+onMounted(() => {
+  if (props.text.length === 0) return
+  setTimeout(() => startRunningString(props.text[0]), (props.delay ?? 0) * 1000)
 })
-
-
 </script>
 
 <template>
-  <p class="running-string">{{ string }}<template v-if="!completed && cursor">▁</template></p>
+  <p class="running-string">
+    {{ string }}<template v-if="!completed && props.cursor">▁</template>
+  </p>
 </template>
 
 <style scoped lang="scss">

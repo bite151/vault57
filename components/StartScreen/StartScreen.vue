@@ -102,11 +102,6 @@ function loadingCompleted(): void {
     v-else
     class="container"
   >
-    <Navigation
-      @onRedirect="redirect"
-      style="z-index: 2"
-      v-show="isLoaded"
-    />
     <div class="wrapper">
       <div
         v-if="!changeScreenColor"
