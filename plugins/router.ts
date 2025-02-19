@@ -2,6 +2,8 @@ import {useWindowsStore} from "~/store/windowsStore";
 import {usePagesStore} from "~/store/pagesStore";
 import {useGalleryStore} from "~/store/galleryStore";
 import type {RouteLocationNormalizedGeneric} from "vue-router";
+import type {Page} from "~/types/Page";
+import {findPageByUrl} from "~/helpers/app.helpers";
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   const windowsStore = useWindowsStore()
@@ -22,6 +24,15 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   ): Promise<void> => {
       if (to.params.folder === 'gallery' && !galleryStore.images.length) {
         await galleryStore.fetchImages()
+      }
+
+      const page: Page | null = findPageByUrl(to.path)
+      if (to.path !== '/' && !page) {
+        abortNavigation({
+          statusCode: 404,
+          message: 'Page not found',
+          fatal: true
+        })
       }
 
       if (to.path === from.path) {
