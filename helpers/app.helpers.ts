@@ -1,5 +1,7 @@
 import type {Page} from "~/types/Page";
 import { usePagesStore } from "~/store/pagesStore";
+import {useWindowsStore} from "~/store/windowsStore";
+import {useGalleryStore} from "~/store/galleryStore";
 
 export const generateUrl = (currentPage: Page): string => {
   const store = usePagesStore()
@@ -36,4 +38,45 @@ export const findPageByUrl = (url: string): Page | null => {
     return page || null
   }
   return null
+}
+
+export const getPageParams = (url: string): { folder: string, file?: string } | null => {
+  let urlParts = url.split('/').filter(item => item)
+  if (urlParts.includes('file')) {
+    return {
+      folder: urlParts[urlParts.length - 3],
+      file: urlParts[urlParts.length - 1]
+    }
+  }
+  
+  urlParts = urlParts.filter(item => !['games'].includes(item))
+  
+  if (urlParts.length === 1) {
+    return {
+      folder: urlParts[0]
+    }
+  }
+  
+  if (urlParts.length === 2) {
+    return {
+      folder: urlParts[0],
+      file: urlParts[1]
+    }
+  }
+  return null
+}
+
+export const openWindow = async (page: Page): Promise<void> => {
+  const url = generateUrl(page)
+  const params = getPageParams(url)
+  
+  if (params?.folder === 'gallery') {
+    const galleryStore = useGalleryStore()
+    if (!galleryStore.images.length) {
+      await galleryStore.fetchImages()
+    }
+  }
+  
+  useWindowsStore().updateWindowContent('', url, params)
+  window.history.pushState({}, '', url)
 }

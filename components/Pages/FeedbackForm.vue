@@ -65,10 +65,6 @@ watch(
   }
 )
 
-onMounted(() => {
-  console.log('jjkbhhbu')
-})
-
 async function submitForm() {
   isLoading.value = true;
   formFeedback.value = null;
@@ -100,10 +96,7 @@ async function submitForm() {
     class="feedback"
     :style="`background: url(${config.public.MEDIA_URL}/images/backgrounds/306_185.png)`"
   >
-    <div
-      v-if="route.fullPath === '/contacts/feedback-form'"
-      class="feedback__logo"
-    >
+    <div class="feedback__logo">
       <RunningLine
         :text="['ConnectuS']"
         :velocity="[100, 300]"
@@ -117,13 +110,6 @@ async function submitForm() {
         :delay="2"
         class="bottom-line"
       />
-    </div>
-    <div
-      v-else
-      class="feedback__logo"
-    >
-      <p class="top-line">ConnectuS</p>
-      <p class="bottom-line">technologies</p>
     </div>
 
     <form

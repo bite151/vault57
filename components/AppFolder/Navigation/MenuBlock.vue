@@ -6,13 +6,13 @@ import MenuBlock from "~/components/AppFolder/Navigation/MenuBlock.vue";
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 import type { Page } from "~/types/Page";
 import type { PageWindow } from "~/types/Window";
-import { generateUrl } from "~/helpers/app.helpers";
+import {openWindow} from "~/helpers/app.helpers";
 
-const currentWindow: PageWindow | undefined = inject('currentWindow')
 const windowsStore = useWindowsStore()
-
-const router = useRouter()
 const pagesStore = usePagesStore()
+
+const pageWindow: PageWindow | undefined = inject('currentWindow')
+const currentWindow = computed(() => windowsStore.openedWindows.find(i => i.windowId === pageWindow?.windowId))
 
 const { parentPageId = 1 } = defineProps(['parentPageId'])
 
@@ -29,12 +29,12 @@ const pages = computed<Page[]>(() => {
 })
 
 function isActive (url: string): boolean {
-  return currentWindow!.fullUrl.includes(url)
+  return currentWindow.value!.fullUrl.includes(url)
 }
 
 function activeClassName (url: string): boolean {
-  const routesArr = currentWindow!.fullUrl.split('/')
-  const level = (!currentWindow?.routeParams?.file) ? 1 : 2
+  const routesArr = currentWindow.value!.fullUrl.split('/')
+  const level = (!currentWindow.value?.routeParams?.file) ? 1 : 2
   return url === '/' + routesArr[routesArr.length - level]
 }
 
@@ -49,11 +49,11 @@ function itemIcon (page: Page) {
 
 function redirectTo(page: Page) {
   const windowId = windowsStore.openedWindows.find(item => item.isOnFront)?.windowId ?? null;
-  if (windowId && currentWindow!.windowId !== windowId) {
-    windowsStore.setWindowToFront(currentWindow!.windowId)
+  if (windowId && currentWindow.value!.windowId !== windowId) {
+    windowsStore.setWindowToFront(currentWindow.value!.windowId)
   }
-  const url = generateUrl(page)
-  router.push(url)
+
+  openWindow(page)
 }
 </script>
 
@@ -64,9 +64,8 @@ function redirectTo(page: Page) {
       :key="page.id"
     >
       <nuxt-link
-        :to="generateUrl(page)"
         :class="{ active: activeClassName(page.url) }"
-        @click.stop="redirectTo(page)"
+        @click="redirectTo(page)"
       >
         <AsyncIcon
           v-if="page.icon && page.icon !== 'Folder'"

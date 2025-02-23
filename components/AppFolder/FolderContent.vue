@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { usePagesStore } from "~/store/pagesStore";
-import { useMouse, useWindowScroll } from "@vueuse/core";
+import {useMouse, useWindowScroll} from "@vueuse/core";
 import FolderItem from "~/components/AppFolder/FolderItem.vue";
 import ContextMenu from "~/components/AppFolder/ContextMenu.vue";
 import EmptyFolder from "~/components/AppFolder/EmptyFolder.vue";
@@ -11,13 +11,12 @@ import type { ConfirmDialogProps } from "~/types/ConfirmDialog";
 import type { MenuItem, Page } from "~/types/Page";
 import type { PageWindow } from "~/types/Window";
 
-const { currentFolder } = defineProps<{
-  currentFolder?: PageWindow | undefined
-}>();
+const props = defineProps<{ currentFolder?: PageWindow | undefined }>()
+const currentFolder = toRef(props, 'currentFolder')
 
 const currentComponent = shallowRef(null);
 watch(
-  () => currentFolder?.contentComponent?.component,
+  () => currentFolder.value?.contentComponent?.component,
   (componentName) => {
     if (componentName) {
       currentComponent.value = defineAsyncComponent(() =>
@@ -31,12 +30,12 @@ watch(
 const pagesStore = usePagesStore()
 
 const files = computed<Page[]>(() => {
-  if (currentFolder?.fullUrl === '/my-computer') {
+  if (currentFolder.value?.fullUrl === '/my-computer') {
     return pagesStore.pages.filter(page => page.parentId === 1 && !page.url.includes('/file/') && page.showInFinder)
   }
 
   return pagesStore.pages
-    .filter(page => page.parentId === currentFolder?.id)
+    .filter(page => page.parentId === currentFolder.value?.id)
     .sort((a: Page, b: Page) => {
       if (a.title < b.title) return -1
       if (a.title > b.title) return 1
@@ -110,11 +109,11 @@ function closePropertiesModal (): void {
 }
 
 function onFolderClick (): void {
-  const isTrash = currentFolder?.fullUrl === '/trash'
+  const isTrash = currentFolder.value?.fullUrl === '/trash'
   const trash: Page = pagesStore.pages.find(page => page.url === '/trash')!
   const isTrashEmpty = !pagesStore.pages.some(page => page.parentId === trash.id)
   if (isTrash && !isTrashEmpty) {
-    openContextMenu(currentFolder!, [{
+    openContextMenu(currentFolder.value!, [{
       key: 'restore-all',
       title: 'Восстановить все',
       icon: null,

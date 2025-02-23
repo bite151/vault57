@@ -11,13 +11,14 @@ import '~/assets/scss/simplebar.css';
 import type { PageWindow } from "~/types/Window";
 import { generateUrl } from "~/helpers/app.helpers";
 
-const { currentWindow } = defineProps<{
+const props = defineProps<{
   currentWindow: PageWindow
 }>()
+const currentWindow = toRef(props, 'currentWindow')
 
 const folderWindowElement = ref<HTMLElement | null>(null)
 provide('parentElement', folderWindowElement);
-provide('currentWindow', currentWindow);
+provide('currentWindow', currentWindow.value)
 
 const windowButtons = computed(() => [
   {
@@ -27,22 +28,22 @@ const windowButtons = computed(() => [
     icon: 'Minus',
     action: hideWindow
   }, {
-    icon: !currentWindow.isFullScreen ? 'Maximize2' : 'Minimize2',
+    icon: !currentWindow.value.isFullScreen ? 'Maximize2' : 'Minimize2',
     action: toggleFullScreen
   }
 ])
 const windowsStore = useWindowsStore()
 const openedWindows = computed(() => windowsStore.openedWindows.filter(item => !item.isHidden))
-const breadCrumbs = generateUrl(currentWindow)
+const breadCrumbs = computed(() => generateUrl(currentWindow.value))
 
 function toFront(): void {
-  windowsStore.setWindowToFront(currentWindow.windowId)
+  windowsStore.setWindowToFront(currentWindow.value.windowId)
 }
 
 function toggleFullScreen(): void {
-  const isFullScreen = !openedWindows.value.find(item => item.windowId === currentWindow.windowId)?.isFullScreen
+  const isFullScreen = !openedWindows.value.find(item => item.windowId === currentWindow.value.windowId)?.isFullScreen
   windowsStore.updateWindowParams({
-    windowId: currentWindow.windowId,
+    windowId: currentWindow.value.windowId,
     isHidden: false,
     isFullScreen
   })
@@ -51,14 +52,14 @@ function toggleFullScreen(): void {
 function hideWindow(e: MouseEvent): void {
   const checkMatches = windowsStore.openedWindows
     .filter(item => item.isHidden)
-    .some(item => item.id === currentWindow.id)
+    .some(item => item.id === currentWindow.value.id)
   if (checkMatches) {
     // if there is already such a window in the dock,
     // then the duplicate is closed.
     closeWindow()
   } else {
     windowsStore.updateWindowParams({
-      windowId: currentWindow.windowId,
+      windowId: currentWindow.value.windowId,
       isHidden: true,
       hiddenAt: Math.round(new Date().getTime() / 1000)
     })
@@ -68,7 +69,7 @@ function hideWindow(e: MouseEvent): void {
 }
 
 function closeWindow(): void {
-  windowsStore.closeWindow(currentWindow.windowId)
+  windowsStore.closeWindow(currentWindow.value.windowId)
   if (!openedWindows.value.length) {
     window.history.pushState({}, '', '/desktop')
   }
@@ -85,7 +86,7 @@ function updateWindowsPosition() {
 
 function onMoveEnd(): void {
   windowsStore.updateWindowParams({
-    windowId: currentWindow.windowId,
+    windowId: currentWindow.value.windowId,
     position: {
       x: folderWindowElement.value!.offsetLeft,
       y: folderWindowElement.value!.offsetTop,
@@ -96,7 +97,7 @@ function onMoveEnd(): void {
 
 function onResizeEnd(): void {
   windowsStore.updateWindowParams({
-    windowId: currentWindow.windowId,
+    windowId: currentWindow.value.windowId,
     size: {
       width: folderWindowElement.value!.clientWidth,
       height: folderWindowElement.value!.clientHeight,

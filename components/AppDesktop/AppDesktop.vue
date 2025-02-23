@@ -4,12 +4,25 @@ import AlertDialog from "~/components/common/Modals/AlertDialog.vue";
 import {useWindowsStore} from "~/store/windowsStore";
 import Dock from "~/components/AppDesktop/Dock.vue";
 import {usePagesStore} from "~/store/pagesStore";
+import {findPageByUrl, generateUrl} from "~/helpers/app.helpers";
 
 const windowsStore = useWindowsStore()
 const pagesStore = usePagesStore()
 
 const icons = computed(() => pagesStore.desktopItems)
 const showAlertDialog = ref<boolean>(false)
+
+function openWindow(url: string): void {
+  const page = findPageByUrl(url)
+  if (!page) return
+
+  const hiddenWindow = windowsStore.openedWindows.find(item => item.isHidden && generateUrl(item) === url)
+  if (hiddenWindow) {
+    windowsStore.updateWindowParams({ windowId: hiddenWindow.windowId, isHidden: false })
+    return
+  }
+  windowsStore.setWindow(url)
+}
 </script>
 
 <template>
@@ -20,8 +33,7 @@ const showAlertDialog = ref<boolean>(false)
         :key="block.key"
         class="block"
         :class="`block${block.key}`"
-        :to="block.url"
-        @click.prevent="windowsStore.setWindow(block.url)"
+        @click.prevent="openWindow(block.url)"
       >
         <AsyncIcon
           :name="block.icon"

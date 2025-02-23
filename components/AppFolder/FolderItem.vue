@@ -2,7 +2,7 @@
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 import { usePagesStore } from "~/store/pagesStore";
 import { useWindowsStore } from "~/store/windowsStore";
-import { generateUrl } from "~/helpers/app.helpers";
+import { openWindow } from "~/helpers/app.helpers";
 import type { MenuItem, Page } from "~/types/Page";
 import type {PageWindow} from "~/types/Window";
 
@@ -12,7 +12,6 @@ const { folderItem, windowId } = defineProps<{
 }>()
 
 const emit = defineEmits(['onContextMenu', 'onRemove', 'onShowProps'])
-const router = useRouter()
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
 
@@ -62,6 +61,7 @@ function openPage (page: Page): void {
   const hiddenWindow = windowsStore.openedWindows.find(item => item.pageId === page.id && item.isHidden)
   if (hiddenWindow) {
     windowsStore.updateWindowParams({ windowId: hiddenWindow.windowId, isHidden: false })
+    windowsStore.setWindowToFront(hiddenWindow.windowId)
     return
   }
 
@@ -70,8 +70,7 @@ function openPage (page: Page): void {
     windowsStore.setWindowToFront(windowId)
   }
 
-  // const url = generateUrl(page)
-  // router.push(url)
+  openWindow(page)
 }
 
 // function openPageInNewWindow(page: Page): void {
@@ -97,7 +96,6 @@ function restorePage (page: Page): void {
   <div class="file">
     <nuxt-link
       v-if="!isTrash"
-      :to="generateUrl(folderItem)"
       active-class="file_active"
       @click.stop="openPage(folderItem)"
       @contextmenu.prevent="emit(

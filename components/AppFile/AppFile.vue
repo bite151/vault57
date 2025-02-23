@@ -84,7 +84,7 @@ function updateWindowsPosition() {
   const nextWindow = openedWindows.value[openedWindows.value.length - 1]
   if (nextWindow) {
     windowsStore.setWindowToFront(nextWindow.windowId)
-    router.push(nextWindow.fullUrl)
+    // router.push(nextWindow.fullUrl)
     return
   }
   window.history.pushState({}, '', '/desktop')
