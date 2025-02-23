@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import RunningLine from "~/components/StartScreen/RunningLine.vue";
 import {useMousePressed} from "@vueuse/core";
+import {generateUrl} from "~/helpers/app.helpers";
+import {useWindowsStore} from "~/store/windowsStore";
 
 const config = useRuntimeConfig()
+const route = useRoute()
+const currentWindow = useWindowsStore().openedWindows.find(item => item.isOnFront)
 
 type FormFeedbackType = 'incomplete' | 'invalid' | 'success' | 'error' | null;
 type FormDialog = {
@@ -58,10 +62,14 @@ watch(
     if (feedback) {
       setTimeout(() => formFeedback.value = null, 4000)
     }
-  })
+  }
+)
 
+onMounted(() => {
+  console.log('jjkbhhbu')
+})
 
-async function submitForm () {
+async function submitForm() {
   isLoading.value = true;
   formFeedback.value = null;
 
@@ -92,7 +100,10 @@ async function submitForm () {
     class="feedback"
     :style="`background: url(${config.public.MEDIA_URL}/images/backgrounds/306_185.png)`"
   >
-    <div class="feedback__logo">
+    <div
+      v-if="route.fullPath === '/contacts/feedback-form'"
+      class="feedback__logo"
+    >
       <RunningLine
         :text="['ConnectuS']"
         :velocity="[100, 300]"
@@ -106,6 +117,13 @@ async function submitForm () {
         :delay="2"
         class="bottom-line"
       />
+    </div>
+    <div
+      v-else
+      class="feedback__logo"
+    >
+      <p class="top-line">ConnectuS</p>
+      <p class="bottom-line">technologies</p>
     </div>
 
     <form
