@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import {useMouse, useMousePressed} from "@vueuse/core";
+import {useMouse, useMousePressed, useEventListener} from "@vueuse/core";
 
 const emits = defineEmits(['onResizeEnd'])
 const resizer = ref(null)
@@ -9,14 +9,19 @@ const { pressed } = useMousePressed({ target: resizer })
 const { x, y } = useMouse()
 const clickPosition = ref<{ x: number, y: number }>({ x: 0, y: 0})
 
+let stopListener: (() => void) | null = null
+
 watch(
   () => pressed.value,
-  () => {
-    if (pressed.value) {
-      document.addEventListener('mousemove', resizeListener)
+  (val) => {
+    if (val) {
+      stopListener = useEventListener('mousemove', resizeListener)
       document.body.classList.add('nwse-resize')
     } else {
-      document.removeEventListener('mousemove', resizeListener)
+      if (stopListener) {
+        stopListener()
+        stopListener = null
+      }
       document.body.classList.remove('nwse-resize')
 
       emits('onResizeEnd')

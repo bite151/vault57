@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AsyncIcon from "~/components/common/AsyncIcon.vue";
 import {ref} from "vue";
-import {useMouse, useMousePressed} from "@vueuse/core";
+import {useMouse, useMousePressed, useEventListener} from "@vueuse/core";
 import type { WindowPosition } from "~/types/Window";
 
 interface Button<T = MouseEvent> {
@@ -22,14 +22,19 @@ const { pressed } = useMousePressed({ target: header })
 const { x, y } = useMouse()
 const clickPosition = ref<WindowPosition>({ y: 0, x: 0 })
 
+let stopListener: (() => void) | null = null
+
 watch(
   () => pressed.value,
-  () => {
-    if (pressed.value) {
-      document.addEventListener('mousemove', moveListener)
+  (val) => {
+    if (val) {
+      stopListener = useEventListener('mousemove', moveListener)
       parentElement?.value.classList.add('is-move')
     } else {
-      document.removeEventListener('mousemove', moveListener)
+      if (stopListener) {
+        stopListener()
+        stopListener = null
+      }
       parentElement?.value.classList.remove('is-move')
 
       emits('onMoveEnd')
