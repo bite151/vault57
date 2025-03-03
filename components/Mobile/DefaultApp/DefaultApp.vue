@@ -10,6 +10,16 @@ const screens = computed<PageWindow[]>(() => windowsStore.openedWindows)
 
 const menu = ref<boolean>(false)
 const windowIndex = ref<number | null>(null)
+
+watch(
+  () => [menu.value, windowsStore.openedWindows.length],
+  () => {
+    if (!import.meta.browser) return
+    const check = !menu.value && !!windowsStore.openedWindows.length
+    document.body.style.background = check ? '#dededc' : '#3e403b'
+  },
+  { immediate: true }
+)
 </script>
 
 <template>

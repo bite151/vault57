@@ -35,6 +35,7 @@ const hasOldSession = ref<boolean>(false)
 onMounted(() => {
   animate(text)
   hasOldSession.value = checkOldSession()
+  document.body.style.background = '#121212'
 })
 
 function checkOldSession(): boolean {

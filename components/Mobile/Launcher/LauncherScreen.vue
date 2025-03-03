@@ -15,7 +15,10 @@ function launchApp(app: Page) {
 
   windowsStore.closeAllWindows()
   windowsStore.setWindow(url, params)
-  window.history.pushState({}, '', url)
+  if (import.meta.browser) {
+    window.history.pushState({}, '', url)
+    document.body.style.background = '#dededc'
+  }
 }
 </script>
 

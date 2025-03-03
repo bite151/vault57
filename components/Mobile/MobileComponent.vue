@@ -10,7 +10,6 @@ const route = useRoute()
 const router = useRouter()
 const windowsStore = useWindowsStore()
 
-
 const urls = ['/my-computer', '/trash']
 if (urls.includes(route.path)) {
   windowsStore.closeAllWindows()
@@ -19,16 +18,14 @@ if (urls.includes(route.path)) {
 onMounted(() => {
   console.log('Launched mobile application', route.path);
 
-  if (import.meta.browser) {
-    router.push({ path: window.location.pathname });
+  router.push({ path: window.location.pathname });
 
-    if (urls.includes(route.path)) {
-      window.history.pushState({}, '', '/desktop')
-    }
-
-    loadScreens()
-    windowsStore.isLoaded = true
+  if (urls.includes(route.path)) {
+    window.history.pushState({}, '', '/desktop')
   }
+
+  loadScreens()
+  windowsStore.isLoaded = true
 })
 
 onBeforeUnmount(() => {
@@ -36,9 +33,14 @@ onBeforeUnmount(() => {
 })
 
 function loadScreens() {
-  if (!windowsStore.openedWindows.length) return
+  if (!windowsStore.openedWindows.length) {
+    document.body.style.background = '#3e403b'
+    return
+  }
   const currentScreen = windowsStore.openedWindows[windowsStore.openedWindows.length - 1];
   windowsStore.openedWindows = [currentScreen]
+
+  document.body.style.background = '#dededc'
 
   if (!currentScreen.mobile?.loadParentsScreens) return
 
@@ -90,7 +92,7 @@ function loadScreens() {
     justify-content: center;
     align-items: center;
     height: 100dvh;
-    background-color: #3e403b;;
+    background-color: #3e403b;
   }
 
   .mobile-screen {
