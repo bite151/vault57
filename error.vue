@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { NuxtError } from '#app'
-import AppDesktop from "~/components/AppDesktop/AppDesktop.vue";
+import AppDesktop from "~/components/Desktop/Desktop/AppDesktop.vue";
 
 const { error = null } = defineProps({
   error: Object as () => NuxtError
@@ -34,7 +34,7 @@ main {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: var(--desctop-bg-color);
+  background-color: var(--desktop-bg-color);
 }
 .p404 {
   position: absolute;

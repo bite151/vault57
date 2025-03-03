@@ -20,6 +20,23 @@ export const generateUrl = (currentPage: Page): string => {
   return generator(currentPage)
 }
 
+export const getParents = (currentPage: Page): Page[] => {
+  const store = usePagesStore()
+  const { pages } = store as { pages: Page[] }
+  
+  const generator = (page: Page, array: Page[] = []): Page[] => {
+    const parentId = page.defaultParentId || page.parentId
+    const child = pages.find(item => item.id === parentId)
+    
+    array.unshift(page)
+    if (child) {
+      return generator(child, array)
+    }
+    return array
+  }
+  return generator(currentPage)
+}
+
 export const findPageByUrl = (url: string): Page | null => {
   const store = usePagesStore()
   const { pages } = store as { pages: Page[] }
@@ -80,3 +97,5 @@ export const openWindow = async (page: Page): Promise<void> => {
   useWindowsStore().updateWindowContent('', url, params)
   window.history.pushState({}, '', url)
 }
+
+export const sleep = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms))

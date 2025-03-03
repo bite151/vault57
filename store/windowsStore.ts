@@ -14,7 +14,8 @@ export const useWindowsStore = defineStore('windowsStore', () => {
       page && page.parentId > 0 && !['/desktop'].includes(page.url)
       && !openedWindows.value.some(item => item.id === page.id)
     ) {
-      const windowId = Math.round(new Date().getTime() / 1000)
+      const randomString = Math.random().toString(36).substring(2, 10);
+      const windowId = randomString + '-' + new Date().getTime()
       let x = 0, y = 0
       if (openedWindows.value.length) {
         x = 66 * (openedWindows.value.length)
@@ -26,6 +27,7 @@ export const useWindowsStore = defineStore('windowsStore', () => {
         windowId,
         pageId: page.id,
         isOnFront: true,
+        isHidden: false,
         fullUrl: page.fullUrl ?? '',
         routeParams: params,
         position: {
@@ -58,7 +60,7 @@ export const useWindowsStore = defineStore('windowsStore', () => {
     )
   }
   
-  function setWindowToFront(windowId: number) {
+  function setWindowToFront(windowId: string) {
     const checkArray = openedWindows.value.some(i => i.windowId === windowId && !i.isHidden)
     if (!checkArray) {
       return false
@@ -92,7 +94,7 @@ export const useWindowsStore = defineStore('windowsStore', () => {
       .sort((a, b) => Number(a.isOnFront) - Number(b.isOnFront))
   }
   
-  function updateWindowParams<T extends Partial<WindowParams>>(params: { windowId: number } & T): void {
+  function updateWindowParams<T extends Partial<WindowParams>>(params: { windowId: string } & T): void {
     openedWindows.value = openedWindows.value.map((item) => {
       if (item.windowId === params.windowId) {
         return {...item, ...params}
@@ -101,7 +103,7 @@ export const useWindowsStore = defineStore('windowsStore', () => {
     })
   }
   
-  function closeWindow(windowId: number): void {
+  function closeWindow(windowId: string): void {
     openedWindows.value = openedWindows.value.filter(item => item.windowId !== windowId)
     
     if (openedWindows.value.length) {
@@ -110,5 +112,9 @@ export const useWindowsStore = defineStore('windowsStore', () => {
     }
   }
   
-  return { openedWindows, isLoaded, setWindow, updateWindowContent, updateWindowParams, setWindowToFront, closeWindow}
+  function closeAllWindows(): void {
+    openedWindows.value = []
+  }
+  
+  return { openedWindows, isLoaded, setWindow, updateWindowContent, updateWindowParams, setWindowToFront, closeWindow, closeAllWindows}
 })

@@ -1,6 +1,19 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true,
+    },
+  },
+  
+  devServer: {
+    host: '192.168.1.145',
+    // host: '192.168.88.252',
+    port: 3000,
+  },
+  
   modules: ['@pinia/nuxt', '@nuxt/image', '@nuxt/fonts', 'vue-yandex-maps/nuxt'],
   
   runtimeConfig: {
@@ -71,6 +84,7 @@ export default defineNuxtConfig({
   },
 
   css: [
+    'animate.css/animate.min.css',
     '~/assets/scss/utils/_reset.scss',
     '~/assets/scss/main.scss'
   ],

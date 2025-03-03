@@ -1,0 +1,140 @@
+<script setup lang="ts">
+import {watchDebounced} from "@vueuse/shared";
+import {useWindowsStore} from "~/store/windowsStore";
+import {usePagesStore} from "~/store/pagesStore";
+import {findPageByUrl} from "~/helpers/app.helpers";
+import type {PageWindow} from "~/types/Window";
+
+const AppDesktop = defineAsyncComponent(() => import('~/components/Desktop/Desktop/AppDesktop.vue'))
+const AppFolder = defineAsyncComponent(() => import('~/components/Desktop/Finder/FinderFolder/AppFolder.vue'))
+const AppFile = defineAsyncComponent(() => import('~/components/Desktop/Finder/FinderFile/AppFile.vue'))
+
+const route = useRoute()
+const router = useRouter()
+const windowsStore = useWindowsStore()
+const pagesStore = usePagesStore()
+
+const windows = computed<PageWindow[]>(() => windowsStore.openedWindows)
+const openedWindows = computed(() => windows.value.filter(window => !window.isHidden))
+const loaded = computed(() => windowsStore.isLoaded)
+
+onMounted(() => {
+  console.log('Desktop application launched')
+  getLastSession()
+})
+
+watchDebounced(
+  () => windowsStore.openedWindows,
+  () => {
+    const data = windows.value.map((item) => {
+      const { content, ...rest } = item;
+      return rest;
+    });
+
+    localStorage.setItem('openedWindows', JSON.stringify({
+      dataCreatedAt: Math.round(new Date().getTime() / 1000),
+      data
+    }))
+  },
+  { debounce: 1000, maxWait: 2000 }
+)
+
+function getLastSession () {
+  const str = localStorage.getItem('openedWindows')
+  if (!str) {
+    windowsStore.isLoaded = true
+    return
+  }
+
+  const storage = JSON.parse(str);
+  if (!storage.data?.length) {
+    windowsStore.isLoaded = true
+    return
+  }
+
+  const session: PageWindow[] = storage.data.map((item: PageWindow) => {
+    const page = pagesStore.pages.find(page => page.id === item.id)
+    item.content = page?.content || null
+    item.pageId = page!.id
+    return item
+  })
+
+  if (route.path.includes('/desktop')) {
+    windowsStore.openedWindows = session
+    const topWindowId = session.find(item => item.isOnFront)?.windowId ?? null
+    if (topWindowId) {
+      windowsStore.setWindowToFront(topWindowId)
+    }
+    windowsStore.isLoaded = true
+    return
+  }
+
+  const currentPage = findPageByUrl(route.path)
+
+  if (currentPage) {
+    const isWindowOpen = session.find(item => item.id === currentPage.id)
+
+    if (isWindowOpen) {
+      session.map((item: PageWindow) => {
+        if (item.windowId === isWindowOpen.windowId) {
+          item.isHidden = false
+        }
+        return item
+      })
+      windowsStore.openedWindows = session
+      windowsStore.setWindowToFront(isWindowOpen.windowId)
+      windowsStore.isLoaded = true
+      return
+    }
+
+    const currentSession = [
+      ...session,
+      ...windowsStore.openedWindows
+    ]
+    windowsStore.openedWindows = [...new Map(currentSession.map(item => [item.windowId, item])).values()];
+  }
+  windowsStore.isLoaded = true
+}
+
+</script>
+
+<template>
+  <main
+    id="main-content-teleport"
+    class="desktop"
+  >
+    <component
+      class="window-component"
+      :class="{'window-component_visible': loaded}"
+      v-for="window in openedWindows"
+      :is="!window.routeParams?.file ? AppFolder : AppFile"
+      :key="window.windowId"
+      :current-window="window"
+    />
+
+    <AppDesktop />
+  </main>
+</template>
+
+<style scoped lang="scss">
+.desktop {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--desktop-bg-color);
+}
+
+.window-component {
+  transform: translateY(100vh) scale(.5);
+  opacity: 0;
+  visibility: hidden;
+
+  &_visible {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    visibility: visible;
+  }
+}
+</style>

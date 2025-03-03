@@ -7,9 +7,11 @@ export interface Page {
   title: string;
   fileName: string;
   metaDescription: string;
+  mobile: MobileAppProps;
   content: PageContent | null;
   icon: string | null;
   showInFinder?: boolean;
+  showInLauncher?: boolean;
   contentComponent?: {
     directory: string;
     component: string;
@@ -19,6 +21,15 @@ export interface Page {
   createdAt: string;
   updatedAt: string;
   createdBy?: string;
+}
+
+interface MobileAppProps {
+  icon: string;
+  title: string;
+  description: string;
+  shortTitle: string;
+  contentComponent: string;
+  loadParentsScreens?: boolean;
 }
 
 export interface MenuItem {

@@ -5,7 +5,7 @@ export interface WindowPosition { x: number; y: number; margin?: string }
 export interface WindowSize { width: number; height: number }
 
 export interface WindowParams<Position = WindowPosition>{
-  windowId: number;
+  windowId: string;
   pageId: number;
   fullUrl: string;
   routeParams: RouteParams | null;
