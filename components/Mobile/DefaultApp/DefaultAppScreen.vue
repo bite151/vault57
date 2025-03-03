@@ -4,7 +4,7 @@ import {usePagesStore} from "~/store/pagesStore";
 import type {PageWindow} from "~/types/Window";
 import type {Page} from "~/types/Page";
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
-import {useEventListener} from "@vueuse/core";
+import {useEventListener, useSwipe, type UseSwipeDirection} from "@vueuse/core";
 import DefaultAppIcon from "~/components/Mobile/DefaultApp/DefaultAppIcon.vue";
 import {generateUrl, getPageParams, sleep} from "~/helpers/app.helpers";
 import DefaultAppContent from "~/components/Mobile/DefaultApp/DefaultAppContent.vue";
@@ -14,6 +14,37 @@ const { screen, isMenuOpened } = defineProps<{
   isMenuOpened: boolean
 }>()
 
+const isTopScreen = computed(() => screen.id === windowsStore.openedWindows[windowsStore.openedWindows.length - 1].id)
+
+const swipeEl = shallowRef<HTMLElement | null>(null)
+const screenEl = shallowRef<HTMLElement | null>(null);
+
+const { direction, isSwiping, lengthX, lengthY } = useSwipe(
+  swipeEl,
+  {
+    passive: false,
+    onSwipe(e: TouchEvent) {
+      if (!isTopScreen.value) return
+      if (!screenEl.value) return
+      if (lengthY.value < 0) return
+      screenEl.value.style.top = -lengthY.value + 'px'
+    },
+    onSwipeEnd(e: TouchEvent, direction: UseSwipeDirection) {
+      if (!screenEl.value) return
+      if (!isTopScreen.value) return
+
+      if (direction === 'up') {
+        if (lengthY.value > 170) {
+          screenEl.value.style.top = '-100%'
+          closeScreenBySwipe()
+        } else {
+          screenEl.value.style.top = '0px'
+        }
+      }
+    },
+  },
+)
+
 const emits = defineEmits(['showMenu', 'selectWindow']);
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
@@ -21,10 +52,9 @@ const windowsStore = useWindowsStore()
 const isLoaded = computed<boolean>(() => windowsStore.isLoaded)
 const isMainScreen = computed<boolean>(() => windowsStore.openedWindows[0].id === screen.id)
 
-const container = ref<HTMLElement | null>(null);
 const titleClass = ref<string>('')
 
-useEventListener(container, 'scroll', () => offsetTitle())
+useEventListener(screenEl, 'scroll', () => offsetTitle())
 onMounted(() => offsetTitle())
 
 const content = computed<Page[]>(() => {
@@ -38,8 +68,8 @@ const content = computed<Page[]>(() => {
 })
 
 function offsetTitle() {
-  if (!container.value) return
-  titleClass.value = (container.value.scrollTop > 16)
+  if (!screenEl.value) return
+  titleClass.value = (screenEl.value.scrollTop > 16)
     ? 'app-title_offset app-title_transition-none'
     : ''
 }
@@ -81,15 +111,26 @@ function closeApp(): void {
   windowsStore.closeAllWindows()
   window.history.pushState({}, '', '/desktop')
 }
+
+function closeScreenBySwipe(): void {
+  setTimeout(() => {
+    windowsStore.closeWindow(screen.windowId)
+    if (!windowsStore.openedWindows.length) {
+      emits('showMenu', false)
+      window.history.pushState({}, '', '/desktop')
+    }
+  }, 300)
+}
 </script>
 
 <template>
   <div
-    ref="container"
+    ref="screenEl"
     class="app-screen"
   >
     <div
       v-if="isMenuOpened"
+      ref="swipeEl"
       class="blocker"
       @click="selectScreen()"
     />
@@ -191,7 +232,7 @@ function closeApp(): void {
 
     overflow-y: auto;
     overflow-x: hidden;
-    transition: transform .4s ease;
+    transition: transform .4s ease, top .2s ease;
     z-index: 9;
 
     .blocker {
