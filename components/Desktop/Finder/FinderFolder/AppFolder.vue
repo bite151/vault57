@@ -52,11 +52,11 @@ const hideEffectClassName = computed<string>(() => {
 
 onMounted(() => {
   isShown.value = 1
-  console.log('mounted new window')
+  // console.log('mounted new window')
 })
 
 onBeforeUnmount(() => {
-  console.log('before unmount window')
+  // console.log('before unmount window')
 })
 
 function toFront(): void {
