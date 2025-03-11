@@ -30,6 +30,7 @@ interface MobileAppProps {
   shortTitle: string;
   contentComponent: string;
   loadParentsScreens?: boolean;
+  background?: string;
 }
 
 export interface MenuItem {

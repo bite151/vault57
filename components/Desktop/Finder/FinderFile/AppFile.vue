@@ -45,7 +45,6 @@ const windowButtons = ref([
   }
 ])
 
-const router = useRouter()
 const windowsStore = useWindowsStore()
 const openedWindows = computed(() => windowsStore.openedWindows.filter(item => !item.isHidden))
 const breadCrumbs = generateUrl(currentWindow)

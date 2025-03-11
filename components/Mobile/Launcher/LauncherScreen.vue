@@ -17,7 +17,7 @@ function launchApp(app: Page) {
   windowsStore.setWindow(url, params)
   if (import.meta.browser) {
     window.history.pushState({}, '', url)
-    document.body.style.background = '#dededc'
+    // document.body.style.background = '#dededc'
   }
 }
 </script>

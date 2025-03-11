@@ -8,6 +8,7 @@ import {useEventListener, useSwipe, type UseSwipeDirection} from "@vueuse/core";
 import DefaultAppIcon from "~/components/Mobile/DefaultApp/DefaultAppIcon.vue";
 import {generateUrl, getPageParams, sleep} from "~/helpers/app.helpers";
 import DefaultAppContent from "~/components/Mobile/DefaultApp/DefaultAppContent.vue";
+import CustomAppScreen from "~/components/Mobile/CustomApp/CustomAppScreen.vue";
 
 const { screen, isMenuOpened } = defineProps<{
   screen: PageWindow,
@@ -127,6 +128,7 @@ function closeScreenBySwipe(): void {
   <div
     ref="screenEl"
     class="app-screen"
+    :style="`${screen.mobile.background ? 'background: ' + screen.mobile.background : ''}`"
   >
     <div
       v-if="isMenuOpened"
@@ -136,7 +138,6 @@ function closeScreenBySwipe(): void {
     />
 
     <header class="app-header">
-
       <Transition
         enter-active-class="animate__animated animate__zoomIn animate__faster"
         leave-active-class="animate__animated animate__fadeOut animate__faster"
@@ -185,7 +186,13 @@ function closeScreenBySwipe(): void {
         </div>
       </Transition>
     </header>
-    <section class="app-main">
+
+    <CustomAppScreen
+      v-if="screen.mobile.contentComponent"
+      :screen="screen"
+    />
+
+    <section v-else class="app-main">
       <div
         class="app-title"
         :class="titleClass"
@@ -294,7 +301,7 @@ function closeScreenBySwipe(): void {
     }
     &_offset {
       margin-bottom: 0;
-      padding: 12px 64px;
+      padding: 12px 64px 12px 72px;
       h1 {
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -321,6 +328,24 @@ function closeScreenBySwipe(): void {
   }
   &-main {
     margin-top: -12px;
+    &.app-custom {
+      margin-top: -60px;
+
+      .app-title {
+        z-index: 1;
+        background: rgba(#dededc, .5);
+        &:before {
+          display: none;
+        }
+      }
+
+      .custom-component-content {
+        //margin-top: -60px;
+        //height: 100dvh !important;
+        height: calc(100dvh - 60px) !important;
+        background: #dededc !important;
+      }
+    }
     .main-content {
       &_grid {
         padding: 24px;
@@ -332,7 +357,11 @@ function closeScreenBySwipe(): void {
     }
   }
 }
-
+.component-wrapper {
+  //height: calc(100dvh - 60px);
+  height: 100dvh;
+  margin-top: -60px;
+}
 .animate__faster {
   --animate-duration: 0.2s;
 }

@@ -4,13 +4,15 @@ import {usePagesStore} from "~/store/pagesStore";
 import {generateUrl, getPageParams, sleep} from "~/helpers/app.helpers";
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
 import type {Page} from "~/types/Page";
+import type {PageWindow} from "~/types/Window";
 
 
 const emits = defineEmits(['showMenu', 'selectWindow']);
 const windowsStore = useWindowsStore()
 const pagesStore = usePagesStore()
 
-const firstScreen = computed<Page>(() => windowsStore.openedWindows[0])
+const firstScreen = computed<PageWindow>(() => windowsStore.openedWindows[0])
+const currentScreen = computed<PageWindow | undefined>(() => windowsStore.currentScreen)
 
 const links = computed<Page[]>(() => {
   const screens = windowsStore.openedWindows
@@ -36,8 +38,7 @@ async function toHome(): Promise<void> {
 }
 
 async function redirect(page: Page) {
-  const currentScreen = windowsStore.openedWindows[windowsStore.openedWindows.length - 1]
-  if (page.id === currentScreen.id) {
+  if (page.id === currentScreen.value?.id) {
     emits('selectWindow', null)
     emits('showMenu', false)
     return

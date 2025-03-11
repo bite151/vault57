@@ -9,8 +9,9 @@ import type {Page} from "~/types/Page";
 const route = useRoute()
 const router = useRouter()
 const windowsStore = useWindowsStore()
+const currentScreen = computed<PageWindow | undefined>(() => windowsStore.currentScreen)
 
-const urls = ['/my-computer', '/trash']
+const urls = ['/my-computer', '/trash', '/desktop']
 if (urls.includes(route.path)) {
   windowsStore.closeAllWindows()
 }
@@ -33,18 +34,17 @@ onBeforeUnmount(() => {
 })
 
 function loadScreens() {
-  if (!windowsStore.openedWindows.length) {
+  if (!windowsStore.openedWindows.length || !currentScreen.value) {
     document.body.style.background = '#3e403b'
     return
   }
-  const currentScreen = windowsStore.openedWindows[windowsStore.openedWindows.length - 1];
-  windowsStore.openedWindows = [currentScreen]
+  windowsStore.openedWindows = [currentScreen.value]
 
-  document.body.style.background = '#dededc'
+  document.body.style.background = currentScreen.value.mobile.background ?? '#dededc'
 
-  if (!currentScreen.mobile?.loadParentsScreens) return
+  if (!currentScreen.value.mobile?.loadParentsScreens) return
 
-  const parents = getParents(currentScreen).slice(1, -1).filter(s => s.url !== '/my-computer').reverse()
+  const parents = getParents(currentScreen.value).slice(1, -1).filter(s => s.url !== '/my-computer').reverse()
 
   parents.forEach((item: Page) => {
     const fullUrl = generateUrl(item)

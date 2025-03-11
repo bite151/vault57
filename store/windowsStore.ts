@@ -7,6 +7,8 @@ export const useWindowsStore = defineStore('windowsStore', () => {
   const openedWindows = ref<PageWindow[]>([])
   const isLoaded = ref<boolean>(false)
   
+  const currentScreen = computed<PageWindow | undefined>(() => openedWindows.value[openedWindows.value.length - 1])
+  
   function setWindow(toUrl: string, params : RouteParams | null = null): void {
     const page: Page | null = findPageByUrl(toUrl)
     
@@ -116,5 +118,5 @@ export const useWindowsStore = defineStore('windowsStore', () => {
     openedWindows.value = []
   }
   
-  return { openedWindows, isLoaded, setWindow, updateWindowContent, updateWindowParams, setWindowToFront, closeWindow, closeAllWindows}
+  return { openedWindows, isLoaded, setWindow, updateWindowContent, updateWindowParams, setWindowToFront, closeWindow, closeAllWindows, currentScreen }
 })

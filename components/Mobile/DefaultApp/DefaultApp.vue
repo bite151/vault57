@@ -7,6 +7,7 @@ import type {PageWindow} from "~/types/Window";
 
 const windowsStore = useWindowsStore()
 const screens = computed<PageWindow[]>(() => windowsStore.openedWindows)
+const currentScreenBackground = computed<string | undefined>(() => windowsStore.currentScreen?.mobile.background)
 
 const menu = ref<boolean>(false)
 const windowIndex = ref<number | null>(null)
@@ -16,7 +17,7 @@ watch(
   () => {
     if (!import.meta.browser) return
     const check = !menu.value && !!windowsStore.openedWindows.length
-    document.body.style.background = check ? '#dededc' : '#3e403b'
+    document.body.style.background = check ? currentScreenBackground.value || '#dededc' : '#3e403b'
   },
   { immediate: true }
 )
@@ -27,6 +28,7 @@ watch(
     v-if="screens.length > 0"
     class="default-app"
     :class="{'default-app_menu' : menu}"
+    :style="`background: ${ currentScreenBackground || '#dededc' }`"
   >
 
     <DefaultAppScreen
@@ -75,7 +77,7 @@ watch(
   }
 
   &_menu {
-    background: #3e403b;
+    background: #3e403b !important;
     .app-screen {
       width: 100vw;
       border-radius: 36px;
