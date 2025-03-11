@@ -4,6 +4,7 @@ import {useGalleryStore} from "~/store/galleryStore";
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
 import InstaPreviewerItem from "~/components/CustomPageComponents/InstaGallery/InstaPreviewerItem.vue";
 import type {GalleryImage} from "~/types/Gallery";
+import {sleep} from "~/helpers/app.helpers";
 
 const emits = defineEmits(['close'])
 const { currentImage } = defineProps<{
@@ -23,7 +24,8 @@ onMounted(() => {
 function scrollToImage(id: number) {
   const index = images.value.findIndex(i => i.id === id)
 
-  nextTick(() => {
+  nextTick(async () => {
+    await sleep(10)
     const items = containerEl.value?.querySelectorAll('.insta-item')
     if (items && items[index]) {
       items[index].scrollIntoView({ block: 'start' })
@@ -124,4 +126,8 @@ function scrollToImage(id: number) {
   }
 }
 
+.animate__faster {
+  --animate-duration: 0.4s;
+  --animate-delay: 0.2s;
+}
 </style>

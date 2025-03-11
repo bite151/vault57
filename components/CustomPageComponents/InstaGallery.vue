@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {useGalleryStore} from "~/store/galleryStore";
-import InstaPreviewer from "~/components/CustomPageComponents/InstaGallery/InstaPreviewer.vue";
 import type {GalleryImage} from "~/types/Gallery";
+
+const InstaPreviewer = defineAsyncComponent(() => import('~/components/CustomPageComponents/InstaGallery/InstaPreviewer.vue'));
 
 interface Images { images: Ref<GalleryImage[]> }
 
