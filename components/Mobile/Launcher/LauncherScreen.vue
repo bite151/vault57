@@ -4,10 +4,13 @@ import AsyncIcon from "~/components/Common/AsyncIcon.vue";
 import type {Page} from "~/types/Page";
 import {generateUrl, getPageParams} from "~/helpers/app.helpers";
 import {useWindowsStore} from "~/store/windowsStore";
+import {usePWA} from "@/composables/usePWA";
 
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
 const mainScreenIcons = computed<Page[]>(() => pagesStore.pages.filter(page => page.showInLauncher))
+
+const { installPWA, installPromptEvent, isInstalled } = usePWA();
 
 function launchApp(app: Page) {
   const url = generateUrl(app)
@@ -69,6 +72,25 @@ function launchApp(app: Page) {
       </div>
       <div class="launcher-item-title">
         {{ item.mobile.shortTitle || item.title }}
+      </div>
+    </div>
+
+    <div
+      v-if="installPromptEvent && !isInstalled"
+      class="launcher-item"
+      @click="installPWA"
+    >
+      <div class="launcher-icon">
+        <div>
+          <AsyncIcon
+            name="ArrowBigDownDash"
+            :size="40"
+            :stroke-width="1.5"
+          />
+        </div>
+      </div>
+      <div class="launcher-item-title">
+        Установить
       </div>
     </div>
   </div>

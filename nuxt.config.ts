@@ -9,13 +9,13 @@ export default defineNuxtConfig({
   },
   
   devServer: {
-    host: 'localhost',
-    // host: '192.168.1.145', // Home
+    // host: 'localhost',
+    host: '192.168.1.145', // Home
     // host: '192.168.88.252', // Vault57
     port: 3000,
   },
   
-  modules: ['@pinia/nuxt', '@nuxt/image', '@nuxt/fonts', 'vue-yandex-maps/nuxt'],
+  modules: ['@pinia/nuxt', '@vite-pwa/nuxt', '@nuxt/image', '@nuxt/fonts', 'vue-yandex-maps/nuxt'],
   
   runtimeConfig: {
     public: {
@@ -32,6 +32,13 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: 'ru'
       },
+      link: [
+        {
+          rel: 'manifest',
+          type: 'application/manifest+json',
+          href: '/manifest.webmanifest'
+        }
+      ]
     }
   },
   
@@ -98,7 +105,38 @@ export default defineNuxtConfig({
       }
     }
   },
-  
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Vault57',
+      short_name: 'Vault57',
+      description: 'Ретро компьютерный клуб',
+      theme_color: '#BEBFB8',
+      icons: [
+        {
+          src: '/icon-192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: '/icon-512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+      ],
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module',
+    },
+    client: {
+      installPrompt: true,
+    }
+  },
   yandexMaps: {
     apikey: '49b703ae-b1f3-4b42-bc45-dc0860f1af3c',
   },
