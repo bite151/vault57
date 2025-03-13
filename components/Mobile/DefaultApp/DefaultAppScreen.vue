@@ -9,6 +9,7 @@ import DefaultAppIcon from "~/components/Mobile/DefaultApp/DefaultAppIcon.vue";
 import {generateUrl, getPageParams, sleep} from "~/helpers/app.helpers";
 import DefaultAppContent from "~/components/Mobile/DefaultApp/DefaultAppContent.vue";
 import CustomAppScreen from "~/components/Mobile/CustomApp/CustomAppScreen.vue";
+import {useAppStatesStore} from "~/store/appStatesStore";
 
 const { screen, isMenuOpened } = defineProps<{
   screen: PageWindow,
@@ -49,6 +50,9 @@ const { direction, isSwiping, lengthX, lengthY } = useSwipe(
 const emits = defineEmits(['showMenu', 'selectWindow']);
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
+
+const appStatesStore = useAppStatesStore()
+const { isMobileMenuOpened } = storeToRefs(appStatesStore);
 
 const isLoaded = computed<boolean>(() => windowsStore.isLoaded)
 const isMainScreen = computed<boolean>(() => windowsStore.openedWindows[0].id === screen.id)
@@ -94,6 +98,7 @@ async function selectScreen(): Promise<void> {
   windowsStore.openedWindows.splice(index + 1)
   window.history.pushState({}, '', screen.fullUrl)
   emits('showMenu', false)
+  isMobileMenuOpened.value = false
   emits('selectWindow', null)
 }
 
@@ -118,6 +123,7 @@ function closeScreenBySwipe(): void {
     windowsStore.closeWindow(screen.windowId)
     if (!windowsStore.openedWindows.length) {
       emits('showMenu', false)
+      isMobileMenuOpened.value = false
       window.history.pushState({}, '', '/desktop')
     }
   }, 300)
@@ -174,7 +180,7 @@ function closeScreenBySwipe(): void {
           <button
             v-if="!isMainScreen"
             class="menu-button"
-            @click="emits('showMenu', true)"
+            @click="() => {emits('showMenu', true); isMobileMenuOpened = true}"
           >
             <AsyncIcon
               name="Menu"

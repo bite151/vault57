@@ -4,30 +4,23 @@ import DefaultAppMenu from "~/components/Mobile/DefaultApp/DefaultAppMenu.vue";
 import DefaultAppScreen from "~/components/Mobile/DefaultApp/DefaultAppScreen.vue";
 import {useWindowsStore} from "~/store/windowsStore";
 import type {PageWindow} from "~/types/Window";
+import {useAppStatesStore} from "~/store/appStatesStore";
 
 const windowsStore = useWindowsStore()
 const screens = computed<PageWindow[]>(() => windowsStore.openedWindows)
 const currentScreenBackground = computed<string | undefined>(() => windowsStore.currentScreen?.mobile.background)
 
-const menu = ref<boolean>(false)
-const windowIndex = ref<number | null>(null)
+const appStatesStore = useAppStatesStore()
+const { isMobileMenuOpened } = storeToRefs(appStatesStore);
 
-watch(
-  () => [menu.value, windowsStore.openedWindows.length],
-  () => {
-    if (!import.meta.browser) return
-    const check = !menu.value && !!windowsStore.openedWindows.length
-    document.body.style.background = check ? currentScreenBackground.value || '#dededc' : '#3e403b'
-  },
-  { immediate: true }
-)
+const windowIndex = ref<number | null>(null)
 </script>
 
 <template>
   <div
     v-if="screens.length > 0"
     class="default-app"
-    :class="{'default-app_menu' : menu}"
+    :class="{'default-app_menu' : isMobileMenuOpened}"
     :style="`background: ${ currentScreenBackground || '#dededc' }`"
   >
 
@@ -35,10 +28,10 @@ watch(
       v-for="(screen, n) in screens"
       :key="screen.windowId"
       :screen="screen"
-      :isMenuOpened="menu"
+      :isMenuOpened="isMobileMenuOpened"
       class="app-screen"
       :class="{'app-screen_hide-animate': windowIndex !== null && n > windowIndex }"
-      @show-menu="(flag) => menu = flag"
+      @show-menu="(flag) => isMobileMenuOpened = flag"
       @select-window="(index) => windowIndex = index"
     />
 
@@ -47,8 +40,8 @@ watch(
       leave-active-class="animate__animated animate__fadeOutLeft animate__faster"
     >
       <DefaultAppMenu
-        v-if="menu"
-        @show-menu="(flag) => menu = flag"
+        v-if="isMobileMenuOpened"
+        @show-menu="(flag) => isMobileMenuOpened = flag"
         @select-window="(index) => windowIndex = index"
       />
     </Transition>

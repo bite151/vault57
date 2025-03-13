@@ -5,6 +5,7 @@ import {useWindowsStore} from "~/store/windowsStore";
 import {generateUrl, getPageParams, getParents} from "~/helpers/app.helpers";
 import type {PageWindow} from "~/types/Window";
 import type {Page} from "~/types/Page";
+import {useAppStatesStore} from "~/store/appStatesStore";
 
 const route = useRoute()
 const router = useRouter()
@@ -28,6 +29,20 @@ onMounted(() => {
   loadScreens()
   windowsStore.isLoaded = true
 })
+
+const appStatesStore = useAppStatesStore()
+const { isMobileMenuOpened } = storeToRefs(appStatesStore);
+const currentScreenBackground = computed<string | undefined>(() => windowsStore.currentScreen?.mobile.background)
+
+watch(
+  () => [isMobileMenuOpened.value, windowsStore.openedWindows.length],
+  () => {
+    if (!import.meta.browser) return
+    const check = !isMobileMenuOpened.value && !!windowsStore.openedWindows.length
+    document.body.style.background = check ? currentScreenBackground.value || '#dededc' : '#3e403b'
+  },
+  { immediate: true }
+)
 
 onBeforeUnmount(() => {
   console.log('Mobile application is unmounted');

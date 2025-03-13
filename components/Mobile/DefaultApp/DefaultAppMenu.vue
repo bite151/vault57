@@ -5,11 +5,15 @@ import {generateUrl, getPageParams, sleep} from "~/helpers/app.helpers";
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
 import type {Page} from "~/types/Page";
 import type {PageWindow} from "~/types/Window";
+import {useAppStatesStore} from "~/store/appStatesStore";
 
 
 const emits = defineEmits(['showMenu', 'selectWindow']);
 const windowsStore = useWindowsStore()
 const pagesStore = usePagesStore()
+
+const appStatesStore = useAppStatesStore()
+const { isMobileMenuOpened } = storeToRefs(appStatesStore);
 
 const firstScreen = computed<PageWindow>(() => windowsStore.openedWindows[0])
 const currentScreen = computed<PageWindow | undefined>(() => windowsStore.currentScreen)
@@ -29,6 +33,7 @@ const links = computed<Page[]>(() => {
 const realizeRedirect = (url: string): void => {
   window.history.pushState({}, '', url)
   emits('showMenu', false)
+  isMobileMenuOpened.value = false
   emits('selectWindow', null)
 }
 
@@ -40,6 +45,7 @@ async function toHome(): Promise<void> {
 async function redirect(page: Page) {
   if (page.id === currentScreen.value?.id) {
     emits('selectWindow', null)
+    isMobileMenuOpened.value = false
     emits('showMenu', false)
     return
   }
@@ -64,6 +70,7 @@ async function redirect(page: Page) {
   await sleep(200)
   emits('selectWindow', null)
   await sleep(300)
+  isMobileMenuOpened.value = false
   emits('showMenu', false)
 }
 </script>
