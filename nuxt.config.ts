@@ -37,6 +37,11 @@ export default defineNuxtConfig({
           rel: 'manifest',
           type: 'application/manifest+json',
           href: '/manifest.webmanifest'
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: '/favicon-64.png'
         }
       ]
     }
@@ -128,6 +133,35 @@ export default defineNuxtConfig({
     workbox: {
       navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
+      globIgnores: ['**/node_modules/**/*'],
+      globDirectory: '.output/public',
+      runtimeCaching: [
+        {
+          urlPattern: ({ request }) => request.destination === 'image',
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'images-cache',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 7 * 24 * 60 * 60,
+            },
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
+          },
+        },
+        {
+          urlPattern: ({ request }) => request.destination === 'script' || request.destination === 'style',
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'assets-cache',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 7 * 24 * 60 * 60,
+            },
+          },
+        },
+      ]
     },
     devOptions: {
       enabled: true,

@@ -4,7 +4,7 @@ export function usePWA() {
   
   onMounted(() => {
     window.addEventListener('beforeinstallprompt', (event: Event) => {
-      event.preventDefault(); // Отключаем стандартное всплывающее окно
+      event.preventDefault();
       installPromptEvent.value = event;
     });
     

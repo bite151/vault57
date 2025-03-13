@@ -76,7 +76,6 @@ function launchApp(app: Page) {
     </div>
 
     <div
-      v-if="installPromptEvent && !isInstalled"
       class="launcher-item"
       @click="installPWA"
     >
