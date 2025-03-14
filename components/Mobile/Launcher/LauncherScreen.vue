@@ -76,6 +76,7 @@ function launchApp(app: Page) {
     </div>
 
     <div
+      v-if="installPromptEvent && !isInstalled"
       class="launcher-item"
       @click="installPWA"
     >
@@ -92,6 +93,7 @@ function launchApp(app: Page) {
         Установить
       </div>
     </div>
+
   </div>
 </template>
 

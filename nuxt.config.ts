@@ -9,8 +9,8 @@ export default defineNuxtConfig({
   },
   
   devServer: {
-    // host: 'localhost',
-    host: '192.168.1.145', // Home
+    host: '192.168.1.41',
+    // host: '192.168.1.145', // Home
     // host: '192.168.88.252', // Vault57
     port: 3000,
   },
