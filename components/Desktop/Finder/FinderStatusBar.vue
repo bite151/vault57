@@ -4,7 +4,7 @@ import {useMouse, useMousePressed, useEventListener} from "@vueuse/core";
 
 const emits = defineEmits(['onResizeEnd'])
 const resizer = ref(null)
-const parentElement = inject('parentElement');
+const parentElement = inject<Ref<HTMLElement> | undefined>('parentElement');
 const { pressed } = useMousePressed({ target: resizer })
 const { x, y } = useMouse()
 const clickPosition = ref<{ x: number, y: number }>({ x: 0, y: 0})
@@ -30,6 +30,8 @@ watch(
 )
 
 function onStartResize() {
+  if (!parentElement) return
+
   clickPosition.value = {
     x: parentElement.value.clientWidth + parentElement.value.offsetLeft,
     y: parentElement.value.clientHeight + parentElement.value.offsetTop
@@ -37,10 +39,12 @@ function onStartResize() {
 
   parentElement.value.style.top = parentElement.value.offsetTop + 'px'
   parentElement.value.style.left = parentElement.value.offsetLeft +'px'
-  parentElement.value.style.margin = 0
+  parentElement.value.style.margin = '0'
 }
 
 const resizeListener = () => {
+  if (!parentElement) return
+
   parentElement.value.style.height = y.value - parentElement.value.offsetTop + 'px'
   parentElement.value.style.width = x.value - parentElement.value.offsetLeft + 'px'
 }

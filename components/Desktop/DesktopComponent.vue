@@ -4,15 +4,17 @@ import {useWindowsStore} from "~/store/windowsStore";
 import {usePagesStore} from "~/store/pagesStore";
 import {findPageByUrl} from "~/helpers/app.helpers";
 import type {PageWindow} from "~/types/Window";
+import {useThemeColor} from "~/composables/useThemeColor";
 
 const AppDesktop = defineAsyncComponent(() => import('~/components/Desktop/Desktop/AppDesktop.vue'))
 const AppFolder = defineAsyncComponent(() => import('~/components/Desktop/Finder/FinderFolder/AppFolder.vue'))
 const AppFile = defineAsyncComponent(() => import('~/components/Desktop/Finder/FinderFile/AppFile.vue'))
 
 const route = useRoute()
-const router = useRouter()
+
 const windowsStore = useWindowsStore()
 const pagesStore = usePagesStore()
+const { changeThemeColor } = useThemeColor()
 
 const windows = computed<PageWindow[]>(() => windowsStore.openedWindows)
 const openedWindows = computed(() => windows.value.filter(window => !window.isHidden))
@@ -20,6 +22,7 @@ const loaded = computed(() => windowsStore.isLoaded)
 
 onMounted(() => {
   console.log('Desktop application launched')
+  changeThemeColor('#c0c2be')
   getLastSession()
 })
 

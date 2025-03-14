@@ -5,7 +5,7 @@ const { text } = props
 const string = ref<string>('')
 const stringNumber = ref<number>(0)
 
-const getRandomArbitrary = (min, max) => {
+const getRandomArbitrary = (min: number, max: number) => {
   return Math.random() * (max - min) + min;
 }
 
@@ -23,7 +23,7 @@ const removeString = () => {
   }
 }
 
-const startRunningString = (text, letterNumber = 0) => {
+const startRunningString = (text: string, letterNumber = 0) => {
   const velocity = getRandomArbitrary(75, 300)
   string.value += text[letterNumber]
   letterNumber++

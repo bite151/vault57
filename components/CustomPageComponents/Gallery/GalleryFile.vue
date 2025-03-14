@@ -14,7 +14,6 @@ const model = defineModel()
 const imageIndex = ref<number>(0)
 
 const currentImage = computed(() => imageIndex.value !== null ? images.value[imageIndex.value] : null)
-const location = computed(() => import.meta.client ? window.location.origin : null)
 
 const isFullScreen = ref<boolean>(false)
 const isHidden = ref<boolean>(false)

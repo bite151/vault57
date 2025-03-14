@@ -46,30 +46,31 @@ const moveListener = () => {
   if (pressed.value) {
     let top = y.value - clickPosition.value.y
     let left = x.value - clickPosition.value.x
-    if (parentElement) {
-      const xMin = clickPosition.value.x
-      const xMax = window.innerWidth - (header.value!.offsetWidth - clickPosition.value.x + parentElement.value.clientLeft*2)
-      if (xMin >= x.value) {
-        left = xMin - clickPosition.value.x
-      } else if (xMax <= x.value) {
-        left = xMax - clickPosition.value.x
-      }
 
-      const yMin = clickPosition.value.y
-      const yMax = window.innerHeight - parentElement.value.offsetHeight + clickPosition.value.y
-      if (yMin >= y.value) {
-        top = yMin - clickPosition.value.y
-      } else if (yMax <= y.value) {
-        top = yMax - clickPosition.value.y
-      }
+    if (!parentElement) return
 
-      if (top < 0) {
-        top = 0
-      }
-
-      parentElement.value.style.top = `${top}px`
-      parentElement.value.style.left = `${left}px`
+    const xMin = clickPosition.value.x
+    const xMax = window.innerWidth - (header.value!.offsetWidth - clickPosition.value.x + parentElement.value.clientLeft*2)
+    if (xMin >= x.value) {
+      left = xMin - clickPosition.value.x
+    } else if (xMax <= x.value) {
+      left = xMax - clickPosition.value.x
     }
+
+    const yMin = clickPosition.value.y
+    const yMax = window.innerHeight - parentElement.value.offsetHeight + clickPosition.value.y
+    if (yMin >= y.value) {
+      top = yMin - clickPosition.value.y
+    } else if (yMax <= y.value) {
+      top = yMax - clickPosition.value.y
+    }
+
+    if (top < 0) {
+      top = 0
+    }
+
+    parentElement.value.style.top = `${top}px`
+    parentElement.value.style.left = `${left}px`
   }
 }
 
