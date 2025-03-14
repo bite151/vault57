@@ -25,10 +25,14 @@ function scrollToImage(id: number) {
   const index = images.value.findIndex(i => i.id === id)
 
   nextTick(async () => {
-    await sleep(10)
+    await sleep(50)
     const items = containerEl.value?.querySelectorAll('.insta-item')
     if (items && items[index]) {
-      items[index].scrollIntoView({ block: 'start' })
+      // items[index].scrollIntoView({ block: 'start' })
+      const { offsetTop } = items[index] as HTMLElement;
+      containerEl.value?.scrollTo({
+        top: offsetTop - 60
+      });
     }
   })
 }

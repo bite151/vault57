@@ -4,11 +4,13 @@ import { useWindowsStore } from "~/store/windowsStore";
 
 import RunningLine from "~/components/Common/RunningLine.vue";
 import {sleep} from "~/helpers/app.helpers";
+import {useThemeColor} from "~/composables/useThemeColor";
 
 const { isMobile } = useDevice()
 const appStatesStore = useAppStatesStore();
 const windowsStore = useWindowsStore();
 const router = useRouter();
+const { changeThemeColor } = useThemeColor()
 
 const isLoading = computed<boolean>(() => appStatesStore.startLoading);
 const isLoaded  = computed<boolean>(() => appStatesStore.isLoaded);
@@ -35,7 +37,7 @@ const hasOldSession = ref<boolean>(false)
 onMounted(() => {
   animate(text)
   hasOldSession.value = checkOldSession()
-  document.body.style.background = '#121212'
+  changeThemeColor('#121212')
 })
 
 function checkOldSession(): boolean {

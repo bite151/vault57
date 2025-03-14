@@ -5,6 +5,7 @@ import type {Page} from "~/types/Page";
 import {generateUrl, getPageParams} from "~/helpers/app.helpers";
 import {useWindowsStore} from "~/store/windowsStore";
 import {usePWA} from "@/composables/usePWA";
+import {useThemeColor} from "~/composables/useThemeColor";
 
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
@@ -20,7 +21,6 @@ function launchApp(app: Page) {
   windowsStore.setWindow(url, params)
   if (import.meta.browser) {
     window.history.pushState({}, '', url)
-    // document.body.style.background = '#dededc'
   }
 }
 </script>

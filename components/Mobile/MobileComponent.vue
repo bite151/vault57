@@ -6,6 +6,7 @@ import {generateUrl, getPageParams, getParents} from "~/helpers/app.helpers";
 import type {PageWindow} from "~/types/Window";
 import type {Page} from "~/types/Page";
 import {useAppStatesStore} from "~/store/appStatesStore";
+import {useThemeColor} from "~/composables/useThemeColor";
 
 const route = useRoute()
 const router = useRouter()
@@ -34,12 +35,16 @@ const appStatesStore = useAppStatesStore()
 const { isMobileMenuOpened } = storeToRefs(appStatesStore);
 const currentScreenBackground = computed<string | undefined>(() => windowsStore.currentScreen?.mobile.background)
 
+const { changeThemeColor } = useThemeColor()
+
 watch(
   () => [isMobileMenuOpened.value, windowsStore.openedWindows.length],
   () => {
     if (!import.meta.browser) return
     const check = !isMobileMenuOpened.value && !!windowsStore.openedWindows.length
-    document.body.style.background = check ? currentScreenBackground.value || '#dededc' : '#3e403b'
+    // document.body.style.background = check ? currentScreenBackground.value || '#dededc' : '#3e403b'
+    const color = check ? currentScreenBackground.value || '#dededc' : '#3e403b'
+    changeThemeColor(color)
   },
   { immediate: true }
 )
@@ -50,12 +55,13 @@ onBeforeUnmount(() => {
 
 function loadScreens() {
   if (!windowsStore.openedWindows.length || !currentScreen.value) {
-    document.body.style.background = '#3e403b'
+    changeThemeColor('#3e403b')
     return
   }
   windowsStore.openedWindows = [currentScreen.value]
 
-  document.body.style.background = currentScreen.value.mobile.background ?? '#dededc'
+  const color = currentScreen.value.mobile.background ?? '#dededc'
+  changeThemeColor(color)
 
   if (!currentScreen.value.mobile?.loadParentsScreens) return
 

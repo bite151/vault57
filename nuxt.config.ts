@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   },
   
   devServer: {
-    host: '192.168.1.41',
+    host: 'localhost',
     // host: '192.168.1.145', // Home
     // host: '192.168.88.252', // Vault57
     port: 3000,
@@ -117,6 +117,7 @@ export default defineNuxtConfig({
       short_name: 'Vault57',
       description: 'Ретро компьютерный клуб',
       theme_color: '#BEBFB8',
+      orientation: 'portrait-primary',
       icons: [
         {
           src: '/icon-192.png',
