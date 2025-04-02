@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "npx nuxi dev --host",
     "generate": "nuxt generate",
     "preview": "node .output/server/index.mjs",
-    "host": "cross-env PORT=8841 HOST=92.63.100.179 node .output/server/index.mjs",
+    "host": "cross-env PORT=8841 HOST=127.0.0.1 node .output/server/index.mjs",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
@@ -20,6 +20,7 @@
     "class-variance-authority": "^0.7.0",
     "click-outside-vue3": "^4.0.1",
     "clsx": "^2.1.1",
+    "iron-session": "^8.0.4",
     "lucide-vue-next": "^0.474.0",
     "nuxt": "^3.12.2",
     "nuxt-lucide-icons": "^1.0.5",

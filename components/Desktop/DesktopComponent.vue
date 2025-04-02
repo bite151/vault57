@@ -99,6 +99,12 @@ function getLastSession () {
   windowsStore.isLoaded = true
 }
 
+function isComponent(window: PageWindow) {
+  if (window.url === '/network') {
+    return AppFile
+  }
+  return !window.routeParams?.file ? AppFolder : AppFile
+}
 </script>
 
 <template>
@@ -110,7 +116,7 @@ function getLastSession () {
       class="window-component"
       :class="{'window-component_visible': loaded}"
       v-for="window in openedWindows"
-      :is="!window.routeParams?.file ? AppFolder : AppFile"
+      :is="isComponent(window)"
       :key="window.windowId"
       :current-window="window"
     />

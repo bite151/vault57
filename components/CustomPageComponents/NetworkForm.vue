@@ -1,0 +1,322 @@
+<script setup lang="ts">
+
+import {useAuthStore} from "~/store/authStore";
+
+type FormFeedbackType = 'incomplete' | 'invalid' | 'success' | 'error' | null;
+type FormDialog = {
+  title: string;
+  description: string;
+}
+
+const authStore = useAuthStore();
+const { login, logout } = authStore
+const { isAuth, profile } = storeToRefs(authStore)
+
+const log = ref<string>('');
+const password = ref<string>('');
+
+const isLoading = ref<boolean>(false);
+const formFeedback: Ref<FormFeedbackType> = ref(null);
+
+const button = ref<HTMLElement | null>(null)
+
+const formDialog = computed<FormDialog | null>(() => {
+  if (formFeedback.value === 'error') {
+    return {
+      title: 'Ошибка отправки!',
+      description: 'Попробуйте еще раз позднее'
+    }
+  }
+
+  if (formFeedback.value === 'success') {
+    // return {
+    //   title: 'Сообщение отправлено!',
+    //   description: 'Мы свяжемся с Вами в ближайшее время'
+    // }
+  }
+
+  if (formFeedback.value === 'incomplete') {
+    return {
+      title: 'Внимание!',
+      description: 'Заполните все поля формы'
+    }
+  }
+
+  if (formFeedback.value === 'invalid') {
+    // return {
+    //   title: 'Внимание!',
+    //   description: 'Указан некорректный email'
+    // }
+  }
+  return null
+})
+
+watch(
+  () => formFeedback.value,
+  (feedback) => {
+    if (feedback) {
+      setTimeout(() => formFeedback.value = null, 4000)
+    }
+  }
+)
+
+async function handleLogIn() {
+  isLoading.value = true;
+  formFeedback.value = null;
+
+  if (!log.value.trim() || !password.value.trim()) {
+    formFeedback.value = 'incomplete'
+    isLoading.value = false
+    return
+  }
+
+  try {
+    await login({ login: log.value, password: password.value })
+  } catch (error: any) {
+    const errorMessage = error?.message || 'Неизвестная ошибка';
+    console.log(errorMessage)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+async function handleLogOut() {
+  isLoading.value = true;
+  try {
+    await logout()
+  } catch (error: any) {
+    const errorMessage = error?.message || 'Неизвестная ошибка';
+    console.log(errorMessage)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+</script>
+
+<template>
+  <div
+    class="auth"
+  >
+    <div class="img-container">
+
+    </div>
+
+    <form
+      class="auth__form"
+      @submit.prevent="handleLogIn"
+    >
+      <section
+        v-if="!isAuth"
+        class="form__fields"
+      >
+        <fieldset class="form__fieldset">
+          <label
+            class="form__label"
+          >
+            Login
+            <input
+              type="text"
+              v-model="log"
+              class="form__input"
+            />
+          </label>
+        </fieldset>
+        <fieldset class="form__fieldset">
+          <label
+            class="form__label"
+          >
+            Password
+            <input
+              type="password"
+              v-model="password"
+              class="form__input"
+            />
+          </label>
+        </fieldset>
+      </section>
+
+      <pre v-else>{{ profile }}</pre>
+
+
+      <footer class="form__footer">
+        <button
+          v-if="isAuth"
+          class="form__button"
+          :class="{'form__button_disabled': isLoading }"
+          :disabled="isLoading"
+          @click.prevent="handleLogOut"
+        >
+          Logout
+        </button>
+
+        <button
+          v-else
+          ref="button"
+          type="submit"
+          class="form__button"
+          :class="{'form__button_disabled': isLoading }"
+          :disabled="isLoading"
+        >
+          {{ isLoading ? 'connecting...' : 'Log In' }}
+        </button>
+
+      </footer>
+    </form>
+
+
+    <div
+      class="form__dialog"
+      :class="formFeedback"
+    >
+      <p class="title">{{ formDialog?.title }}</p>
+      <p class="description">{{ formDialog?.description }}</p>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.auth {
+  width: 700px;
+  display: flex;
+  gap: 24px;
+  position: relative;
+  height: 100%;
+  padding: 24px;
+  overflow: hidden;
+
+  background: #f5f5f5;
+  .img-container {
+    width: 200px;
+    height: 100%;
+    border: 2px solid #737372;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-left: 12px;
+    margin-right: 12px;
+    width: 100%;
+
+    overflow: auto;
+    padding: 4px;
+  }
+
+  .form {
+    &__fields {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      flex-grow: 1;
+      gap: 24px;
+    }
+    &__fieldset {
+      width: 100%;
+      max-width: 580px;
+    }
+    &__label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 18px;
+      //font-weight: 600;
+      color: #515250;
+      user-select: none;
+    }
+    &__input {
+      padding: 10px 12px;
+      border: 3px solid #737372;
+      border-radius: 4px;
+      background: #f5f6f5;
+      box-shadow: inset 2px 2px 0 rgba(#6b6c66, 0.5);//, 6px 4px 0 0 #6b6c68;
+
+      font-family: IBM, sans-serif;
+      font-size: 18px;
+      color: #515250;
+    }
+    &__footer {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      gap: 24px;
+    }
+    &__button {
+      padding: 6px 24px;
+      background: #d7d7d7;
+
+      border: 1px dotted #5a5c56;
+      border-radius: 1px;
+      outline: 3px solid #d7d7d7;
+
+      font-size: 18px;
+      color: #5a5c56;
+      letter-spacing: 1px;
+
+      &_pressed {
+        //transform: translateY(0px) translateX(0px);
+      }
+
+      &_disabled {
+        background: #afb0ad;
+        outline: 3px solid #afb0ad;
+      }
+    }
+
+    &__dialog {
+      position: absolute;
+      right: 42px;
+      left: 266px;
+      top: 30px;
+      margin: 0 auto;
+      max-width: 568px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 18px 24px;
+      border: 1px solid #f5f6ef;
+      color: #f5f5f5;
+      box-shadow: 6px 4px 0 6px rgba(#6b6c68, .6);
+      z-index: 9;
+      transform: translateY(-120px);
+      opacity: 0;
+      visibility: hidden;
+      transition: transform .3s ease-in-out;
+
+      &.error {
+        opacity: 1;
+        visibility: visible;
+        background: #802929;
+        outline: 6px solid #802929;
+        transform: translateX(0);
+      }
+
+      &.invalid,
+      &.incomplete {
+        opacity: 1;
+        visibility: visible;
+        background: #c8841d;
+        outline: 6px solid #c8841d;
+        transform: translateX(0);
+      }
+
+      &.success {
+        opacity: 1;
+        visibility: visible;
+        background: #3C8029;
+        outline: 6px solid #3C8029;
+        transform: translateX(0);
+      }
+
+      .title {
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+    }
+  }
+}
+</style>

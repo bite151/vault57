@@ -7,7 +7,7 @@ import { findPageByUrl } from '~/helpers/app.helpers'
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
   const windowsStore = useWindowsStore()
   const galleryStore = useGalleryStore()
-  
+
   if (to.params.folder === 'gallery' && !galleryStore.images.length) {
     await galleryStore.fetchImages()
   }

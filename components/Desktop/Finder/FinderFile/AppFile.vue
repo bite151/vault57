@@ -139,8 +139,8 @@ function onResizeEnd(): void {
     top: ${currentWindow?.position?.y}px;
     left: ${currentWindow?.position?.x}px;
     margin: ${currentWindow?.position?.margin || '0'};
-    width: ${currentWindow?.size?.width}px;
-    height: ${currentWindow?.size?.height}px;`"
+    width: ${currentWindow?.size?.width ? currentWindow.size.width + 'px' : ''};
+    height: ${currentWindow?.size?.height ? currentWindow.size.height + 'px' : ''}`"
     @click="toFront()"
   >
     <FinderHeader

@@ -1,4 +1,5 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import process from "node:process";
+
 export default defineNuxtConfig({
   devtools: {
     enabled: true,
@@ -9,17 +10,21 @@ export default defineNuxtConfig({
   },
   
   devServer: {
-    host: 'localhost',
-    // host: '192.168.1.145', // Home
-    // host: '192.168.88.252', // Vault57
     port: 3000,
   },
   
-  modules: ['@pinia/nuxt', '@vite-pwa/nuxt', '@nuxt/image', '@nuxt/fonts', 'vue-yandex-maps/nuxt'],
+  modules: [
+    '@pinia/nuxt',
+    // '@vite-pwa/nuxt',
+    '@nuxt/image',
+    '@nuxt/fonts',
+    'vue-yandex-maps/nuxt',
+  ],
   
   runtimeConfig: {
     public: {
       API_URL: process.env.API_URL,
+      API_BASE_URL: process.env.API_BASE_URL,
       MEDIA_URL: process.env.MEDIA_URL,
     },
   },
@@ -33,11 +38,11 @@ export default defineNuxtConfig({
         lang: 'ru'
       },
       link: [
-        {
-          rel: 'manifest',
-          type: 'application/manifest+json',
-          href: '/manifest.webmanifest'
-        },
+        // {
+        //   rel: 'manifest',
+        //   type: 'application/manifest+json',
+        //   href: '/manifest.webmanifest'
+        // },
         {
           rel: 'icon',
           type: 'image/png',
@@ -69,7 +74,8 @@ export default defineNuxtConfig({
           name: "level-1",
           path: "/:folder",
           file: "~/pages/page.vue",
-        }, {
+        },
+        {
           name: "level-2",
           path: "/:folder/:file",
           file: "~/pages/page.vue",
@@ -110,69 +116,69 @@ export default defineNuxtConfig({
       }
     }
   },
-  pwa: {
-    registerType: 'autoUpdate',
-    manifest: {
-      name: 'Vault57',
-      short_name: 'Vault57',
-      description: 'Ретро компьютерный клуб',
-      theme_color: '#BEBFB8',
-      orientation: 'portrait-primary',
-      icons: [
-        {
-          src: '/icon-192.png',
-          sizes: '192x192',
-          type: 'image/png',
-        },
-        {
-          src: '/icon-512.png',
-          sizes: '512x512',
-          type: 'image/png',
-        },
-      ],
-    },
-    workbox: {
-      navigateFallback: '/',
-      globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
-      globIgnores: ['**/node_modules/**/*'],
-      globDirectory: '.output/public',
-      runtimeCaching: [
-        {
-          urlPattern: ({ request }) => request.destination === 'image',
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'images-cache',
-            expiration: {
-              maxEntries: 50,
-              maxAgeSeconds: 7 * 24 * 60 * 60,
-            },
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-          },
-        },
-        {
-          urlPattern: ({ request }) => request.destination === 'script' || request.destination === 'style',
-          handler: 'StaleWhileRevalidate',
-          options: {
-            cacheName: 'assets-cache',
-            expiration: {
-              maxEntries: 50,
-              maxAgeSeconds: 7 * 24 * 60 * 60,
-            },
-          },
-        },
-      ]
-    },
-    devOptions: {
-      enabled: true,
-      type: 'module',
-    },
-    client: {
-      installPrompt: true,
-    }
-  },
+  // pwa: {
+  //   registerType: 'autoUpdate',
+  //   manifest: {
+  //     name: 'Vault57',
+  //     short_name: 'Vault57',
+  //     description: 'Ретро компьютерный клуб',
+  //     theme_color: '#BEBFB8',
+  //     orientation: 'portrait-primary',
+  //     icons: [
+  //       {
+  //         src: '/icon-192.png',
+  //         sizes: '192x192',
+  //         type: 'image/png',
+  //       },
+  //       {
+  //         src: '/icon-512.png',
+  //         sizes: '512x512',
+  //         type: 'image/png',
+  //       },
+  //     ],
+  //   },
+  //   workbox: {
+  //     navigateFallback: '/',
+  //     globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
+  //     globIgnores: ['**/node_modules/**/*'],
+  //     globDirectory: '.output/public',
+  //     runtimeCaching: [
+  //       {
+  //         urlPattern: ({ request }) => request.destination === 'image',
+  //         handler: 'CacheFirst',
+  //         options: {
+  //           cacheName: 'images-cache',
+  //           expiration: {
+  //             maxEntries: 50,
+  //             maxAgeSeconds: 7 * 24 * 60 * 60,
+  //           },
+  //           cacheableResponse: {
+  //             statuses: [0, 200],
+  //           },
+  //         },
+  //       },
+  //       {
+  //         urlPattern: ({ request }) => request.destination === 'script' || request.destination === 'style',
+  //         handler: 'StaleWhileRevalidate',
+  //         options: {
+  //           cacheName: 'assets-cache',
+  //           expiration: {
+  //             maxEntries: 50,
+  //             maxAgeSeconds: 7 * 24 * 60 * 60,
+  //           },
+  //         },
+  //       },
+  //     ]
+  //   },
+  //   devOptions: {
+  //     enabled: true,
+  //     type: 'module',
+  //   },
+  //   client: {
+  //     installPrompt: true,
+  //   }
+  // },
   yandexMaps: {
     apikey: '49b703ae-b1f3-4b42-bc45-dc0860f1af3c',
-  },
+  }
 })
