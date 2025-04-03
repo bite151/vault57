@@ -108,6 +108,7 @@ function isComponent(window: PageWindow) {
   <main
     id="main-content-teleport"
     class="desktop"
+    v-if="windowsStore.isLoaded"
   >
     <component
       class="window-component"

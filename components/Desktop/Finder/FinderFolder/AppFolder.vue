@@ -6,7 +6,6 @@ import FinderStatusBar from "~/components/Desktop/Finder/FinderStatusBar.vue";
 import Navigation from "~/components/Desktop/Finder/Navigation/Navigation.vue";
 import FolderContent from "~/components/Desktop/Finder/FinderFolder/FolderContent.vue";
 import Simplebar from 'simplebar-vue';
-// import 'simplebar-vue/dist/simplebar.min.css';
 import 'assets/scss/simplebar.css';
 import type { PageWindow } from "~/types/Window";
 import { generateUrl } from "~/helpers/app.helpers";
@@ -52,11 +51,6 @@ const hideEffectClassName = computed<string>(() => {
 
 onMounted(() => {
   isShown.value = 1
-  // console.log('mounted new window')
-})
-
-onBeforeUnmount(() => {
-  // console.log('before unmount window')
 })
 
 function toFront(): void {
@@ -165,6 +159,7 @@ function onResizeEnd(): void {
         :moveable="true"
         :buttons="windowButtons"
         @on-move-end="onMoveEnd"
+        @on-move-start="toFront()"
       >
         <h1>{{ currentWindow?.desktop.title }}</h1>
       </FinderHeader>

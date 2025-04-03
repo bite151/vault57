@@ -34,11 +34,11 @@ function showWindow(windowId: string): void {
         @click="showWindow(item.windowId)"
       >
         <AsyncIcon
-          :name="item.icon ? item.icon : 'Folder'"
+          :name="item.desktop.icon ? item.desktop.icon : 'Folder'"
           :stroke-width="1.4"
           :size="34"
         />
-        <p>{{ item.title }}</p>
+        <p>{{ item.desktop.title }}</p>
       </div>
     </div>
   </Transition>

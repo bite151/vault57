@@ -19,7 +19,7 @@ provide('parentElement', fileWindowElement);
 
 const currentComponent = shallowRef(null);
 watch(
-  () => currentWindow.desktop.contentComponent,
+  () => currentWindow?.desktop.contentComponent,
   (componentName) => {
     if (componentName) {
       currentComponent.value = defineAsyncComponent(() =>
@@ -49,17 +49,39 @@ const windowsStore = useWindowsStore()
 const openedWindows = computed(() => windowsStore.openedWindows.filter(item => !item.isHidden))
 const breadCrumbs = generateUrl(currentWindow)
 
+const isShown = ref<number>(0)
+const showEffectClassName = computed<string>(() => {
+  if (isShown.value === 2) {
+    return 'animate__fadeInUp' // expand
+  }
+  return 'animate__fadeIn' // open
+})
+const hideEffectClassName = computed<string>(() => {
+  if (isShown.value === -1) {
+    return 'animate__fadeOutDown'  // hide in the Dock
+  }
+  return 'animate__fadeOut' // close window
+})
+
+onMounted(() => {
+  isShown.value = 1
+})
+
 function toFront(): void {
   windowsStore.setWindowToFront(currentWindow.windowId)
 }
 
-function closeWindow(): void {
+async function closeWindow(): Promise<void> {
+  isShown.value = -2
+  await new Promise(r => setTimeout(r, 50));
   windowsStore.closeWindow(currentWindow.windowId)
 
   updateWindowsPosition()
 }
 
-function hideWindow(e: MouseEvent): void {
+async function hideWindow(e: MouseEvent): Promise<void> {
+  isShown.value = -1
+  await new Promise(r => setTimeout(r, 50));
   const checkMatches = windowsStore.openedWindows
     .filter(item => item.isHidden)
     .some(item => item.id === currentWindow.id)
@@ -126,62 +148,69 @@ function onResizeEnd(): void {
 </script>
 
 <template>
-  <div
-    ref="fileWindowElement"
-    class="content-file"
-    :class="{
-      'content-file_full-screen': currentWindow.isFullScreen,
-      'content-file_hidden': currentWindow.isHidden,
-      'content-file_front': currentWindow.isOnFront,
-      'content-file_reset-width': currentWindow?.desktop.resetWidth
-    }"
-    :style="`
-    top: ${currentWindow?.position?.y}px;
-    left: ${currentWindow?.position?.x}px;
-    margin: ${currentWindow?.position?.margin || '0'};
-    width: ${currentWindow?.size?.width ? currentWindow.size.width + 'px' : ''};
-    height: ${currentWindow?.size?.height ? currentWindow.size.height + 'px' : ''}`"
-    @click="toFront()"
+  <Transition
+    :enter-active-class="`animate__animated animate__faster ${showEffectClassName}`"
+    :leave-active-class="`animate__animated animate__faster ${hideEffectClassName}`"
   >
-    <FinderHeader
-      :moveable="true"
-      :buttons="windowButtons"
-      @on-move-end="onMoveEnd"
+    <div
+      v-if="isShown > 0"
+      ref="fileWindowElement"
+      class="content-file"
+      :class="{
+        'content-file_full-screen': currentWindow.isFullScreen,
+        'content-file_hidden': currentWindow.isHidden,
+        'content-file_front': currentWindow.isOnFront,
+        'content-file_reset-width': currentWindow?.desktop.resetWidth
+      }"
+      :style="`
+      top: ${currentWindow?.position?.y}px;
+      left: ${currentWindow?.position?.x}px;
+      margin: ${currentWindow?.position?.margin || '0'};
+      width: ${currentWindow?.size?.width ? currentWindow.size.width + 'px' : ''};
+      height: ${currentWindow?.size?.height ? currentWindow.size.height + 'px' : ''}`"
+      @click="toFront()"
     >
-      <h1>{{ currentWindow.desktop.title }}</h1>
-    </FinderHeader>
+      <FinderHeader
+        :moveable="true"
+        :buttons="windowButtons"
+        @on-move-end="onMoveEnd"
+        @on-move-start="toFront()"
+      >
+        <h1>{{ currentWindow.desktop.title }}</h1>
+      </FinderHeader>
 
-    <section class="content-wrapper">
-      <div class="main-frame">
-        <div
-          v-if="currentWindow.desktop.contentComponent"
-          class="component-wrapper"
-          :class="{'component-wrapper_rounded': currentWindow.desktop.hideStatusBar}"
-        >
-          <component
-            v-if="currentComponent"
-            :is="currentComponent"
-          />
-        </div>
-
-        <Simplebar class="scrollbar-file" v-else>
+      <section class="content-wrapper">
+        <div class="main-frame">
           <div
-            class="content"
-            :class="{'content_rounded': currentWindow.desktop.hideStatusBar}"
+            v-if="currentWindow.desktop.contentComponent"
+            class="component-wrapper"
+            :class="{'component-wrapper_rounded': currentWindow.desktop.hideStatusBar}"
           >
-            <FileContent :content="currentWindow?.content" />
+            <component
+              v-if="currentComponent"
+              :is="currentComponent"
+            />
           </div>
-        </Simplebar>
 
-        <FinderStatusBar
-          v-if="!currentWindow.desktop.hideStatusBar"
-          @on-resize-end="onResizeEnd"
-        >
-          {{ breadCrumbs.replace('/file/', '/') }}
-        </FinderStatusBar>
-      </div>
-    </section>
-  </div>
+          <Simplebar class="scrollbar-file" v-else>
+            <div
+              class="content"
+              :class="{'content_rounded': currentWindow.desktop.hideStatusBar}"
+            >
+              <FileContent :content="currentWindow?.content" />
+            </div>
+          </Simplebar>
+
+          <FinderStatusBar
+            v-if="!currentWindow.desktop.hideStatusBar"
+            @on-resize-end="onResizeEnd"
+          >
+            {{ breadCrumbs.replace('/file/', '/') }}
+          </FinderStatusBar>
+        </div>
+      </section>
+    </div>
+  </Transition>
 </template>
 
 <style scoped lang="scss">
@@ -318,5 +347,9 @@ function onResizeEnd(): void {
   background-color: var(--folder-status-bar-bg-color);
   font-weight: 600;
   color: var(--folder-status-bar-color);
+}
+
+.animate__faster {
+  --animate-duration: 0.7s;
 }
 </style>

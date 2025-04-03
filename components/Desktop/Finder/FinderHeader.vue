@@ -3,6 +3,7 @@ import AsyncIcon from "~/components/Common/AsyncIcon.vue";
 import {ref} from "vue";
 import {useMouse, useMousePressed, useEventListener} from "@vueuse/core";
 import type { WindowPosition } from "~/types/Window";
+import {useWindowsStore} from "~/store/windowsStore";
 
 interface Button<T = MouseEvent> {
   icon: string,
@@ -14,7 +15,7 @@ defineProps<{
   moveable: boolean,
 }>()
 
-const emits = defineEmits(['onMoveEnd'])
+const emits = defineEmits(['onMoveEnd', 'onMoveStart'])
 const parentElement = inject<Ref<HTMLElement> | undefined>('parentElement');
 
 const header = ref<HTMLElement | null>(null)
@@ -49,6 +50,10 @@ const moveListener = () => {
 
     if (!parentElement) return
 
+    parentElement.value.style.right = `inherit`
+    parentElement.value.style.bottom = `inherit`
+    parentElement.value.style.margin = '0'
+
     const xMin = clickPosition.value.x
     const xMax = window.innerWidth - (header.value!.offsetWidth - clickPosition.value.x + parentElement.value.clientLeft*2)
     if (xMin >= x.value) {
@@ -75,6 +80,7 @@ const moveListener = () => {
 }
 
 function onStartMove(e : MouseEvent) {
+  emits('onMoveStart')
   clickPosition.value = {  x: e.layerX, y: e.layerY }
   if (parentElement) {
     const top = y.value - clickPosition.value.y - parentElement.value.clientTop
@@ -82,9 +88,6 @@ function onStartMove(e : MouseEvent) {
 
     parentElement.value.style.top = `${top}px`
     parentElement.value.style.left = `${left}px`
-    parentElement.value.style.right = `inherit`
-    parentElement.value.style.bottom = `inherit`
-    parentElement.value.style.margin = '0'
   }
 }
 </script>
