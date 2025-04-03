@@ -11,6 +11,8 @@ export interface Page {
   fullUrl?: string;
   content: PageContent | null | string;
   isPublic: boolean;
+  range: number;
+  type: 'file' | 'folder' ;
   permission: 'public' | 'user' | 'admin';
   createdBy: string;
   createdAt: string;

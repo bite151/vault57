@@ -10,6 +10,7 @@ interface FormDialog {
   status?: FormFeedbackType;
 }
 
+const config = useRuntimeConfig()
 const authStore = useAuthStore();
 const { login, logout } = authStore
 const { isAuth, profile } = storeToRefs(authStore)
@@ -20,8 +21,6 @@ const password = ref<string>('');
 const isLoading = ref<boolean>(false);
 const formFeedback: Ref<FormFeedbackType> = ref(null);
 const formError = ref<any>(null);
-
-const button = ref<HTMLElement | null>(null)
 
 const formDialog = computed<FormDialog | null>(() => {
   const feedback = formFeedback.value;
@@ -109,7 +108,7 @@ async function handleLogOut() {
     class="auth"
   >
     <div class="img-container">
-
+      <nuxt-img :src="`${config.public.MEDIA_URL}/images/desktop/network.png`" alt="" loading="lazy"/>
     </div>
 
     <form
@@ -199,8 +198,17 @@ async function handleLogOut() {
     width: 200px;
     height: 100%;
     border: 2px solid #737372;
-    border-radius: 8px;
+    border-radius: 4px;
+    background-color: #beb8b3;
+    overflow: hidden;
     flex-shrink: 0;
+
+    img {
+      width: calc(100% + 4px);
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
   }
 
   &__form {

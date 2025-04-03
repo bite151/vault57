@@ -31,7 +31,13 @@ const pagesStore = usePagesStore()
 
 const files = computed<Page[]>(() => {
   if (currentFolder.value?.fullUrl === '/my-computer') {
-    return pagesStore.pages.filter(page => page.parentId === 1 && !page.url.includes('/file/') && page.desktop.showInFinder)
+    return pagesStore.pages
+      .filter(page => page.parentId === 1 && !page.url.includes('/file/') && page.desktop.showInFinder)
+      .sort((a, b) => {
+        if (a.range < b.range) return -1
+        if (a.range > b.range) return 1
+        return 0
+      })
   }
 
   return pagesStore.pages

@@ -19,7 +19,11 @@ const { parentPageId = 1 } = defineProps(['parentPageId'])
 const pages = computed<Page[]>(() => {
   const pages = pagesStore.pages.filter(page => page.parentId === parentPageId && !page.url.includes('/file/') && page.desktop.showInFinder);
   if (parentPageId === 1) {
-    return pages
+    return pages.sort((a, b) => {
+      if (a.range < b.range) return -1
+      if (a.range > b.range) return 1
+      return 0
+    })
   }
   return pages.sort((a, b) => {
     if (a.desktop.title < b.desktop.title) return -1
