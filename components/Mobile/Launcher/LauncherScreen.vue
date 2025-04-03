@@ -9,7 +9,7 @@ import {useThemeColor} from "~/composables/useThemeColor";
 
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
-const mainScreenIcons = computed<Page[]>(() => pagesStore.pages.filter(page => page.showInLauncher))
+const mainScreenIcons = computed<Page[]>(() => pagesStore.pages.filter(page => page.mobile.showInLauncher))
 
 const { installPWA, installPromptEvent, isInstalled } = usePWA();
 
@@ -64,14 +64,14 @@ function launchApp(app: Page) {
       <div class="launcher-icon">
         <div>
           <AsyncIcon
-            :name="item.mobile.icon || item.icon"
+            :name="item.mobile.icon || item.desktop.icon"
             :size="40"
             :stroke-width="1.5"
           />
         </div>
       </div>
       <div class="launcher-item-title">
-        {{ item.mobile.shortTitle || item.title }}
+        {{ item.mobile.shortTitle || item.mobile.title }}
       </div>
     </div>
 

@@ -19,7 +19,7 @@ provide('parentElement', fileWindowElement);
 
 const currentComponent = shallowRef(null);
 watch(
-  () => currentWindow?.contentComponent?.component,
+  () => currentWindow.desktop.contentComponent,
   (componentName) => {
     if (componentName) {
       currentComponent.value = defineAsyncComponent(() =>
@@ -133,7 +133,7 @@ function onResizeEnd(): void {
       'content-file_full-screen': currentWindow.isFullScreen,
       'content-file_hidden': currentWindow.isHidden,
       'content-file_front': currentWindow.isOnFront,
-      'content-file_reset-width': currentWindow?.resetWidth
+      'content-file_reset-width': currentWindow?.desktop.resetWidth
     }"
     :style="`
     top: ${currentWindow?.position?.y}px;
@@ -148,15 +148,15 @@ function onResizeEnd(): void {
       :buttons="windowButtons"
       @on-move-end="onMoveEnd"
     >
-      <h1>{{ currentWindow?.title }}</h1>
+      <h1>{{ currentWindow.desktop.title }}</h1>
     </FinderHeader>
 
     <section class="content-wrapper">
       <div class="main-frame">
         <div
-          v-if="currentWindow?.contentComponent"
+          v-if="currentWindow.desktop.contentComponent"
           class="component-wrapper"
-          :class="{'component-wrapper_rounded': currentWindow?.hideStatusBar}"
+          :class="{'component-wrapper_rounded': currentWindow.desktop.hideStatusBar}"
         >
           <component
             v-if="currentComponent"
@@ -167,14 +167,14 @@ function onResizeEnd(): void {
         <Simplebar class="scrollbar-file" v-else>
           <div
             class="content"
-            :class="{'content_rounded': currentWindow?.hideStatusBar}"
+            :class="{'content_rounded': currentWindow.desktop.hideStatusBar}"
           >
             <FileContent :content="currentWindow?.content" />
           </div>
         </Simplebar>
 
         <FinderStatusBar
-          v-if="!currentWindow?.hideStatusBar"
+          v-if="!currentWindow.desktop.hideStatusBar"
           @on-resize-end="onResizeEnd"
         >
           {{ breadCrumbs.replace('/file/', '/') }}

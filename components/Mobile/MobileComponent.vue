@@ -13,7 +13,7 @@ const router = useRouter()
 const windowsStore = useWindowsStore()
 const currentScreen = computed<PageWindow | undefined>(() => windowsStore.currentScreen)
 
-const urls = ['/my-computer', '/trash', '/desktop']
+const urls = ['/my-computer', '/trash', '/desktop', '/network']
 if (urls.includes(route.path)) {
   windowsStore.closeAllWindows()
 }
@@ -63,7 +63,7 @@ function loadScreens() {
   const color = currentScreen.value.mobile.background ?? '#dededc'
   changeThemeColor(color)
 
-  if (!currentScreen.value.mobile?.loadParentsScreens) return
+  if (!currentScreen.value.mobile.loadParentScreens) return
 
   const parents = getParents(currentScreen.value).slice(1, -1).filter(s => s.url !== '/my-computer').reverse()
 

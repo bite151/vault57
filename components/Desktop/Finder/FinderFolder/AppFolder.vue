@@ -166,7 +166,7 @@ function onResizeEnd(): void {
         :buttons="windowButtons"
         @on-move-end="onMoveEnd"
       >
-        <h1>{{ currentWindow?.title }}</h1>
+        <h1>{{ currentWindow?.desktop.title }}</h1>
       </FinderHeader>
 
       <section class="content-wrapper">

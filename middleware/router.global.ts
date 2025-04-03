@@ -23,8 +23,8 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, fro
   }
   
   useSeoMeta({
-    title: page?.title ?? '',
-    description: page?.metaDescription ?? ''
+    title: page?.seo.title ?? '',
+    description: page?.seo.description ?? ''
   })
   
   if (to.path === from.path) {

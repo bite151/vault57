@@ -20,11 +20,11 @@ export const usePagesStore = defineStore('pages', () => {
   
   async function fetchPages(): Promise<Page[]> {
     loading.value = true
-    const { data } = await useFetch<Page[]>(config.public.API_URL + '/pages.json')
+    const data = await $fetch<any>('/api/pages/getAll')
     loading.value = false
-    if (data.value) {
-      pages.value = data.value
-      return data.value
+    if (data) {
+      pages.value = data
+      return data
     }
     return []
   }

@@ -100,9 +100,6 @@ function getLastSession () {
 }
 
 function isComponent(window: PageWindow) {
-  if (window.url === '/network') {
-    return AppFile
-  }
   return !window.routeParams?.file ? AppFolder : AppFile
 }
 </script>
@@ -114,7 +111,6 @@ function isComponent(window: PageWindow) {
   >
     <component
       class="window-component"
-      :class="{'window-component_visible': loaded}"
       v-for="window in openedWindows"
       :is="isComponent(window)"
       :key="window.windowId"
@@ -135,12 +131,29 @@ function isComponent(window: PageWindow) {
   background-color: var(--desktop-bg-color);
 }
 
-.window-component {
-  transform: translateY(100vh) scale(.5);
-  opacity: 0;
-  visibility: hidden;
+//.window-component {
+//  transform: translateY(100vh) scale(.5);
+//  opacity: 0;
+//  visibility: hidden;
+//
+//  &_visible {
+//    transform: translateY(0) scale(1);
+//    opacity: 1;
+//    visibility: visible;
+//  }
+//}
 
-  &_visible {
+.window-component {
+  //transform: translateY(100vh) scale(0.5);
+  //opacity: 0;
+  //visibility: hidden;
+  //animation: fadeInUp ease-out .1s fade-in();
+  opacity: 1;
+  visibility: visible;
+}
+
+@keyframes fadeInUp {
+  to {
     transform: translateY(0) scale(1);
     opacity: 1;
     visibility: visible;

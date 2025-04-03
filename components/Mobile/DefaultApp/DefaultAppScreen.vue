@@ -66,8 +66,8 @@ const content = computed<Page[]>(() => {
   return pagesStore.pages
     .filter(page => page.parentId === screen.id)
     .sort((a: Page, b: Page) => {
-      if (a.title < b.title) return -1
-      if (a.title > b.title) return 1
+      if (a.mobile.title < b.mobile.title) return -1
+      if (a.mobile.title > b.mobile.title) return 1
       return 0
     })
 })
@@ -203,11 +203,11 @@ function closeScreenBySwipe(): void {
         class="app-title"
         :class="titleClass"
       >
-        <h1>{{ screen.mobile?.title || screen.title }}</h1>
+        <h1>{{ screen.mobile.title }}</h1>
       </div>
 
       <p
-        v-show="screen.mobile?.description"
+        v-show="screen.mobile.description"
         class="app-description"
       >
         {{ screen.mobile?.description }}
@@ -220,8 +220,8 @@ function closeScreenBySwipe(): void {
         <DefaultAppIcon
           v-for="item in content"
           :key="item.id"
-          :title="item.title"
-          :icon="item.mobile?.icon || item.icon"
+          :title="item.mobile.title"
+          :icon="item.mobile.icon || item.desktop.icon"
           @click="launchApp(item)"
         />
 

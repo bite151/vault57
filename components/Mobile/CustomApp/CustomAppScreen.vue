@@ -29,14 +29,14 @@ watch(
       class="app-title app-title_offset app-title_transition-none"
       :style="`${screen.mobile.background ? 'background: ' + screen.mobile.background : ''}`"
     >
-      <h1>{{ screen.mobile?.title || screen.title }}</h1>
+      <h1>{{ screen.mobile.title }}</h1>
     </div>
     <component
       v-if="currentComponent"
       :is="currentComponent"
       class="custom-component-content"
       :class="{
-        'content_full-height': fullHeightComponents.includes(screen.mobile.contentComponent),
+        'content_full-height': fullHeightComponents.includes(screen.mobile.contentComponent || ''),
       }"
     />
   </div>

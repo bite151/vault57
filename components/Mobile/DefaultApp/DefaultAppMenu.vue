@@ -24,8 +24,8 @@ const links = computed<Page[]>(() => {
   return pagesStore.pages
     .filter(page => page.parentId === firstScreen.value.id)
     .sort((a: Page, b: Page) => {
-      if (a.title < b.title) return -1
-      if (a.title > b.title) return 1
+      if (a.mobile.title < b.mobile.title) return -1
+      if (a.mobile.title > b.mobile.title) return 1
       return 0
     })
 })
@@ -103,12 +103,12 @@ async function redirect(page: Page) {
             @click="redirect(firstScreen)"
           >
             <AsyncIcon
-              :name="firstScreen.mobile?.icon || firstScreen.icon"
+              :name="firstScreen.mobile.icon || firstScreen.desktop.icon"
               :size="22"
               :stroke-width="1.6"
               color="#dededc"
             />
-            {{ firstScreen.title }}
+            {{ firstScreen.mobile.title }}
           </button>
           <ul>
             <li
@@ -120,12 +120,12 @@ async function redirect(page: Page) {
                 @click="redirect(link)"
               >
                 <AsyncIcon
-                  :name="link.mobile?.icon || link.icon"
+                  :name="link.mobile.icon || link.desktop.icon"
                   :size="18"
                   :stroke-width="1.4"
                   color="#dededc"
                 />
-                {{ link.title }}
+                {{ link.mobile.title }}
               </button>
             </li>
           </ul>

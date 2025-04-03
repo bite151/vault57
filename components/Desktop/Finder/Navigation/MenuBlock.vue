@@ -17,13 +17,13 @@ const currentWindow = computed(() => windowsStore.openedWindows.find(i => i.wind
 const { parentPageId = 1 } = defineProps(['parentPageId'])
 
 const pages = computed<Page[]>(() => {
-  const pages = pagesStore.pages.filter(page => page.parentId === parentPageId && !page.url.includes('/file/') && page.showInFinder);
+  const pages = pagesStore.pages.filter(page => page.parentId === parentPageId && !page.url.includes('/file/') && page.desktop.showInFinder);
   if (parentPageId === 1) {
     return pages
   }
   return pages.sort((a, b) => {
-    if (a.title < b.title) return -1
-    if (a.title > b.title) return 1
+    if (a.desktop.title < b.desktop.title) return -1
+    if (a.desktop.title > b.desktop.title) return 1
     return 0
   })
 })
@@ -68,8 +68,8 @@ function redirectTo(page: Page) {
         @click="redirectTo(page)"
       >
         <AsyncIcon
-          v-if="page.icon && page.icon !== 'Folder'"
-          :name="page.icon"
+          v-if="page.desktop.icon !== 'Folder'"
+          :name="page.desktop.icon"
           class="icon"
           :size="20"
           :strokeWidth="2"
@@ -83,7 +83,7 @@ function redirectTo(page: Page) {
           :strokeWidth="2"
           color="#31322d"
         />
-        <span>{{ page.title }}</span>
+        <span>{{ page.desktop.title }}</span>
       </nuxt-link>
 
       <MenuBlock

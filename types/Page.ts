@@ -1,36 +1,43 @@
+interface SEO {
+  title: string;
+  description: string;
+}
+
 export interface Page {
   id: number;
   parentId: number;
   defaultParentId?: number | null;
   url: string;
   fullUrl?: string;
-  title: string;
-  fileName: string;
-  metaDescription: string;
-  mobile: MobileAppProps;
-  content: PageContent | null;
-  icon: string | null;
-  showInFinder?: boolean;
-  showInLauncher?: boolean;
-  contentComponent?: {
-    directory: string;
-    component: string;
-  } | null;
-  hideStatusBar?: boolean;
-  resetWidth?: boolean;
+  content: PageContent | null | string;
+  isPublic: boolean;
+  permission: 'public' | 'user' | 'admin';
+  createdBy: string;
   createdAt: string;
   updatedAt: string;
-  createdBy?: string;
+  seo: SEO;
+  mobile: MobileAppProps;
+  desktop: DesktopAppProps;
 }
 
 interface MobileAppProps {
   icon: string;
   title: string;
-  description: string;
   shortTitle: string;
-  contentComponent: string;
-  loadParentsScreens?: boolean;
-  background?: string;
+  description: string;
+  contentComponent: string | null;
+  showInLauncher: boolean;
+  loadParentScreens: boolean;
+  background: string;
+}
+
+interface DesktopAppProps {
+  icon: string;
+  title: string;
+  contentComponent: string | null;
+  showInFinder: boolean;
+  resetWidth: boolean;
+  hideStatusBar: boolean;
 }
 
 export interface MenuItem {

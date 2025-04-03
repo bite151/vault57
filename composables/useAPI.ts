@@ -5,7 +5,7 @@ type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
 export function useAPI() {
   const config = useRuntimeConfig()
 
-  async function fetch(url: string, method: Method, options: any) {
+  async function fetch<T>(url: string, method: Method, options: any): Promise<T> {
     try {
       return await $fetch(config.public.API_BASE_URL + url, {
         ...options,

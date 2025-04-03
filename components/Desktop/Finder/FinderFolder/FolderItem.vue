@@ -105,11 +105,11 @@ function restorePage (page: Page): void {
       )"
     >
       <AsyncIcon
-        :name="folderItem.icon || 'Folder'"
+        :name="folderItem.desktop.icon || 'Folder'"
         :size="52"
         :strokeWidth="1.3"
       />
-      <p>{{ folderItem.fileName }}</p>
+      <p>{{ folderItem.desktop.title }}</p>
     </nuxt-link>
 
     <div
@@ -123,11 +123,11 @@ function restorePage (page: Page): void {
       )"
     >
       <AsyncIcon
-        :name="folderItem.icon || 'Folder'"
+        :name="folderItem.desktop.icon || 'Folder'"
         :size="52"
         :strokeWidth="1.3"
       />
-      <p>{{ folderItem.fileName }}</p>
+      <p>{{ folderItem.desktop.title }}</p>
     </div>
   </div>
 </template>

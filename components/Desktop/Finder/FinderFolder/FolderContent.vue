@@ -16,7 +16,7 @@ const currentFolder = toRef(props, 'currentFolder')
 
 const currentComponent = shallowRef(null);
 watch(
-  () => currentFolder.value?.contentComponent?.component,
+  () => currentFolder.value?.desktop.contentComponent,
   (componentName) => {
     if (componentName) {
       currentComponent.value = defineAsyncComponent(() =>
@@ -31,14 +31,14 @@ const pagesStore = usePagesStore()
 
 const files = computed<Page[]>(() => {
   if (currentFolder.value?.fullUrl === '/my-computer') {
-    return pagesStore.pages.filter(page => page.parentId === 1 && !page.url.includes('/file/') && page.showInFinder)
+    return pagesStore.pages.filter(page => page.parentId === 1 && !page.url.includes('/file/') && page.desktop.showInFinder)
   }
 
   return pagesStore.pages
     .filter(page => page.parentId === currentFolder.value?.id)
     .sort((a: Page, b: Page) => {
-      if (a.title < b.title) return -1
-      if (a.title > b.title) return 1
+      if (a.desktop.title < b.desktop.title) return -1
+      if (a.desktop.title > b.desktop.title) return 1
       return 0
     })
 })
@@ -139,7 +139,7 @@ function restoreAll () {
     class="content"
     @contextmenu.prevent="onFolderClick"
   >
-    <template v-if="currentFolder?.contentComponent">
+    <template v-if="currentFolder?.desktop.contentComponent">
       <component
         v-if="currentComponent"
         :is="currentComponent"
