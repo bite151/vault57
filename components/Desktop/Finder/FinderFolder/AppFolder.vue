@@ -161,7 +161,7 @@ function onResizeEnd(): void {
         @on-move-end="onMoveEnd"
         @on-move-start="toFront()"
       >
-        <h1>{{ currentWindow?.desktop.title }}</h1>
+        <h1>{{ currentWindow.desktop.title }}</h1>
       </FinderHeader>
 
       <section class="content-wrapper">

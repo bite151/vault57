@@ -5,16 +5,15 @@ interface Options {
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const { fetch } = useAPI()
-  
   const isAuth = ref<boolean>(false)
   const profile = ref<any>(null)
   
   async function login(body: { login: string; password: string }) {
     if (isAuth.value) return
     
-    profile.value = await fetch('/auth/login', 'POST', {
+    profile.value = await $fetch('/api/auth/login', {
       body,
+      method: 'POST',
     })
     isAuth.value = true
   }
@@ -32,7 +31,8 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await $fetch<any>('/api/auth/check', options)
       isAuth.value = true
       profile.value = data
-    } catch (e) {
+    } catch (e: any) {
+      // console.dir(e.data.message.split(',').join(', '))
       clearAuth()
     }
   }

@@ -88,7 +88,7 @@ async function hideWindow(e: MouseEvent): Promise<void> {
   if (checkMatches) {
     // if there is already such a window in the dock,
     // then the duplicate is closed.
-    closeWindow()
+    await closeWindow()
   } else {
     windowsStore.updateWindowParams({
       windowId: currentWindow.windowId,

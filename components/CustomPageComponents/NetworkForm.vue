@@ -3,54 +3,63 @@
 import {useAuthStore} from "~/store/authStore";
 
 type FormFeedbackType = 'incomplete' | 'invalid' | 'success' | 'error' | null;
-type FormDialog = {
+interface FormDialog {
   title: string;
   description: string;
+  errorData?: any;
+  status?: FormFeedbackType;
 }
 
 const authStore = useAuthStore();
 const { login, logout } = authStore
 const { isAuth, profile } = storeToRefs(authStore)
 
-const log = ref<string>('');
-const password = ref<string>('');
+const log = ref<string>('knkjn');
+const password = ref<string>('kjbk');
 
 const isLoading = ref<boolean>(false);
 const formFeedback: Ref<FormFeedbackType> = ref(null);
+const formError = ref<any>(null);
 
 const button = ref<HTMLElement | null>(null)
 
 const formDialog = computed<FormDialog | null>(() => {
-  if (formFeedback.value === 'error') {
+  const feedback = formFeedback.value;
+
+  if (feedback === 'error') {
     return {
-      title: 'Ошибка отправки!',
-      description: 'Попробуйте еще раз позднее'
+      title: 'Ошибка!',
+      description: formError.value,
+      status: 'error'
     }
   }
 
-  if (formFeedback.value === 'success') {
+  if (feedback === 'success') {
     // return {
     //   title: 'Сообщение отправлено!',
-    //   description: 'Мы свяжемся с Вами в ближайшее время'
+    //   description: 'Мы свяжемся с Вами в ближайшее время',
+    //   status: 'success'
     // }
   }
 
-  if (formFeedback.value === 'incomplete') {
+  if (feedback === 'incomplete') {
     return {
       title: 'Внимание!',
-      description: 'Заполните все поля формы'
+      description: 'Заполните все поля формы',
+      status: 'incomplete'
     }
   }
 
-  if (formFeedback.value === 'invalid') {
-    // return {
-    //   title: 'Внимание!',
-    //   description: 'Указан некорректный email'
-    // }
+  if (feedback === 'invalid') {
+    return {
+      title: 'Внимание!',
+      description: formError.value,
+      status: 'invalid'
+    }
   }
-  return null
-})
 
+  return null;
+})
 watch(
   () => formFeedback.value,
   (feedback) => {
@@ -71,10 +80,10 @@ async function handleLogIn() {
   }
 
   try {
-    await login({ login: log.value, password: password.value })
-  } catch (error: any) {
-    const errorMessage = error?.message || 'Неизвестная ошибка';
-    console.log(errorMessage)
+    await login({login: log.value, password: password.value})
+  } catch (e: any) {
+    formError.value = e.data.message.split(',').join(', ');
+    formFeedback.value = 'invalid';
   } finally {
     isLoading.value = false
   }
@@ -82,11 +91,12 @@ async function handleLogIn() {
 
 async function handleLogOut() {
   isLoading.value = true;
+
   try {
     await logout()
-  } catch (error: any) {
-    const errorMessage = error?.message || 'Неизвестная ошибка';
-    console.log(errorMessage)
+  } catch (e: any) {
+    formError.value = e.data.message.split(',').join(', ');
+    formFeedback.value = 'error';
   } finally {
     isLoading.value = false
   }
@@ -137,7 +147,6 @@ async function handleLogOut() {
       </section>
 
       <pre v-else>{{ profile }}</pre>
-
 
       <footer class="form__footer">
         <button

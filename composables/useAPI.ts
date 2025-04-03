@@ -1,19 +1,22 @@
-import {splitCookiesString} from "h3";
-import {FetchError} from "ofetch";
 type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
+interface ApiError {
+  message: string;
+  status: number;
+  data: any;
+}
 
 export function useAPI() {
   const config = useRuntimeConfig()
 
-  async function fetch<T>(url: string, method: Method, options: any): Promise<T> {
+  async function fetch<T>(url: string, method: Method, options: any): Promise<T | ApiError> {
     try {
-      return await $fetch(config.public.API_BASE_URL + url, {
+      return await $fetch<T>(config.public.API_BASE_URL + url, {
         ...options,
         credentials: 'include',
         method
       });
     } catch (e) {
-      errorHandling(e)
+      throwError(e)
     }
   }
   
@@ -25,26 +28,42 @@ export function useAPI() {
         method
       });
     } catch (e) {
-      errorHandling(e)
+      throwError(e)
     }
   }
   
-  function errorHandling(error: unknown): never {
-    let statusCode = 500;
-    let errorData: any = 'Unknown error';
-    
-    if (error instanceof FetchError) {
-      statusCode = error.response?.status || 500;
-      errorData = error.data || error.message || 'Unknown API error';
-    } else if (error instanceof Error) {
-      errorData = error.message;
+  function transformNitroError(error: any): ApiError {
+    if (error?.response?._data) {
+      return {
+        message: error.response._data.message || 'Server error',
+        status: error.response.status,
+        data: error.response._data
+      };
     }
+    
+    if (error?.name === 'FetchError') {
+      return {
+        message: 'Network error: Could not connect to server',
+        status: 0,
+        data: null
+      };
+    }
+    
+    return {
+      message: 'Unknown API error',
+      status: -1,
+      data: null
+    };
+  }
+  
+  function throwError(e: any): never {
+    const error = transformNitroError(e);
     
     throw createError({
-      statusCode,
-      ...errorData,
-    });
+      statusCode: error.status,
+      message: error.message,
+    })
   }
   
-  return { fetch, fetchRaw, errorHandling }
+  return { fetch, fetchRaw }
 }
