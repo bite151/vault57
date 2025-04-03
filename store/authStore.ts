@@ -32,7 +32,6 @@ export const useAuthStore = defineStore('auth', () => {
       isAuth.value = true
       profile.value = data
     } catch (e: any) {
-      // console.dir(e.data.message.split(',').join(', '))
       clearAuth()
     }
   }

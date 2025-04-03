@@ -14,8 +14,8 @@ const authStore = useAuthStore();
 const { login, logout } = authStore
 const { isAuth, profile } = storeToRefs(authStore)
 
-const log = ref<string>('knkjn');
-const password = ref<string>('kjbk');
+const log = ref<string>('');
+const password = ref<string>('');
 
 const isLoading = ref<boolean>(false);
 const formFeedback: Ref<FormFeedbackType> = ref(null);
