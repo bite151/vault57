@@ -139,7 +139,7 @@ function onResizeEnd(): void {
     :leave-active-class="`animate__animated animate__faster ${hideEffectClassName}`"
   >
     <div
-      v-if="isShown > 0"
+      v-show="isShown > 0"
       ref='folderWindowElement'
       class="content-folder"
       :class="{

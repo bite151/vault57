@@ -1,34 +1,18 @@
-type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
-interface Options {
-  method: Method;
-  headers?: { Cookie: string};
-}
-
 export const useAuthStore = defineStore('auth', () => {
+  const { apiRequest } = useAPI();
   const isAuth = ref<boolean>(false)
   const profile = ref<any>(null)
   
   async function login(body: { login: string; password: string }) {
     if (isAuth.value) return
     
-    profile.value = await $fetch('/api/auth/login', {
-      body,
-      method: 'POST',
-    })
+    profile.value = await apiRequest('/auth/login', 'POST', { body })
     isAuth.value = true
   }
   
-  async function checkAuth(session: string | null = null) {
-    const options: Options = { method: 'GET' }
-    
-    if (session) {
-      options.headers = {
-        Cookie: `session=${session}`
-      }
-    }
-    
+  async function checkAuth() {
     try {
-      const data = await $fetch<any>('/api/auth/check', options)
+      const data = await apiRequest('/users/profile', 'GET')
       isAuth.value = true
       profile.value = data
     } catch (e: any) {
@@ -37,9 +21,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
   
   async function logout() {
-    await $fetch('/api/auth/logout', {
-      method: 'POST'
-    })
+    await apiRequest('/auth/logout', 'POST')
     clearAuth()
   }
   

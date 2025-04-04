@@ -1,6 +1,7 @@
 import type {DesktopItem, Page} from "~/types/Page";
 
 export const usePagesStore = defineStore('pages', () => {
+  const { apiRequest } = useAPI();
   const config = useRuntimeConfig()
   const loading = ref<boolean>(false)
   
@@ -20,14 +21,9 @@ export const usePagesStore = defineStore('pages', () => {
   
   async function fetchPages(): Promise<Page[]> {
     loading.value = true
-    const session = useCookie<string | null>('session');
-    const data = await $fetch<Page[]>(config.public.API_BASE_URL + '/pages', {
-      credentials: 'include',
-      headers: {
-        Cookie: `session=${session.value}`,
-      }
-    })
+    const data = await apiRequest<Page[]>('/pages', 'GET')
     loading.value = false
+    
     if (data) {
       pages.value = data.map(page => ({
         ...page,

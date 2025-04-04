@@ -81,7 +81,7 @@ async function handleLogIn() {
   try {
     await login({login: log.value, password: password.value})
   } catch (e: any) {
-    formError.value = e.data.message.split(',').join(', ');
+    formError.value = e.message
     formFeedback.value = 'invalid';
   } finally {
     isLoading.value = false
@@ -94,7 +94,7 @@ async function handleLogOut() {
   try {
     await logout()
   } catch (e: any) {
-    formError.value = e.data.message.split(',').join(', ');
+    formError.value = e.message
     formFeedback.value = 'error';
   } finally {
     isLoading.value = false
