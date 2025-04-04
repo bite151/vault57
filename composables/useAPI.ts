@@ -7,8 +7,7 @@ interface ApiError {
 
 export function useAPI() {
   const config = useRuntimeConfig()
-
-  async function fetch<T>(url: string, method: Method, options: any): Promise<T | ApiError> {
+  async function fetch<T>(url: string, method: Method, options: any): Promise<any> {
     try {
       return await $fetch<T>(config.public.API_BASE_URL + url, {
         ...options,

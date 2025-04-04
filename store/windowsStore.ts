@@ -114,9 +114,13 @@ export const useWindowsStore = defineStore('windowsStore', () => {
     }
   }
   
+  function closeProtectedWindows() {
+    openedWindows.value = openedWindows.value.filter(item => item.permission === 'public')
+  }
+  
   function closeAllWindows(): void {
     openedWindows.value = []
   }
   
-  return { openedWindows, isLoaded, setWindow, updateWindowContent, updateWindowParams, setWindowToFront, closeWindow, closeAllWindows, currentScreen }
+  return { openedWindows, isLoaded, setWindow, updateWindowContent, updateWindowParams, setWindowToFront, closeWindow, closeAllWindows, closeProtectedWindows, currentScreen }
 })

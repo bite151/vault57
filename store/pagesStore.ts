@@ -20,11 +20,20 @@ export const usePagesStore = defineStore('pages', () => {
   
   async function fetchPages(): Promise<Page[]> {
     loading.value = true
-    const data = await $fetch<any>('/api/pages/getAll')
+    const session = useCookie<string | null>('session');
+    const data = await $fetch<Page[]>(config.public.API_BASE_URL + '/pages', {
+      credentials: 'include',
+      headers: {
+        Cookie: `session=${session.value}`,
+      }
+    })
     loading.value = false
     if (data) {
-      pages.value = data
-      return data
+      pages.value = data.map(page => ({
+        ...page,
+        content: typeof page.content === 'string' ? JSON.parse(page.content) : page.content,
+      }))
+      return pages.value
     }
     return []
   }

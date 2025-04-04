@@ -39,7 +39,7 @@ watchDebounced(
       data
     }))
   },
-  { debounce: 1000, maxWait: 2000 }
+  { debounce: 500, maxWait: 1000 }
 )
 
 function getLastSession () {

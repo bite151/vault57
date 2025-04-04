@@ -108,7 +108,7 @@ async function handleLogOut() {
     class="auth"
   >
     <div class="img-container">
-      <nuxt-img :src="`${config.public.MEDIA_URL}/images/desktop/network.png`" alt="" loading="lazy"/>
+      <nuxt-img :src="`${config.public.MEDIA_URL}/images/desktop/network-3-min.png`" alt="" loading="lazy"/>
     </div>
 
     <form
@@ -145,7 +145,7 @@ async function handleLogOut() {
         </fieldset>
       </section>
 
-      <pre v-else>{{ profile }}</pre>
+      <pre v-else class="form__user-info">{{ profile }}</pre>
 
       <footer class="form__footer">
         <button
@@ -185,7 +185,7 @@ async function handleLogOut() {
 
 <style scoped lang="scss">
 .auth {
-  width: 700px;
+  width: 100%;
   display: flex;
   gap: 24px;
   position: relative;
@@ -225,16 +225,20 @@ async function handleLogOut() {
   }
 
   .form {
-    &__fields {
+    &__fields,
+    &__user-info {
       display: flex;
       flex-direction: column;
       width: 100%;
       flex-grow: 1;
       gap: 24px;
     }
+    &__user-info {
+      min-width: 400px;
+    }
     &__fieldset {
       width: 100%;
-      max-width: 580px;
+      min-width: 400px;
     }
     &__label {
       display: flex;

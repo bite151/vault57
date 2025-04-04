@@ -159,7 +159,7 @@ function onResizeEnd(): void {
         :moveable="true"
         :buttons="windowButtons"
         @on-move-end="onMoveEnd"
-        @on-move-start="toFront()"
+        @on-move-start="toFront"
       >
         <h1>{{ currentWindow.desktop.title }}</h1>
       </FinderHeader>
@@ -180,6 +180,7 @@ function onResizeEnd(): void {
 
           <FinderStatusBar
             @on-resize-end="onResizeEnd"
+            @on-resize-start="toFront"
           >
             {{ breadCrumbs.replace('/file/', '/') }}
           </FinderStatusBar>

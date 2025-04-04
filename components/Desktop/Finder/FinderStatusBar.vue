@@ -2,9 +2,9 @@
 import {ref} from "vue";
 import {useMouse, useMousePressed, useEventListener} from "@vueuse/core";
 
-const emits = defineEmits(['onResizeEnd'])
+const emits = defineEmits(['onResizeEnd', 'onResizeStart'])
 const resizer = ref(null)
-const parentElement = inject<Ref<HTMLElement> | undefined>('parentElement');
+const parentElement = inject<Ref<HTMLElement> | undefined>('parentElement')
 const { pressed } = useMousePressed({ target: resizer })
 const { x, y } = useMouse()
 const clickPosition = ref<{ x: number, y: number }>({ x: 0, y: 0})
@@ -37,9 +37,7 @@ function onStartResize() {
     y: parentElement.value.clientHeight + parentElement.value.offsetTop
   }
 
-  parentElement.value.style.top = parentElement.value.offsetTop + 'px'
-  parentElement.value.style.left = parentElement.value.offsetLeft +'px'
-  parentElement.value.style.margin = '0'
+  emits('onResizeStart')
 }
 
 const resizeListener = () => {
@@ -47,6 +45,9 @@ const resizeListener = () => {
 
   parentElement.value.style.height = y.value - parentElement.value.offsetTop + 'px'
   parentElement.value.style.width = x.value - parentElement.value.offsetLeft + 'px'
+  parentElement.value.style.top = parentElement.value.offsetTop + 'px'
+  parentElement.value.style.left = parentElement.value.offsetLeft +'px'
+  parentElement.value.style.margin = '0'
 }
 </script>
 
