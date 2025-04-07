@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
-import AlertDialog from "~/components/Desktop/Modals/AlertDialog.vue";
+import AlertDialog from "~/components/Desktop/Dialogs/AlertDialog.vue";
 import {useWindowsStore} from "~/store/windowsStore";
 import Dock from "~/components/Desktop/Desktop/Dock.vue";
 import {usePagesStore} from "~/store/pagesStore";

@@ -5,18 +5,28 @@ import { useWindowsStore } from "~/store/windowsStore";
 import { openWindow } from "~/helpers/app.helpers";
 import type { MenuItem, Page } from "~/types/Page";
 import type {PageWindow} from "~/types/Window";
+import {useAuthStore} from "~/store/authStore";
 
 const { folderItem, windowId } = defineProps<{
   folderItem: Page,
   windowId: string | undefined
 }>()
 
-const emit = defineEmits(['onContextMenu', 'onRemove', 'onShowProps'])
+const emit = defineEmits(['onContextMenu', 'onRemove', 'onShowProps', 'onEdit'])
+const authStore = useAuthStore()
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
 
 const currentWindow = computed<PageWindow | undefined>(() => windowsStore.openedWindows.find(item => item.windowId === windowId))
 const isTrash = computed<boolean>(() => currentWindow.value?.fullUrl === '/trash')
+const isAdmin = computed<boolean>(() => authStore.isAuth && authStore.profile.role === 'admin')
+const menuItems = computed<ActionKey[]>(() => {
+  const items = ['open','remove', 'properties']
+  if (isAdmin.value) {
+    items.splice(1, 0, 'edit')
+  }
+  return items
+})
 
 const menuItemsList: MenuItem[] = [
   {
@@ -31,6 +41,12 @@ const menuItemsList: MenuItem[] = [
   //   icon: null,
   //   action: (page: Page) => openPageInNewWindow(page)
   // },
+  {
+    key: 'edit',
+    title: 'Редактировать',
+    icon: null,
+    action: (page: Page) => emit('onEdit', page)
+  },
   {
     key: 'remove',
     title: 'Удалить',
@@ -50,6 +66,7 @@ const menuItemsList: MenuItem[] = [
     action: (page: Page) => emit('onShowProps', page)
   },
 ] as const
+
 
 type ActionKey = (typeof menuItemsList)[number]['key']
 
@@ -93,7 +110,10 @@ function restorePage (page: Page): void {
 </script>
 
 <template>
-  <div class="file">
+  <div
+    class="file"
+    :class="{ file_hidden: !folderItem.isPublic }"
+  >
     <nuxt-link
       v-if="!isTrash"
       active-class="file_active"
@@ -101,7 +121,7 @@ function restorePage (page: Page): void {
       @contextmenu.prevent="emit(
         'onContextMenu',
         folderItem,
-        getMenuItems(['open','remove','properties'])
+        getMenuItems(menuItems)
       )"
     >
       <AsyncIcon
@@ -146,6 +166,15 @@ function restorePage (page: Page): void {
     color: #31322d;
 
     cursor: pointer;
+  }
+
+  &_hidden {
+    a, .file-inner {
+      color: #a7a7a5;
+    }
+    svg {
+      stroke: #a7a7a5;
+    }
   }
 
   svg {

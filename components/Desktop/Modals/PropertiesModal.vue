@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import type { Page } from "~/types/Page";
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
-import { generateUrl } from "~/helpers/app.helpers";
+import { generateUrl, getNestedValue } from "~/helpers/app.helpers";
 import FinderHeader from "~/components/Desktop/Finder/FinderHeader.vue";
 
 interface PropField {
@@ -17,7 +17,7 @@ const propertiesModal = ref(null)
 provide('parentElement', propertiesModal);
 
 const propFields = ref<PropField[]>([
-  { name: 'Имя', key: 'title' },
+  { name: 'Имя', key: 'desktop.title' },
   { name: 'Путь', key: 'url' },
   { name: 'Создан', key: 'createdAt' },
   { name: 'Изменен', key: 'updatedAt' },
@@ -46,14 +46,14 @@ onClickOutside(propertiesModal, event => emits('on-close'))
               action: () => emits('on-close'),
             }]"
           >
-            <span>{{ data.title }}</span>
+            <span>{{ data.desktop.title }}</span>
             — Свойства
           </FinderHeader>
 
           <div class="content content_rounded">
             <div class="icon-wrapper">
               <AsyncIcon
-                :name="data.icon!"
+                :name="data.desktop.icon!"
                 :size="72"
                 :stroke-width="1"
               />
@@ -65,7 +65,7 @@ onClickOutside(propertiesModal, event => emits('on-close'))
                 :key="field.key"
               >
                 {{ field.name }}:
-                <span>{{ field.key !== 'url' ? data[field.key] : generateUrl(data).replace('/file/', '/') }}</span>
+                <span>{{ field.key !== 'url' ? getNestedValue(data, field.key) : generateUrl(data).replace('/file/', '/') }}</span>
               </p>
             </div>
           </div>

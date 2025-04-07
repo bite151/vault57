@@ -3,13 +3,17 @@ import type {PageContent} from "~/types/Page";
 
 const config = useRuntimeConfig()
 defineProps<({
-  content: PageContent | null
+  content: PageContent | string | null
 })>()
+
+function imgSrc(src: string): string {
+  return !src.includes(';base64') ? config.public.MEDIA_URL + src : src
+}
 </script>
 
 <template>
   <div
-    v-if="content"
+    v-if="content && typeof content !== 'string'"
     class="article"
     :style="`background-image: url(${config.public.MEDIA_URL}/images/backgrounds/236_45fabric.png)`"
   >
@@ -20,7 +24,7 @@ defineProps<({
     >
       <NuxtImg
         v-if="block.img"
-        :src="config.public.MEDIA_URL + block.img"
+        :src="imgSrc(block.img)"
         :placeholder="[50, 25, 75, 5]"
         format="webp"
         class="cover"
@@ -36,7 +40,7 @@ defineProps<({
       >
         <NuxtImg
           v-for="img in block.images"
-          :src="config.public.MEDIA_URL + img"
+          :src="imgSrc(img)"
           :placeholder="[50, 25, 75, 5]"
           format="webp"
           loading="lazy"

@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import type { ConfirmDialogProps } from "~/types/ConfirmDialog";
-import type {Page} from "~/types/Page";
-import {ref} from "vue";
-import {onClickOutside} from "@vueuse/core";
+import { ref } from "vue";
+import { onClickOutside } from "@vueuse/core";
 import FinderHeader from "~/components/Desktop/Finder/FinderHeader.vue";
 
+interface AlertDialogProps {
+  title: string;
+  message: string;
+}
+
 const emits = defineEmits(['on-close'])
-const { title, dialog, buttons, data } = defineProps<ConfirmDialogProps<Page>>()
+const { title, message } = defineProps<AlertDialogProps>()
 
-const confirmDialog = ref(null)
-provide('parentElement', confirmDialog);
+const alertDialog = ref(null)
+provide('parentElement', alertDialog);
 
-onClickOutside(confirmDialog, event => emits('on-close'))
+onClickOutside(alertDialog, event => emits('on-close'))
 </script>
 
 <template>
-  <ClientOnly >
+  <ClientOnly>
     <Teleport to="body">
       <Transition
         enter-active-class="animate__animated animate__fadeIn animate__faster"
@@ -23,8 +26,8 @@ onClickOutside(confirmDialog, event => emits('on-close'))
         appear
       >
         <div
-          ref="confirmDialog"
-          class="confirm-dialog"
+          ref="alertDialog"
+          class="alert-dialog"
         >
           <FinderHeader
             :moveable="true"
@@ -34,14 +37,13 @@ onClickOutside(confirmDialog, event => emits('on-close'))
           </FinderHeader>
 
           <div class="content content_rounded">
-            <p>{{ dialog }}</p>
+            <p>{{ message }}</p>
             <div class="content__buttons">
               <button
-                v-for="button in buttons"
                 class="buttons__button"
-                @click="button.action(data)"
+                @click="emits('on-close')"
               >
-                <span>{{ button.text }}</span>
+                <span>OK</span>
               </button>
             </div>
           </div>
@@ -49,11 +51,10 @@ onClickOutside(confirmDialog, event => emits('on-close'))
       </Transition>
     </Teleport>
   </ClientOnly>
-
 </template>
 
 <style scoped lang="scss">
-.confirm-dialog {
+.alert-dialog {
   display: flex;
   flex-direction: column;
   max-width: 430px;
@@ -88,6 +89,9 @@ onClickOutside(confirmDialog, event => emits('on-close'))
   &.is-move {
     box-shadow: 30px 30px 0 0 var(--folder-shadow-light-color);
     transform: translateY(-5px) translateX(-5px) scale(1.01);
+    bottom: inherit;
+    right: inherit;
+    margin: 0;
 
     .title-bar {
       cursor: grabbing
@@ -109,6 +113,8 @@ onClickOutside(confirmDialog, event => emits('on-close'))
     font-weight: 600;
     font-size: 17px;
     padding: 8px;
+
+    user-select: none;
   }
 
   &__buttons {
@@ -120,6 +126,7 @@ onClickOutside(confirmDialog, event => emits('on-close'))
   }
 
   .buttons__button {
+    width: 100px;
     padding: 3px;
     background-color: #dcddd7;
     border-radius: 4px;
@@ -141,6 +148,7 @@ onClickOutside(confirmDialog, event => emits('on-close'))
     }
   }
 }
+
 .animate__faster {
   --animate-duration: 0.7s;
 }

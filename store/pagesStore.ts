@@ -1,11 +1,17 @@
 import type {DesktopItem, Page} from "~/types/Page";
+import {useWindowsStore} from "~/store/windowsStore";
 
 export const usePagesStore = defineStore('pages', () => {
+  const windowsStore = useWindowsStore();
   const { apiRequest } = useAPI();
+  
   const config = useRuntimeConfig()
   const loading = ref<boolean>(false)
   
   const pages = ref<Page[]>([])
+  const editedPage = ref<Page | null>(null)
+  const editorHasChanges = ref<boolean>(false)
+  
   const desktopItems = ref<DesktopItem[]>([])
   
   async function fetchDesktopItems(): Promise<DesktopItem[]> {
@@ -25,20 +31,47 @@ export const usePagesStore = defineStore('pages', () => {
     loading.value = false
     
     if (data) {
-      pages.value = data.map(page => ({
-        ...page,
-        content: typeof page.content === 'string' ? JSON.parse(page.content) : page.content,
-      }))
-      return pages.value
+      pages.value = data
+      return data
     }
     return []
+  }
+  
+  async function savePage(page: Page): Promise<Page | null> {
+    loading.value = true
+
+    page.content = JSON.stringify(page.content)
+    
+    const data = (page.id)
+      ? await apiRequest<Page>(`/pages/${page.id}`, 'PATCH', { body: page })
+      : await apiRequest<Page>(`/pages`, 'POST', { body: page })
+    
+    pages.value = pages.value.map(page =>
+      page.id === data.id
+        ? data
+        : page
+    )
+    
+    windowsStore.openedWindows = windowsStore.openedWindows.map(window =>
+      window.id === data.id
+        ? { ...window, ...data }
+        : window
+    )
+    
+    editedPage.value = structuredClone(data)
+    
+    loading.value = false
+    return data
   }
 
   return {
     loading,
     pages,
+    editedPage,
+    editorHasChanges,
     desktopItems,
     fetchDesktopItems,
     fetchPages,
+    savePage,
   }
 })

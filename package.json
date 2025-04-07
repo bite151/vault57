@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@element-plus/nuxt": "^1.1.1",
     "@nuxt/fonts": "^0.7.0",
     "@nuxt/image": "^1.7.0",
     "@pinia/nuxt": "^0.5.1",
@@ -20,6 +21,8 @@
     "class-variance-authority": "^0.7.0",
     "click-outside-vue3": "^4.0.1",
     "clsx": "^2.1.1",
+    "compressorjs": "^1.2.1",
+    "element-plus": "^2.9.7",
     "iron-session": "^8.0.4",
     "lucide-vue-next": "^0.474.0",
     "nuxt": "^3.12.2",

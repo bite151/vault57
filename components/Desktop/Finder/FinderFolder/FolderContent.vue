@@ -5,11 +5,13 @@ import {useMouse, useWindowScroll} from "@vueuse/core";
 import FolderItem from "~/components/Desktop/Finder/FinderFolder/FolderItem.vue";
 import ContextMenu from "~/components/Desktop/Finder/FinderFolder/ContextMenu.vue";
 import EmptyFolder from "~/components/Desktop/Finder/FinderFolder/EmptyFolder.vue";
-import ConfirmDialog from "~/components/Desktop/Modals/ConfirmDialog.vue";
-import PropertiesModal from "~/components/Desktop/Finder/FinderFolder/PropertiesModal.vue";
+import ConfirmDialog from "~/components/Desktop/Dialogs/ConfirmDialog.vue";
+import PropertiesModal from "~/components/Desktop/Modals/PropertiesModal.vue";
 import type { ConfirmDialogProps } from "~/types/ConfirmDialog";
 import type { MenuItem, Page } from "~/types/Page";
 import type { PageWindow } from "~/types/Window";
+import {openWindow} from "~/helpers/app.helpers";
+import {useWindowsStore} from "~/store/windowsStore";
 
 const props = defineProps<{ currentFolder?: PageWindow | undefined }>()
 const currentFolder = toRef(props, 'currentFolder')
@@ -28,6 +30,7 @@ watch(
 );
 
 const pagesStore = usePagesStore()
+const windowsStore = useWindowsStore()
 
 const files = computed<Page[]>(() => {
   if (currentFolder.value?.fullUrl === '/my-computer') {
@@ -72,6 +75,18 @@ function openContextMenu(page: Page, menuItemsArr: MenuItem[]) {
 function closeContextMenu(): void {
   contextMenu.value = null
   isFolderItemActive.value = false
+}
+
+function editPage(page: Page): void {
+  const { pages } = pagesStore
+  const pageEditor = pages.find(page => page.url === '/page-editor')!
+
+  pagesStore.editedPage = JSON.parse(JSON.stringify(page))
+  localStorage.setItem('editedPage', JSON.stringify(page))
+
+  openWindow(pageEditor)
+  const index = windowsStore.openedWindows.findIndex(page => page.url === '/page-editor')
+  windowsStore.openedWindows[index].isFullScreen = true
 }
 
 function removePage(page: Page): void {
@@ -167,6 +182,7 @@ function restoreAll () {
         :window-id="currentFolder?.windowId"
         :class="{'active': isFolderItemActive === folderItem.id}"
         @on-context-menu="openContextMenu"
+        @on-edit="editPage"
         @on-remove="openConfirmDialog"
         @on-show-props="openPropertiesModal"
       />

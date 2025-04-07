@@ -5,6 +5,7 @@ import {usePagesStore} from "~/store/pagesStore";
 import {findPageByUrl} from "~/helpers/app.helpers";
 import type {PageWindow} from "~/types/Window";
 import {useThemeColor} from "~/composables/useThemeColor";
+import {useAuthStore} from "~/store/authStore";
 
 const AppDesktop = defineAsyncComponent(() => import('~/components/Desktop/Desktop/AppDesktop.vue'))
 const AppFolder = defineAsyncComponent(() => import('~/components/Desktop/Finder/FinderFolder/AppFolder.vue'))
@@ -12,13 +13,15 @@ const AppFile = defineAsyncComponent(() => import('~/components/Desktop/Finder/F
 
 const route = useRoute()
 
+const authStore = useAuthStore()
 const windowsStore = useWindowsStore()
 const pagesStore = usePagesStore()
 const { changeThemeColor } = useThemeColor()
 
 const windows = computed<PageWindow[]>(() => windowsStore.openedWindows)
 const openedWindows = computed(() => windows.value.filter(window => !window.isHidden))
-const loaded = computed(() => windowsStore.isLoaded)
+const isAuth = computed(() => authStore.isAuth)
+const user = computed(() => authStore.profile)
 
 onMounted(() => {
   console.log('Desktop application launched')
@@ -117,6 +120,15 @@ function isComponent(window: PageWindow) {
       :current-window="window"
     />
 
+    <div
+      v-if="isAuth && user.role === 'admin'"
+      class="session-info"
+    >
+      <p>Active session:</p>
+      <p>{{ user.role }}</p>
+      <p>{{ user.name }}</p>
+    </div>
+
     <AppDesktop />
   </main>
 </template>
@@ -129,6 +141,18 @@ function isComponent(window: PageWindow) {
   align-items: center;
   height: 100vh;
   background-color: var(--desktop-bg-color);
+}
+
+.session-info {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+
+  p {
+    font-size: 12px;
+    color: #dedcdc;
+    user-select: none;
+  }
 }
 
 //.window-component {

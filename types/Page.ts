@@ -50,7 +50,7 @@ export interface MenuItem {
 }
 
 export interface Block {
-  id: number;
+  id?: number;
   type: 'text' | 'image' | 'video' | string; // можно расширить под другие типы блоков
   title: string;
   img?: string;
@@ -59,8 +59,8 @@ export interface Block {
 }
 
 export interface PageContent {
-  id: number;
-  pageId: number;
+  id?: number;
+  pageId?: number;
   h1: string;
   blocks: Block[];
 }

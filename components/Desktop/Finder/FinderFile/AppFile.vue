@@ -6,9 +6,12 @@ import FinderStatusBar from "~/components/Desktop/Finder/FinderStatusBar.vue";
 import type { PageWindow } from "~/types/Window";
 import {generateUrl} from "~/helpers/app.helpers";
 import Simplebar from "simplebar-vue";
-// import 'simplebar-vue/dist/simplebar.min.css';
 import 'assets/scss/simplebar.css';
 import FileContent from "~/components/Desktop/Finder/FinderFile/FileContent.vue";
+import {usePagesStore} from "~/store/pagesStore";
+import ConfirmDialog from "~/components/Desktop/Dialogs/ConfirmDialog.vue";
+import type {Page} from "~/types/Page";
+import type {ConfirmDialogProps} from "~/types/ConfirmDialog";
 
 const { currentWindow } = defineProps<{
   currentWindow: PageWindow
@@ -33,7 +36,7 @@ watch(
 const windowButtons = ref([
   {
     icon: 'X',
-    action: closeWindow
+    action: confirmCloseWindow
   },
   {
     icon: 'Minus',
@@ -46,6 +49,7 @@ const windowButtons = ref([
 ])
 
 const windowsStore = useWindowsStore()
+const pagesStore = usePagesStore()
 const openedWindows = computed(() => windowsStore.openedWindows.filter(item => !item.isHidden))
 const breadCrumbs = generateUrl(currentWindow)
 
@@ -71,7 +75,37 @@ function toFront(): void {
   windowsStore.setWindowToFront(currentWindow.windowId)
 }
 
-async function closeWindow(): Promise<void> {
+const confirmDialog = ref<boolean>(false)
+const confirmDialogProps = ref<ConfirmDialogProps<undefined>>({
+  title: 'Данные не сохранены',
+  dialog: 'Закрыть редактор?',
+  data: undefined,
+  buttons: [{
+    text: 'Отмена',
+    action: () => closeConfirmDialog(),
+  }, {
+    text: 'Да',
+    action: async (data) => {
+      await closeWindow()
+    },
+  }]
+})
+function openConfirmDialog (): void {
+  confirmDialog.value = true
+}
+function closeConfirmDialog (): void {
+  confirmDialog.value = false
+}
+
+async function confirmCloseWindow(): Promise<void> {
+  if (currentWindow.url === '/page-editor' && pagesStore.editorHasChanges) {
+    openConfirmDialog()
+    return
+  }
+  await closeWindow()
+}
+
+async function closeWindow() {
   isShown.value = -2
   await new Promise(r => setTimeout(r, 50));
   windowsStore.closeWindow(currentWindow.windowId)
@@ -210,6 +244,12 @@ function onResizeEnd(): void {
           </FinderStatusBar>
         </div>
       </section>
+
+      <ConfirmDialog
+        v-if="confirmDialog"
+        v-bind="confirmDialogProps"
+        @on-close="closeConfirmDialog"
+      />
     </div>
   </Transition>
 </template>
@@ -217,7 +257,7 @@ function onResizeEnd(): void {
 <style scoped lang="scss">
 .content-file {
   max-width: 1320px;
-  width: 946px;
+  width: 980px;
   min-width: 720px !important;
   height: 80vh;
   max-height: 980px !important;
@@ -248,17 +288,23 @@ function onResizeEnd(): void {
   }
   &_full-screen {
     box-shadow: none;
-    height: 100vh !important;
-    width: 100% !important;
-    max-width: 1320px;
+    height: calc(100vh + 6px) !important;
+    width: calc(100% + 6px) !important;
+    max-width: 1480px;
 
 
-    top: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    top: -3px !important;
+    bottom: -3px !important;
+    left: -3px !important;
+    right: -3px !important;
     //margin: 0 36px 0 16px !important;
     margin: auto !important;
+
+    //border-width: 2px;
+    border-radius: 0;
+    &:deep(.title-bar) {
+      border-radius: 0;
+    }
   }
   &_hidden {
     position: fixed;
