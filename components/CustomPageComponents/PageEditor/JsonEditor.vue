@@ -43,7 +43,7 @@ function validateJson(data: any): string[] | null {
   }
 
   const requiredFields: Record<string, string> = {
-    id: 'number',
+    // id: 'number',
     parentId: 'number',
     url: 'string',
     content: 'object',

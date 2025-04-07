@@ -46,20 +46,24 @@ export const usePagesStore = defineStore('pages', () => {
       ? await apiRequest<Page>(`/pages/${page.id}`, 'PATCH', { body: page })
       : await apiRequest<Page>(`/pages`, 'POST', { body: page })
     
-    pages.value = pages.value.map(page =>
-      page.id === data.id
-        ? data
-        : page
-    )
-    
-    windowsStore.openedWindows = windowsStore.openedWindows.map(window =>
-      window.id === data.id
-        ? { ...window, ...data }
-        : window
-    )
-    
     editedPage.value = structuredClone(data)
-    
+
+    if (page.id) {
+      pages.value = pages.value.map(page =>
+        page.id === data.id
+          ? data
+          : page
+      )
+      
+      windowsStore.openedWindows = windowsStore.openedWindows.map(window =>
+        window.id === data.id
+          ? { ...window, ...data }
+          : window
+      )
+    } else {
+      pages.value = [...pages.value, data]
+    }
+
     loading.value = false
     return data
   }

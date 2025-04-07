@@ -72,7 +72,7 @@ function redirectTo(page: Page) {
         @click="redirectTo(page)"
       >
         <AsyncIcon
-          v-if="page.desktop.icon !== 'Folder'"
+          v-if="page.desktop.icon && page.desktop.icon !== 'Folder'"
           :name="page.desktop.icon"
           class="icon"
           :size="20"
@@ -91,7 +91,7 @@ function redirectTo(page: Page) {
       </nuxt-link>
 
       <MenuBlock
-        v-if="isActive(page.url) && hasChildren(page.id)"
+        v-if="isActive(page.url) && hasChildren(page.id!)"
         :parent-page-id="page.id"
       />
     </li>

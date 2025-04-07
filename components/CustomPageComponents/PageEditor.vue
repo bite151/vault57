@@ -20,7 +20,7 @@ import {cloneObj, deepEqual} from "~/helpers/app.helpers";
 import {useNotify} from "~/composables/useNotify";
 
 const pagesStore = usePagesStore()
-const { notify } = useNotify()
+const { notify, notifyArray } = useNotify()
 
 const form = ref<Page | null>(null)
 const showTree = ref<boolean>(false)
@@ -65,7 +65,7 @@ onMounted(() => {
     form.value = JSON.parse(storage)
     return
   }
-  form.value = cloneObj(pagesStore.editedPage)
+  form.value = pagesStore.editedPage
 })
 
 onBeforeUnmount(() => {
@@ -74,6 +74,58 @@ onBeforeUnmount(() => {
   form.value = null
   localStorage.removeItem('editedPage')
 })
+
+function createPage() {
+  if (hasChanges.value) {
+    notify('warning', 'Unsaved changes detected', 'Please save your changes before creating a new page')
+    return
+  }
+
+  pagesStore.editedPage = {
+    parentId: 1,
+    url: '/',
+    content: {
+      h1: '',
+      blocks: [
+        {
+          type: 'text',
+          title: '',
+          img: '',
+          p: [],
+          images: []
+        }
+      ]
+    },
+    range: 1,
+    isPublic: 1,
+    type: 'file',
+    permission: 'public',
+    seo: {
+      title: '',
+      description: ''
+    },
+    mobile: {
+      icon: '',
+      title: '',
+      shortTitle: '',
+      description: '',
+      contentComponent: null,
+      showInLauncher: 0,
+      background: '#dededc',
+      loadParentScreens: 1
+    },
+    desktop: {
+      icon: '',
+      title: '',
+      contentComponent: null,
+      showInFinder: 1,
+      resetWidth: 0,
+      hideStatusBar: 0
+    }
+  }
+  form.value = cloneObj(pagesStore.editedPage)
+  localStorage.setItem('editedPage', JSON.stringify(form.value))
+}
 
 async function savePage() {
   if (!form.value) {
@@ -90,13 +142,19 @@ async function savePage() {
     const formClone = cloneObj(form.value)
     const data = await pagesStore.savePage(formClone)
 
+    form.value = cloneObj(data)
     localStorage.setItem('editedPage', JSON.stringify(data))
 
     notify('success', 'Success', 'Page saved')
   } catch (e: any) {
-    e.data?.message?.forEach((message: any) => {
-      notify('error', e.data.error, message)
-    })
+
+    if (e?.data?.error && typeof e?.data?.message !== 'string') {
+      notifyArray('error', e.data.error, e.data)
+    } else if (e?.data?.error) {
+      notify('error', e.data.error, e.message)
+    } else {
+      notify('error', e.statusCode.toString(), e.statusMessage)
+    }
   }
 }
 </script>
@@ -105,6 +163,7 @@ async function savePage() {
   <ControlPanel
     v-model:tree="showTree"
     v-model:tab="tabName"
+    @on-create="createPage"
     @on-save="savePage"
   />
   <div class="content-wrapper">
@@ -118,7 +177,6 @@ async function savePage() {
       v-if="form"
       class="main-frame"
     >
-
       <div
         v-if="tabName === 'json'"
         class="form-block form-block_full-width"
@@ -153,7 +211,7 @@ async function savePage() {
                 v-for="item in pagesStore.pages"
                 :key="item.id"
                 :label="item.seo.title"
-                :value="item.id"
+                :value="item.id!"
               />
             </el-select>
           </el-form-item>

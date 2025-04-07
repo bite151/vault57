@@ -43,13 +43,14 @@ const { tree } = defineProps<{
   tab: string
 }>()
 
-const emits = defineEmits(['update:tree', 'update:tab', 'onSave'])
+const emits = defineEmits(['update:tree', 'update:tab', 'onSave', 'onCreate', 'onDelete'])
 </script>
 
 <template>
 <div class="control-panel">
   <button
     class="control-panel__button"
+    @click="emits('onCreate')"
   >
     <AsyncIcon
       name="FilePlus"
@@ -78,6 +79,18 @@ const emits = defineEmits(['update:tree', 'update:tab', 'onSave'])
       :stroke-width="1.8"
     />
 <!--    Save-->
+  </button>
+
+  <button
+    class="control-panel__button"
+    @click="emits('onDelete')"
+  >
+    <AsyncIcon
+      name="Trash2"
+      :size="18"
+      :stroke-width="1.8"
+    />
+    <!--    Save-->
   </button>
 
   <span></span>

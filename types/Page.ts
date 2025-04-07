@@ -4,19 +4,19 @@ interface SEO {
 }
 
 export interface Page {
-  id: number;
+  id?: number;
   parentId: number;
   defaultParentId?: number | null;
   url: string;
   fullUrl?: string;
   content: PageContent | null | string;
-  isPublic: boolean;
+  isPublic: number;
   range: number;
   type: 'file' | 'folder' ;
   permission: 'public' | 'user' | 'admin';
-  createdBy: string;
-  createdAt: string;
-  updatedAt: string;
+  createdBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
   seo: SEO;
   mobile: MobileAppProps;
   desktop: DesktopAppProps;
@@ -28,8 +28,8 @@ interface MobileAppProps {
   shortTitle: string;
   description: string;
   contentComponent: string | null;
-  showInLauncher: boolean;
-  loadParentScreens: boolean;
+  showInLauncher: number;
+  loadParentScreens: number;
   background: string;
 }
 
@@ -37,9 +37,9 @@ interface DesktopAppProps {
   icon: string;
   title: string;
   contentComponent: string | null;
-  showInFinder: boolean;
-  resetWidth: boolean;
-  hideStatusBar: boolean;
+  showInFinder: number;
+  resetWidth: number;
+  hideStatusBar: number;
 }
 
 export interface MenuItem {
