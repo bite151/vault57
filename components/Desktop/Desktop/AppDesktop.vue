@@ -5,12 +5,19 @@ import {useWindowsStore} from "~/store/windowsStore";
 import Dock from "~/components/Desktop/Desktop/Dock.vue";
 import {usePagesStore} from "~/store/pagesStore";
 import {findPageByUrl, generateUrl} from "~/helpers/app.helpers";
+import {useDialogStore} from "~/store/dialogStore";
+import type {AlertDialogProps} from "~/types/AlertDialog";
+import ConfirmDialog from "~/components/Desktop/Dialogs/ConfirmDialog.vue";
+import type {ConfirmDialogProps} from "~/types/ConfirmDialog";
 
 const windowsStore = useWindowsStore()
 const pagesStore = usePagesStore()
+const dialogStore = useDialogStore()
+
+const alertDialog = computed<AlertDialogProps | null>(() => dialogStore.alertDialog)
+const confirmDialog = computed<ConfirmDialogProps | null>(() => dialogStore.confirmDialog)
 
 const icons = computed(() => pagesStore.desktopItems)
-const showAlertDialog = ref<boolean>(false)
 
 function openWindow(url: string): void {
   const page = findPageByUrl(url)
@@ -22,6 +29,14 @@ function openWindow(url: string): void {
     return
   }
   windowsStore.setWindow(url)
+}
+
+function handleAlertDialog() {
+  dialogStore.closeAllDialogs()
+  dialogStore.alertDialog = {
+    title: 'Error',
+    message: 'This component in the development stage',
+  }
 }
 </script>
 
@@ -45,7 +60,7 @@ function openWindow(url: string): void {
         v-else
         class="block"
         :class="`block${block.key}`"
-        @click="() => showAlertDialog = true"
+        @click="handleAlertDialog"
       >
         <AsyncIcon
           :name="block.icon"
@@ -61,10 +76,11 @@ function openWindow(url: string): void {
   </ClientOnly>
 
   <AlertDialog
-    v-if="showAlertDialog"
-    title="Error"
-    message="This component in the development stage"
-    @on-close="() => showAlertDialog = false"
+    v-if="alertDialog"
+  />
+
+  <ConfirmDialog
+    v-if="confirmDialog"
   />
 </template>
 

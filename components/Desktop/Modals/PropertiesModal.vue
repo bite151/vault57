@@ -53,7 +53,7 @@ onClickOutside(propertiesModal, event => emits('on-close'))
           <div class="content content_rounded">
             <div class="icon-wrapper">
               <AsyncIcon
-                :name="data.desktop.icon!"
+                :name="data.desktop.icon || 'Folder'"
                 :size="72"
                 :stroke-width="1"
               />

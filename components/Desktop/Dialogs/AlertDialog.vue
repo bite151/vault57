@@ -2,19 +2,27 @@
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import FinderHeader from "~/components/Desktop/Finder/FinderHeader.vue";
+import type {AlertDialogProps} from "~/types/AlertDialog";
+import {useDialogStore} from "~/store/dialogStore";
 
-interface AlertDialogProps {
-  title: string;
-  message: string;
+const dialogStore = useDialogStore()
+
+const alertDialog = computed<AlertDialogProps | null>(() => dialogStore.alertDialog)
+
+const alertDialogEl = ref(null)
+provide('parentElement', alertDialogEl);
+
+onClickOutside(alertDialogEl, event => dialogStore.alertDialog = null)
+
+function closeDialog() {
+  if (!alertDialog.value) return
+
+  if (alertDialog.value.action) {
+    alertDialog.value.action()
+  }
+  dialogStore.alertDialog = null
 }
 
-const emits = defineEmits(['on-close'])
-const { title, message } = defineProps<AlertDialogProps>()
-
-const alertDialog = ref(null)
-provide('parentElement', alertDialog);
-
-onClickOutside(alertDialog, event => emits('on-close'))
 </script>
 
 <template>
@@ -26,22 +34,23 @@ onClickOutside(alertDialog, event => emits('on-close'))
         appear
       >
         <div
-          ref="alertDialog"
+          v-if="alertDialog"
+          ref="alertDialogEl"
           class="alert-dialog"
         >
           <FinderHeader
             :moveable="true"
             :buttons="[]"
           >
-            {{ title }}
+            {{ alertDialog.title }}
           </FinderHeader>
 
           <div class="content content_rounded">
-            <p>{{ message }}</p>
+            <p>{{ alertDialog.message }}</p>
             <div class="content__buttons">
               <button
                 class="buttons__button"
-                @click="emits('on-close')"
+                @click="closeDialog()"
               >
                 <span>OK</span>
               </button>

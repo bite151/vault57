@@ -5,13 +5,12 @@ import {useMouse, useWindowScroll} from "@vueuse/core";
 import FolderItem from "~/components/Desktop/Finder/FinderFolder/FolderItem.vue";
 import ContextMenu from "~/components/Desktop/Finder/FinderFolder/ContextMenu.vue";
 import EmptyFolder from "~/components/Desktop/Finder/FinderFolder/EmptyFolder.vue";
-import ConfirmDialog from "~/components/Desktop/Dialogs/ConfirmDialog.vue";
 import PropertiesModal from "~/components/Desktop/Modals/PropertiesModal.vue";
-import type { ConfirmDialogProps } from "~/types/ConfirmDialog";
 import type { MenuItem, Page } from "~/types/Page";
 import type { PageWindow } from "~/types/Window";
 import {openWindow} from "~/helpers/app.helpers";
 import {useWindowsStore} from "~/store/windowsStore";
+import {useDialogStore} from "~/store/dialogStore";
 
 const props = defineProps<{ currentFolder?: PageWindow | undefined }>()
 const currentFolder = toRef(props, 'currentFolder')
@@ -31,6 +30,7 @@ watch(
 
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
+const dialogStore = useDialogStore()
 
 const files = computed<Page[]>(() => {
   if (currentFolder.value?.fullUrl === '/my-computer') {
@@ -62,7 +62,7 @@ const menuItems = ref<MenuItem[]>([])
 const isFolderItemActive = ref<boolean | number>(false)
 
 function openContextMenu(page: Page, menuItemsArr: MenuItem[]) {
-  isFolderItemActive.value = page.id
+  isFolderItemActive.value = page.id!
 
   menuItems.value = menuItemsArr
 
@@ -95,30 +95,30 @@ function removePage(page: Page): void {
   pagesStore.pages = pages.map((item) => {
     if (item.id === page.id) {
       item.defaultParentId = page.parentId
-      item.parentId = trash.id
+      item.parentId = trash.id!
     }
     return item
   })
   closeConfirmDialog()
 }
 
-const confirmDialog = ref<Page | null>(null)
-const confirmDialogProps = ref<ConfirmDialogProps<Page>>({
-  title: 'Подтвердите действие',
-  dialog: 'Переместить в корзину?',
-  buttons: [{
-    text: 'Отмена',
-    action: () => closeConfirmDialog(),
-  }, {
-    text: 'Да',
-    action: (page) => removePage(<Page>page),
-  }]
-})
 function openConfirmDialog (page: Page): void {
-  confirmDialog.value = page
+  dialogStore.closeAllDialogs()
+  dialogStore.confirmDialog = {
+    title: 'Подтвердите действие',
+    dialog: 'Переместить в корзину?',
+    buttons: [{
+      text: 'Отмена',
+      action: () => closeConfirmDialog(),
+    }, {
+      text: 'Да',
+      action: () => removePage(page),
+    }]
+  }
 }
+
 function closeConfirmDialog (): void {
-  confirmDialog.value = null
+  dialogStore.confirmDialog = null
 }
 
 const propertiesModal = ref<Page | null>(null)
@@ -144,7 +144,7 @@ function onFolderClick (): void {
 }
 
 function restoreAll () {
-  const trashId: number = pagesStore.pages.find(page => page.url === '/trash')!.id
+  const trashId: number = pagesStore.pages.find(page => page.url === '/trash')!.id!
   const trashItems = pagesStore.pages.filter(page => page.parentId === trashId)
   trashItems.forEach(item => {
     item.parentId = item.defaultParentId!
@@ -193,13 +193,6 @@ function restoreAll () {
         :menuItems="menuItems"
         :menu-position="menuPosition"
         @on-close="closeContextMenu"
-      />
-
-      <ConfirmDialog
-        v-if="confirmDialog"
-        v-bind="confirmDialogProps"
-        :data="confirmDialog"
-        @on-close="closeConfirmDialog"
       />
 
       <PropertiesModal

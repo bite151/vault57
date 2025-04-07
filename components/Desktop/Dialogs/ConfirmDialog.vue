@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import type { ConfirmDialogProps } from "~/types/ConfirmDialog";
-import type {Page} from "~/types/Page";
 import {ref} from "vue";
 import {onClickOutside} from "@vueuse/core";
 import FinderHeader from "~/components/Desktop/Finder/FinderHeader.vue";
+import {useDialogStore} from "~/store/dialogStore";
 
-const emits = defineEmits(['on-close'])
-const { title, dialog, buttons, data } = defineProps<ConfirmDialogProps<Page>>()
+const dialogStore = useDialogStore()
+const confirmDialog = computed<ConfirmDialogProps | null>(() => dialogStore.confirmDialog)
 
-const confirmDialog = ref(null)
-provide('parentElement', confirmDialog);
+const confirmDialogEl = ref(null)
+provide('parentElement', confirmDialogEl);
 
-onClickOutside(confirmDialog, event => emits('on-close'))
+onClickOutside(confirmDialogEl, event => dialogStore.confirmDialog = null)
 </script>
 
 <template>
@@ -23,23 +23,24 @@ onClickOutside(confirmDialog, event => emits('on-close'))
         appear
       >
         <div
-          ref="confirmDialog"
+          v-if="confirmDialog"
+          ref="confirmDialogEl"
           class="confirm-dialog"
         >
           <FinderHeader
             :moveable="true"
             :buttons="[]"
           >
-            {{ title }}
+            {{ confirmDialog.title }}
           </FinderHeader>
 
           <div class="content content_rounded">
-            <p>{{ dialog }}</p>
+            <p>{{ confirmDialog.dialog }}</p>
             <div class="content__buttons">
               <button
-                v-for="button in buttons"
+                v-for="button in confirmDialog.buttons"
                 class="buttons__button"
-                @click="button.action(data)"
+                @click="button.action()"
               >
                 <span>{{ button.text }}</span>
               </button>

@@ -61,7 +61,7 @@ function getLastSession () {
   const session: PageWindow[] = storage.data.map((item: PageWindow) => {
     const page = pagesStore.pages.find(page => page.id === item.id)
     item.content = page?.content || null
-    item.pageId = page!.id
+    item.pageId = page!.id!
     return item
   })
 

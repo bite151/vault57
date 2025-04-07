@@ -18,8 +18,11 @@ import JsonEditor from "~/components/CustomPageComponents/PageEditor/JsonEditor.
 import ContentEditor from "~/components/CustomPageComponents/PageEditor/ContentEditor.vue";
 import {cloneObj, deepEqual} from "~/helpers/app.helpers";
 import {useNotify} from "~/composables/useNotify";
+import {useDialogStore} from "~/store/dialogStore";
 
 const pagesStore = usePagesStore()
+const dialogStore = useDialogStore()
+
 const { notify, notifyArray } = useNotify()
 
 const form = ref<Page | null>(null)
@@ -157,6 +160,15 @@ async function savePage() {
     }
   }
 }
+
+async function deletePage() {
+  dialogStore.closeAllDialogs()
+  // dialogStore.alertDialog = {
+  //   title: 'Delete',
+  //   message: 'Are you sure you want to delete this page?',
+  // }
+}
+
 </script>
 
 <template>
@@ -165,6 +177,7 @@ async function savePage() {
     v-model:tab="tabName"
     @on-create="createPage"
     @on-save="savePage"
+    @on-delete="deletePage"
   />
   <div class="content-wrapper">
     <aside

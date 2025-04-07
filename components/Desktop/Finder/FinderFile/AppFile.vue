@@ -9,9 +9,7 @@ import Simplebar from "simplebar-vue";
 import 'assets/scss/simplebar.css';
 import FileContent from "~/components/Desktop/Finder/FinderFile/FileContent.vue";
 import {usePagesStore} from "~/store/pagesStore";
-import ConfirmDialog from "~/components/Desktop/Dialogs/ConfirmDialog.vue";
-import type {Page} from "~/types/Page";
-import type {ConfirmDialogProps} from "~/types/ConfirmDialog";
+import {useDialogStore} from "~/store/dialogStore";
 
 const { currentWindow } = defineProps<{
   currentWindow: PageWindow
@@ -50,6 +48,8 @@ const windowButtons = ref([
 
 const windowsStore = useWindowsStore()
 const pagesStore = usePagesStore()
+const dialogStore = useDialogStore()
+
 const openedWindows = computed(() => windowsStore.openedWindows.filter(item => !item.isHidden))
 const breadCrumbs = generateUrl(currentWindow)
 
@@ -75,26 +75,24 @@ function toFront(): void {
   windowsStore.setWindowToFront(currentWindow.windowId)
 }
 
-const confirmDialog = ref<boolean>(false)
-const confirmDialogProps = ref<ConfirmDialogProps<undefined>>({
-  title: 'Данные не сохранены',
-  dialog: 'Закрыть редактор?',
-  data: undefined,
-  buttons: [{
-    text: 'Отмена',
-    action: () => closeConfirmDialog(),
-  }, {
-    text: 'Да',
-    action: async (data) => {
-      await closeWindow()
-    },
-  }]
-})
 function openConfirmDialog (): void {
-  confirmDialog.value = true
-}
-function closeConfirmDialog (): void {
-  confirmDialog.value = false
+  dialogStore.confirmDialog = {
+    title: 'Данные не сохранены',
+    dialog: 'Закрыть редактор?',
+    buttons: [
+      {
+        text: 'Отмена',
+        action: () => dialogStore.confirmDialog = null,
+      },
+      {
+        text: 'Да',
+        action: async () => {
+          await closeWindow()
+          dialogStore.confirmDialog = null
+        }
+      }
+    ]
+  }
 }
 
 async function confirmCloseWindow(): Promise<void> {
@@ -244,12 +242,6 @@ function onResizeEnd(): void {
           </FinderStatusBar>
         </div>
       </section>
-
-      <ConfirmDialog
-        v-if="confirmDialog"
-        v-bind="confirmDialogProps"
-        @on-close="closeConfirmDialog"
-      />
     </div>
   </Transition>
 </template>
@@ -257,7 +249,7 @@ function onResizeEnd(): void {
 <style scoped lang="scss">
 .content-file {
   max-width: 1320px;
-  width: 980px;
+  width: 1000px;
   min-width: 720px !important;
   height: 80vh;
   max-height: 980px !important;
