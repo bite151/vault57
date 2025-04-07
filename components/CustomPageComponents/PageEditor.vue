@@ -62,6 +62,13 @@ watch(
   }
 )
 
+watch(
+  () => pagesStore.editedPage,
+  (val) => {
+    form.value = cloneObj(val)
+  }
+)
+
 onMounted(() => {
   const storage = localStorage.getItem('editedPage')
   if (storage) {
@@ -161,12 +168,59 @@ async function savePage() {
   }
 }
 
-async function deletePage() {
+async function confirmDeletePage() {
+  if (!form.value) return
+
   dialogStore.closeAllDialogs()
-  // dialogStore.alertDialog = {
-  //   title: 'Delete',
-  //   message: 'Are you sure you want to delete this page?',
-  // }
+  dialogStore.confirmDialog = {
+    title: 'Delete',
+    dialog: 'Are you sure you want to delete this page?',
+    buttons: [
+      {
+        text: 'Cancel',
+        action: () => dialogStore.confirmDialog = null,
+      },
+      {
+        text: 'Delete',
+        action: async () => {
+          await deletePage()
+          dialogStore.confirmDialog = null
+        }
+      }
+    ]
+  }
+}
+
+async function deletePage() {
+  if (!form.value) return
+
+  const clearForm = () => {
+    form.value = null
+    pagesStore.editedPage = null
+    localStorage.removeItem('editedPage')
+  }
+
+  if (!form.value.id && hasChanges.value) {
+    clearForm()
+    return
+  }
+
+  try {
+    await pagesStore.deletePage(form.value.id!)
+
+    clearForm()
+    localStorage.removeItem('editedPage')
+
+    notify('success', 'Success', 'Page deleted')
+  } catch (e: any) {
+    if (e?.data?.error && typeof e?.data?.message !== 'string') {
+      notifyArray('error', e.data.error, e.data)
+    } else if (e?.data?.error) {
+      notify('error', e.data.error, e.message)
+    } else {
+      notify('error', e.statusCode.toString(), e.statusMessage)
+    }
+  }
 }
 
 </script>
@@ -177,7 +231,7 @@ async function deletePage() {
     v-model:tab="tabName"
     @on-create="createPage"
     @on-save="savePage"
-    @on-delete="deletePage"
+    @on-delete="confirmDeletePage"
   />
   <div class="content-wrapper">
     <aside

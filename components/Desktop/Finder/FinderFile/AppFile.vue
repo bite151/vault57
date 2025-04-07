@@ -77,15 +77,15 @@ function toFront(): void {
 
 function openConfirmDialog (): void {
   dialogStore.confirmDialog = {
-    title: 'Данные не сохранены',
-    dialog: 'Закрыть редактор?',
+    title: 'You have unsaved changes',
+    dialog: 'Close without saving?',
     buttons: [
       {
-        text: 'Отмена',
+        text: 'Cancel',
         action: () => dialogStore.confirmDialog = null,
       },
       {
-        text: 'Да',
+        text: 'Close',
         action: async () => {
           await closeWindow()
           dialogStore.confirmDialog = null

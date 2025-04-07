@@ -67,6 +67,16 @@ export const usePagesStore = defineStore('pages', () => {
     loading.value = false
     return data
   }
+  
+  async function deletePage(id: number) {
+    loading.value = true
+    
+    await apiRequest<{ id: string, message: string }>(`/pages/${id}`, 'DELETE')
+    pages.value = pages.value.filter(page => page.id !== id)
+    windowsStore.openedWindows = windowsStore.openedWindows.filter(window => window.id !== id)
+    
+    loading.value = false
+  }
 
   return {
     loading,
@@ -77,5 +87,6 @@ export const usePagesStore = defineStore('pages', () => {
     fetchDesktopItems,
     fetchPages,
     savePage,
+    deletePage,
   }
 })
