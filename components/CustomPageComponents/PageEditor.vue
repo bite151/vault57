@@ -118,6 +118,14 @@ async function savePage() {
       v-if="form"
       class="main-frame"
     >
+
+      <div
+        v-if="tabName === 'json'"
+        class="form-block form-block_full-width"
+      >
+        <JsonEditor v-model="form" />
+      </div>
+
       <div v-if="tabName === 'preview'">
         <FileContent :content="form.content" />
       </div>
@@ -421,13 +429,6 @@ async function savePage() {
           <ContentEditor
             v-model="form.content"
           />
-        </div>
-
-        <div
-          v-if="tabName === 'json'"
-          class="form-block form-block_full-width"
-        >
-          <JsonEditor v-model="form" />
         </div>
       </el-form>
     </div>
