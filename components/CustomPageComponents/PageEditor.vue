@@ -3,6 +3,7 @@ import { usePagesStore } from "~/store/pagesStore";
 import type {Page} from "~/types/Page";
 import ControlPanel from "~/components/CustomPageComponents/PageEditor/ControlPanel.vue";
 import FileContent from "~/components/Desktop/Finder/FinderFile/FileContent.vue";
+import 'assets/scss/simplebar.css';
 
 import {
   ElForm,
@@ -19,6 +20,9 @@ import ContentEditor from "~/components/CustomPageComponents/PageEditor/ContentE
 import {cloneObj, deepEqual} from "~/helpers/app.helpers";
 import {useNotify} from "~/composables/useNotify";
 import {useDialogStore} from "~/store/dialogStore";
+import TabsPanel from "~/components/CustomPageComponents/PageEditor/TabsPanel.vue";
+import PagesTree from "~/components/CustomPageComponents/PageEditor/PagesTree.vue";
+import Simplebar from "simplebar-vue";
 
 const pagesStore = usePagesStore()
 const dialogStore = useDialogStore()
@@ -26,7 +30,7 @@ const dialogStore = useDialogStore()
 const { notify, notifyArray } = useNotify()
 
 const form = ref<Page | null>(null)
-const showTree = ref<boolean>(false)
+const showTree = ref<boolean>(true)
 const tabName = ref<string>('general')
 
 const types = [
@@ -73,17 +77,85 @@ onMounted(() => {
   const storage = localStorage.getItem('editedPage')
   if (storage) {
     form.value = JSON.parse(storage)
+    pagesStore.editedPage = cloneObj(form.value)
     return
   }
   form.value = pagesStore.editedPage
 })
 
 onBeforeUnmount(() => {
+  closeTab()
+})
+
+function openPage(page: Page) {
+  const openNewPage = () => {
+    pagesStore.editedPage = page
+    form.value = cloneObj(pagesStore.editedPage)
+    localStorage.setItem('editedPage', JSON.stringify(form.value))
+    dialogStore.confirmDialog = null
+  }
+
+  if (hasChanges.value) {
+    dialogStore.confirmDialog = {
+      title: 'Unsaved changes detected',
+      dialog: 'Do you want to save your edits before opening a new page?',
+      buttons: [
+        {
+          text: 'Open page',
+          action: () => openNewPage(page)
+        },
+        {
+          text: 'Save',
+          action: async () => {
+            await savePage()
+            openNewPage(page)
+          }
+        }
+      ]
+    }
+    return
+  }
+
+  openNewPage(page)
+}
+
+function confirmCloseTab() {
+  if (!hasChanges.value) {
+    closeTab()
+    return
+  }
+
+  dialogStore.confirmDialog = {
+    title: 'Unsaved changes detected',
+    dialog: 'Do you want to save your edits before closing the tab?',
+    buttons: [
+      {
+        text: 'Close tab',
+        action: () => {
+          closeTab()
+          dialogStore.confirmDialog = null
+        }
+      },
+      {
+        text: 'Save',
+        action: async () => {
+          const saved = await savePage()
+          if (saved) {
+            closeTab()
+          }
+          dialogStore.confirmDialog = null
+        }
+      }
+    ]
+  }
+}
+
+function closeTab() {
   pagesStore.editedPage = null
   pagesStore.editorHasChanges = false
   form.value = null
   localStorage.removeItem('editedPage')
-})
+}
 
 function createPage() {
   if (hasChanges.value) {
@@ -137,15 +209,15 @@ function createPage() {
   localStorage.setItem('editedPage', JSON.stringify(form.value))
 }
 
-async function savePage() {
+async function savePage(): Promise<boolean> {
   if (!form.value) {
     notify('warning', 'Page not saved', 'Form model is empty')
-    return
+    return false
   }
 
   if (!hasChanges.value) {
     notify('info', 'Page not saved', 'No changes detected')
-    return
+    return false
   }
 
   try {
@@ -156,6 +228,7 @@ async function savePage() {
     localStorage.setItem('editedPage', JSON.stringify(data))
 
     notify('success', 'Success', 'Page saved')
+    return true
   } catch (e: any) {
 
     if (e?.data?.error && typeof e?.data?.message !== 'string') {
@@ -165,6 +238,7 @@ async function savePage() {
     } else {
       notify('error', e.statusCode.toString(), e.statusMessage)
     }
+    return false
   }
 }
 
@@ -183,7 +257,12 @@ async function confirmDeletePage() {
       {
         text: 'Delete',
         action: async () => {
-          await deletePage()
+          if (form.value?.id) {
+            await deletePage()
+          } else {
+            closeTab()
+          }
+
           dialogStore.confirmDialog = null
         }
       }
@@ -226,6 +305,14 @@ async function deletePage() {
 </script>
 
 <template>
+  <TabsPanel
+    v-if="pagesStore.editedPage"
+    @on-close="confirmCloseTab"
+  />
+<!--  <div style="display: flex; height: 100%; overflow: auto;">-->
+<!--    <pre>{{form}}</pre>-->
+<!--    <pre>{{ pagesStore.editedPage }}</pre>-->
+<!--  </div>-->
   <ControlPanel
     v-model:tree="showTree"
     v-model:tab="tabName"
@@ -233,12 +320,19 @@ async function deletePage() {
     @on-save="savePage"
     @on-delete="confirmDeletePage"
   />
-  <div class="content-wrapper">
+  <div
+    class="content-wrapper"
+    :class="{'page-opened': pagesStore.editedPage}"
+  >
     <aside
       v-if="showTree"
       class="pages-tree"
     >
-      Pages tree
+      <Simplebar class="scrollbar-pages-tree">
+        <PagesTree
+          @on-page-click="openPage"
+        />
+      </Simplebar>
     </aside>
     <div
       v-if="form"
@@ -336,7 +430,7 @@ async function deletePage() {
             <el-input-number
               v-model="form.range"
               class="mx-4"
-              :min="1"
+              :min="0"
               size="large"
               controls-position="right"
             />
@@ -586,16 +680,21 @@ async function deletePage() {
   width: 250px;
   height: 100%;
   flex-shrink: 0;
-  padding: 24px;
-  border-right: 2px solid #31322d;
+  border-right: 1px solid #e0dbdb;
   background-color: #f5f6ef;
   font-size: 14px;
+  overflow: auto;
 }
 .content-wrapper {
   position: sticky;
   display: flex;
-  height: calc(100% - 48px);
+  height: calc(100% - 46px);
   background: #f5f5f5;
+  border-top: 1px solid #e0dbdb;
+
+  .page-opened {
+    height: calc(100% - 86px);
+  }
 }
 
 .main-frame {
@@ -634,6 +733,23 @@ async function deletePage() {
   font-size: 14px;
   font-weight: 100;
 }
+
+.scrollbar-pages-tree {
+  height: 100%;
+  &:deep(div.simplebar-content) {
+    height: 100%;
+    display: flex;
+  }
+  &:deep(.simplebar-scrollbar::before) {
+    left: 1px;
+    right: 0;
+  }
+  &:deep(.simplebar-track.simplebar-vertical) {
+    width: 8px;
+    background-color: #e5e5de;
+  }
+}
+
 .mb-0 {
   margin-bottom: 0;
 }

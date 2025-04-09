@@ -1,17 +1,27 @@
 <script setup lang="ts">
 import {useNotify} from "~/composables/useNotify";
 import type {Page} from "~/types/Page";
+import {usePagesStore} from "~/store/pagesStore";
+import {cloneObj} from "~/helpers/app.helpers";
 
 const { modelValue } = defineProps<{
   modelValue: any
 }>()
+const pagesStore = usePagesStore()
 const emit = defineEmits(['update:modelValue'])
 const { notify } = useNotify()
 const json = ref('')
 
 onMounted(() => {
-  json.value = JSON.stringify(modelValue, undefined, 2);
+  json.value = JSON.stringify(modelValue, undefined, 2)
 })
+
+watch(
+  () => pagesStore.editedPage,
+  () => {
+    json.value = cloneObj(JSON.stringify(pagesStore.editedPage, undefined, 2))
+  }
+)
 
 onBeforeUnmount(() => {
   if (json.value === JSON.stringify(modelValue, undefined, 2)) return
@@ -51,9 +61,9 @@ function validateJson(data: any): string[] | null {
     isPublic: 'number',
     type: 'string',
     permission: 'string',
-    createdBy: 'string',
-    createdAt: 'string',
-    updatedAt: 'string',
+    // createdBy: 'string',
+    // createdAt: 'string',
+    // updatedAt: 'string',
     seo: 'object',
     mobile: 'object',
     desktop: 'object'

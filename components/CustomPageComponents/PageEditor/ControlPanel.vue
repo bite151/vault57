@@ -133,8 +133,10 @@ const emits = defineEmits(['update:tree', 'update:tab', 'onSave', 'onCreate', 'o
   gap: 8px;
   padding: 8px;
   height: 48px;
+  margin-top: -1px;
   background-color: #eee;
-  border-bottom: 2px solid #31322d;
+  border-top: 1px solid #d3d1d1;
+  border-bottom: 1px solid #f5f5f5;
   &__button {
     display: flex;
     align-items: center;

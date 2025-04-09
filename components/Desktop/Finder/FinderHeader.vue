@@ -38,6 +38,10 @@ watch(
       }
       parentElement?.value.classList.remove('is-move')
 
+      // parentElement.value.style.right = `inherit`
+      // parentElement.value.style.bottom = `inherit`
+      // parentElement.value.style.margin = '0'
+
       emits('onMoveEnd')
     }
   }

@@ -41,10 +41,11 @@ export const usePagesStore = defineStore('pages', () => {
     loading.value = true
 
     page.content = JSON.stringify(page.content)
+    const { children, ...rest } = page
     
     const data = (page.id)
-      ? await apiRequest<Page>(`/pages/${page.id}`, 'PATCH', { body: page })
-      : await apiRequest<Page>(`/pages`, 'POST', { body: page })
+      ? await apiRequest<Page>(`/pages/${page.id}`, 'PATCH', { body: rest })
+      : await apiRequest<Page>(`/pages`, 'POST', { body: rest })
     
     editedPage.value = structuredClone(data)
 
