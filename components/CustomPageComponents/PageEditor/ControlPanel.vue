@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
+import {usePagesStore} from "~/store/pagesStore";
 
+const pagesStore = usePagesStore()
 const buttons = [
   {
     name: 'general',
@@ -57,7 +59,6 @@ const emits = defineEmits(['update:tree', 'update:tab', 'onSave', 'onCreate', 'o
       :size="18"
       :stroke-width="1.8"
     />
-    <!--    Create-->
   </button>
   <button
     class="control-panel__button"
@@ -67,9 +68,9 @@ const emits = defineEmits(['update:tree', 'update:tab', 'onSave', 'onCreate', 'o
       :size="18"
       :stroke-width="1.8"
     />
-<!--    Open-->
   </button>
   <button
+    v-if="pagesStore.editedPage"
     class="control-panel__button"
     @click="emits('onSave')"
   >
@@ -78,10 +79,10 @@ const emits = defineEmits(['update:tree', 'update:tab', 'onSave', 'onCreate', 'o
       :size="18"
       :stroke-width="1.8"
     />
-<!--    Save-->
   </button>
 
   <button
+    v-if="pagesStore.editedPage"
     class="control-panel__button"
     @click="emits('onDelete')"
   >
@@ -90,7 +91,6 @@ const emits = defineEmits(['update:tree', 'update:tab', 'onSave', 'onCreate', 'o
       :size="18"
       :stroke-width="1.8"
     />
-    <!--    Save-->
   </button>
 
   <span></span>
@@ -110,20 +110,22 @@ const emits = defineEmits(['update:tree', 'update:tab', 'onSave', 'onCreate', 'o
 
   <span></span>
 
-  <button
-    class="control-panel__button"
-    v-for="button in buttons"
-    :key="button.name"
-    :class="{ 'control-panel__button_active': button.name === tab }"
-    @click="emits('update:tab', button.name)"
-  >
-    <AsyncIcon
-      :name="button.icon"
-      :size="15"
-      :stroke-width="2"
-    />
-    {{ button.title }}
-  </button>
+  <template v-if="pagesStore.editedPage">
+    <button
+      class="control-panel__button"
+      v-for="button in buttons"
+      :key="button.name"
+      :class="{ 'control-panel__button_active': button.name === tab }"
+      @click="emits('update:tab', button.name)"
+    >
+      <AsyncIcon
+        :name="button.icon"
+        :size="15"
+        :stroke-width="2"
+      />
+      {{ button.title }}
+    </button>
+  </template>
 </div>
 </template>
 

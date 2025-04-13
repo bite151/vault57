@@ -27,7 +27,7 @@ export const useWindowsStore = defineStore('windowsStore', () => {
       openedWindows.value.push({
         ...page,
         windowId,
-        pageId: page.id,
+        pageId: page.id!,
         isOnFront: true,
         isHidden: false,
         fullUrl: page.fullUrl ?? '',

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Page from "~/pages/page.vue";
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
+import {usePagesStore} from "~/store/pagesStore";
 
 interface TreeNode extends Page{
   children?: TreeNode[];
@@ -11,18 +12,18 @@ const props = defineProps<{
   level: number,
 }>();
 
+const pagesStore = usePagesStore()
 const sortedNodes = computed(() => {
   if (!props.nodes || !props.nodes.length) return [];
 
   if (props.level === 1) {
     return [...props.nodes].sort((a, b) => (a.range || 0) - (b.range || 0));
   }
-  // const sortedNodes =
-    return [...props.nodes].sort((a, b) => a.desktop.title.localeCompare(b.desktop.title));
-  // return [
-  //   ...sortedNodes.filter(n => n.type === 'Folder'),
-  //   ...sortedNodes.filter(n => n.type === 'File')
-  // ];
+  const sortedNodes = [...props.nodes].sort((a, b) => a.desktop.title.localeCompare(b.desktop.title));
+  return [
+    ...sortedNodes.filter(n => n.type === 'folder'),
+    ...sortedNodes.filter(n => n.type === 'file')
+  ];
 });
 
 function getIcon(page: Page) {
@@ -42,7 +43,8 @@ const emits = defineEmits(['on-page-click'])
       :key="page.id"
     >
       <button
-        class="title"
+        class="folder-item"
+        :class="{'folder-item_active': pagesStore.editedPage?.id === page.id }"
         @click="emits('on-page-click', page)"
       >
         <AsyncIcon
@@ -81,7 +83,7 @@ li {
   cursor: default;
 }
 
-.title {
+.folder-item {
   display: flex;
   flex-grow: 1;
   width: 100%;
@@ -102,8 +104,11 @@ li {
     text-overflow: ellipsis;
     overflow: hidden;
   }
-  &:hover {
+  &:hover{
     background: #ebece6;
+  }
+  &_active {
+    background: #d9dad3 !important;
   }
 }
 </style>

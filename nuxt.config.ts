@@ -26,6 +26,7 @@ export default defineNuxtConfig({
       API_URL: process.env.API_URL,
       API_BASE_URL: process.env.API_BASE_URL,
       MEDIA_URL: process.env.MEDIA_URL,
+      IMAGES_URL: process.env.IMAGES_URL,
     },
   },
   

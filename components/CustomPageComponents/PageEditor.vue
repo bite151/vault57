@@ -371,7 +371,7 @@ async function deletePage() {
               <el-option
                 v-for="item in pagesStore.pages"
                 :key="item.id"
-                :label="item.seo.title"
+                :label="item.desktop.title"
                 :value="item.id!"
               />
             </el-select>
@@ -655,9 +655,17 @@ async function deletePage() {
       v-else
       class="empty-state"
     >
-      выберите страницу
+      <p>
+        Pick a page to edit<br/>
+        or<br/>
+        <span
+          class="create-page"
+          @click="createPage()"
+        >
+          start a fresh one
+      </span>
+      </p>
     </div>
-
   </div>
 </template>
 
@@ -732,6 +740,16 @@ async function deletePage() {
   align-items: center;
   font-size: 14px;
   font-weight: 100;
+  text-align: center;
+  .create-page {
+    text-decoration: underline;
+    cursor: pointer;
+    transition: .2s ease-in-out;
+    &:hover {
+      text-decoration: none;
+      color: #878886;
+    }
+  }
 }
 
 .scrollbar-pages-tree {

@@ -186,7 +186,7 @@ function restorePage (page: Page): void {
   }
 
   p {
-    width: min-content;
+    //width: min-content;
     padding: 2px 6px;
     border-radius: 4px;
     border: 1px dotted transparent;

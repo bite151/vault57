@@ -215,12 +215,12 @@ function closeScreenBySwipe(): void {
 
       <div
         class="main-content"
-        :class="{'main-content_grid': !screen.content}"
+        :class="{'main-content_grid': screen.type === 'folder'}"
       >
         <DefaultAppIcon
           v-for="item in content"
           :key="item.id"
-          :title="item.mobile.title"
+          :title="item.mobile.shortTitle || item.mobile.title"
           :icon="item.mobile.icon || item.desktop.icon"
           @click="launchApp(item)"
         />
@@ -353,6 +353,7 @@ function closeScreenBySwipe(): void {
       }
     }
     .main-content {
+      //padding: 12px 24px;
       &_grid {
         padding: 24px;
         display: grid;

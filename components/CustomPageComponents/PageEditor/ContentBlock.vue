@@ -14,12 +14,23 @@ function randomKey() {
   const randomString = Math.random().toString(36).substring(2, 10);
   return randomString + '-' + new Date().getTime()
 }
+
+function addImg(base64: string) {
+  block.images.push(base64);
+}
+
+function removeImg(n: number) {
+  block.images = [
+    ...block.images.slice(0, n),
+    ...block.images.slice(n + 1)
+  ]
+}
 </script>
 
 <template>
   <div class="content-block">
-
     <ContentBlockSingleImage
+      :key="block.img"
       :image="block.img"
       class="content-block-images"
       @update:image="block.img = $event"
@@ -53,9 +64,11 @@ function randomKey() {
     </el-button>
 
     <ContentBlockImages
+      :key="block.images.join('')"
       :images="block.images"
       class="content-block-images"
-      @update:images="block.images = $event"
+      @add:image="addImg"
+      @remove:image="removeImg"
     />
 
     <el-button

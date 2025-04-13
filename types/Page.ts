@@ -20,6 +20,7 @@ export interface Page {
   seo: SEO;
   mobile: MobileAppProps;
   desktop: DesktopAppProps;
+  children?: Page[];
 }
 
 interface MobileAppProps {

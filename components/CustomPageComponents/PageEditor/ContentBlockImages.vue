@@ -8,15 +8,15 @@ const { images = [] } = defineProps<{
   images: any
 }>()
 const { checkTypes, imageCompress, toBase64 } = useImages()
-const emit = defineEmits(['update:images'])
+const emit = defineEmits(['add:image', 'remove:image'])
 
 const fileList = ref<UploadFile[]>([])
 
 onMounted(() => {
   if (images.length > 0) {
     fileList.value = images.map((file: string) => ({
-      name: 'image',
-      url: !file.includes(';base64') ? config.public.MEDIA_URL + file : file
+      name: Date.now(),
+      url: !file.includes(';base64') ? config.public.IMAGES_URL + file : file
     }))
   }
 })
@@ -31,14 +31,21 @@ const handleChange = async (file: UploadFile) => {
   const img = await imageCompress(file.raw!)
   const base64data = await toBase64(img)
 
-  const urls = fileList.value.map(file => file.url?.replace(config.public.MEDIA_URL, ''))
-  urls.push(base64data)
-  emit('update:images', urls)
+  fileList.value.push(file)
+
+  emit('add:image', base64data)
 }
 
 const handleRemove = (file: UploadFile) => {
-  fileList.value = fileList.value.filter(item => item.url !== file.url)
-  emit('update:images', fileList.value.map(file => file.url))
+  const index = fileList.value.findIndex(item => item.name === file.name)
+
+  if (index > -1) {
+    fileList.value = [
+      ...fileList.value.slice(0, index),
+      ...fileList.value .slice(index + 1)
+    ]
+    emit('remove:image', index)
+  }
 }
 
 const handlePictureCardPreview = (file: UploadFile) => {

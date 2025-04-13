@@ -16,7 +16,7 @@ onMounted(() => {
   if (image) {
     fileList.value = [{
       name: 'image',
-      url: !image.includes(';base64') ? config.public.MEDIA_URL + image : image
+      url: !image.includes(';base64') ? config.public.IMAGES_URL + image : image
     }]
   }
 })
