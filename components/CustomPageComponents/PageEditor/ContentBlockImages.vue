@@ -2,6 +2,7 @@
 import {ElUpload, ElDialog, ElIcon, type UploadFile} from 'element-plus';
 import { Delete, Plus, ZoomIn } from '@element-plus/icons-vue'
 import {useImages} from "~/composables/useImages";
+import {cloneObj} from "~/helpers/app.helpers";
 
 const config = useRuntimeConfig()
 const { images = [] } = defineProps<{
@@ -14,15 +15,24 @@ const fileList = ref<UploadFile[]>([])
 
 onMounted(() => {
   if (images.length > 0) {
-    fileList.value = images.map((file: string) => ({
-      name: Date.now(),
-      url: !file.includes(';base64') ? config.public.IMAGES_URL + file : file
-    }))
+    const list = images.map((file: string) => {
+      return {
+        name: randomKey(),
+        url: !file.includes(';base64') ? config.public.IMAGES_URL + file : file
+      }
+    })
+
+    fileList.value = cloneObj(list)
   }
 })
 
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
+
+function randomKey() {
+  const randomString = Math.random().toString(36).substring(2, 10);
+  return randomString + '-' + new Date().getTime()
+}
 
 const handleChange = async (file: UploadFile) => {
   const error = checkTypes(file.raw!)
@@ -30,10 +40,9 @@ const handleChange = async (file: UploadFile) => {
 
   const img = await imageCompress(file.raw!)
   const base64data = await toBase64(img)
+  emit('add:image', base64data)
 
   fileList.value.push(file)
-
-  emit('add:image', base64data)
 }
 
 const handleRemove = (file: UploadFile) => {
@@ -52,7 +61,6 @@ const handlePictureCardPreview = (file: UploadFile) => {
   dialogImageUrl.value = file.url!
   dialogVisible.value = true
 }
-
 </script>
 
 <template>
@@ -60,6 +68,7 @@ const handlePictureCardPreview = (file: UploadFile) => {
     <el-upload
       :file-list="fileList"
       list-type="picture-card"
+      :multiple="true"
       :auto-upload="false"
       :on-change="handleChange"
     >

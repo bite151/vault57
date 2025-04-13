@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import RunningLine from "~/components/Common/RunningLine.vue";
 import {useMousePressed} from "@vueuse/core";
-import {generateUrl} from "~/helpers/app.helpers";
-import {useWindowsStore} from "~/store/windowsStore";
+import {useFeedbackStore} from "~/store/feedbackStore";
 
 const config = useRuntimeConfig()
-const route = useRoute()
-const currentWindow = useWindowsStore().openedWindows.find(item => item.isOnFront)
+const feedbackStore = useFeedbackStore()
 
 type FormFeedbackType = 'incomplete' | 'invalid' | 'success' | 'error' | null;
 type FormDialog = {
@@ -14,13 +12,12 @@ type FormDialog = {
   description: string;
 }
 
-const name = ref<string>('');
+const clientName = ref<string>('');
 const contact = ref<string>('');
 const message = ref<string>('');
 
 const isLoading = ref<boolean>(false);
 const formFeedback: Ref<FormFeedbackType> = ref(null);
-const success = ref<boolean>(true);
 
 const button = ref<HTMLElement | null>(null)
 const { pressed } = useMousePressed({ target: button })
@@ -69,25 +66,36 @@ async function submitForm() {
   isLoading.value = true;
   formFeedback.value = null;
 
-  if (!name.value.trim() || !contact.value.trim() || !message.value.trim()) {
+  if (!clientName.value.trim() || !contact.value.trim() || !message.value.trim()) {
     formFeedback.value = 'incomplete'
     isLoading.value = false
     return
   }
 
-  const regexEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  if (contact.value && !regexEmail.test(contact.value)) {
-    formFeedback.value = 'invalid';
-    success.value = false;
-    isLoading.value = false;
-    return;
-  }
+  // const regexEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  // if (contact.value && !regexEmail.test(contact.value)) {
+  //   formFeedback.value = 'invalid';
+  //   isLoading.value = false;
+  //   return;
+  // }
 
-  setTimeout(() => {
-    success.value = true;
-    formFeedback.value = 'success';
-    isLoading.value = false;
-  }, 1000);
+  try {
+    await feedbackStore.sendFeedback({
+      clientName: clientName.value,
+      contact: contact.value,
+      message: message.value,
+    });
+
+    formFeedback.value = 'success'
+    clientName.value = ''
+    contact.value = ''
+    message.value = ''
+  } catch (e: any) {
+    formFeedback.value = 'error'
+    return false
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>
 
@@ -123,7 +131,7 @@ async function submitForm() {
           Имя
           <input
             type="text"
-            v-model="name"
+            v-model="clientName"
             class="form__input"
           />
         </label>
@@ -132,7 +140,7 @@ async function submitForm() {
         <label
           class="form__label"
         >
-          Email
+          Контакт
           <input
             type="text"
             v-model="contact"
