@@ -122,7 +122,6 @@ async function submitForm() {
 
     <form
       class="feedback__form"
-      @submit.prevent="submitForm"
     >
       <fieldset class="form__fieldset">
         <label
@@ -164,10 +163,11 @@ async function submitForm() {
 
       <button
         ref="button"
-        type="submit"
+        type="button"
         class="form__button"
         :class="{'form__button_pressed': pressed, 'form__button_disabled': isLoading }"
         :disabled="isLoading"
+        @click="submitForm"
       >
         {{ isLoading ? 'ОТПРАВЛЯЕМ...' : 'ОТПРАВИТЬ' }}
       </button>
@@ -264,7 +264,7 @@ async function submitForm() {
       width: calc(100% - 12px);
       max-width: 568px;
       padding: 12px;
-      margin-top: 8px;
+      //margin-top: 8px;
       background: #5a5c56;
 
       border: 1px solid #f5f6ef;
@@ -275,7 +275,7 @@ async function submitForm() {
       color: #f5f6ef;
       letter-spacing: 1px;
 
-      transform: translateY(-3px) translateX(-2px);
+      //transform: translateY(-3px) translateX(-2px);
       box-shadow: 6px 4px 0 6px rgba(#6b6c68, .6);
 
       &_pressed {
