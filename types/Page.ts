@@ -3,6 +3,8 @@ interface SEO {
   description: string;
 }
 
+export type PageType = 'file' | 'folder'
+
 export interface Page {
   id?: number;
   parentId: number;
@@ -12,7 +14,7 @@ export interface Page {
   content: PageContent | null | string;
   isPublic: number;
   range: number;
-  type: 'file' | 'folder' ;
+  type: PageType;
   permission: 'public' | 'user' | 'admin';
   createdBy?: string;
   createdAt?: string;
@@ -21,6 +23,8 @@ export interface Page {
   mobile: MobileAppProps;
   desktop: DesktopAppProps;
   children?: Page[];
+  blank?: boolean;
+  editName?: boolean;
 }
 
 interface MobileAppProps {
@@ -50,9 +54,9 @@ export interface MenuItem {
   action: (page: Page) => void | null;
 }
 
-export interface Block {
+export interface PageContentBlock {
   id?: number;
-  type: 'text' | 'image' | 'video' | string; // можно расширить под другие типы блоков
+  type: 'text' | 'image' | 'video';
   title: string;
   img?: string;
   p: string[];
@@ -63,7 +67,7 @@ export interface PageContent {
   id?: number;
   pageId?: number;
   h1: string;
-  blocks: Block[];
+  blocks: PageContentBlock[];
 }
 
 export interface DesktopItem {

@@ -39,6 +39,15 @@ export const usePagesStore = defineStore('pages', () => {
   
   async function savePage(page: Page): Promise<Page | null> {
     loading.value = true
+    
+    if (page.blank) {
+      delete page.id
+      delete page.blank
+    }
+    
+    if (page.editName) {
+      delete page.editName
+    }
 
     page.content = JSON.stringify(page.content)
     const { children, ...rest } = page

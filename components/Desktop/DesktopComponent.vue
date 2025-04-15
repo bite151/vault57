@@ -58,12 +58,14 @@ function getLastSession () {
     return
   }
 
-  const session: PageWindow[] = storage.data.map((item: PageWindow) => {
-    const page = pagesStore.pages.find(page => page.id === item.id)
-    item.content = page?.content || null
-    item.pageId = page!.id!
-    return item
-  })
+  const session: PageWindow[] = storage.data
+    .filter((page: PageWindow) => !page.blank)
+    .map((item: PageWindow) => {
+      const page = pagesStore.pages.find(page => page.id === item.id)
+      item.content = page?.content || null
+      item.pageId = page!.id!
+      return item
+    })
 
   if (route.path.includes('/desktop')) {
     windowsStore.openedWindows = session

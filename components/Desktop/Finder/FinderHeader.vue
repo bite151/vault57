@@ -151,6 +151,7 @@ function onStartMove(e : MouseEvent) {
 
     & > * {
       max-width: calc(100% - 104px);
+      margin-right: 4px;
       text-overflow: ellipsis;
       overflow: hidden;
     }

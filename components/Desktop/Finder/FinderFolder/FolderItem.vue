@@ -6,6 +6,7 @@ import { openWindow } from "~/helpers/app.helpers";
 import type { MenuItem, Page } from "~/types/Page";
 import type {PageWindow} from "~/types/Window";
 import {useAuthStore} from "~/store/authStore";
+import {sleep} from "@antfu/utils";
 
 const { folderItem, windowId } = defineProps<{
   folderItem: Page,
@@ -17,17 +18,27 @@ const authStore = useAuthStore()
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
 
+onMounted(() => {
+  if(textarea.value) {
+    textarea.value.focus();
+    textarea.value.select();
+  }
+})
+
 const currentWindow = computed<PageWindow | undefined>(() => windowsStore.openedWindows.find(item => item.windowId === windowId))
 const isTrash = computed<boolean>(() => currentWindow.value?.fullUrl === '/trash')
 const isAdmin = computed<boolean>(() => authStore.isAuth && authStore.profile.role === 'admin')
 const menuItems = computed<ActionKey[]>(() => {
   const items = ['open','remove', 'properties']
   if (isAdmin.value) {
+    items.splice(1, 0, 'rename')
     items.splice(1, 0, 'edit')
   }
   return items
 })
 
+const fileName = ref<HTMLInputElement | null>(null)
+const textarea = ref<HTMLInputElement | null>(null)
 const menuItemsList: MenuItem[] = [
   {
     key: 'open',
@@ -46,6 +57,23 @@ const menuItemsList: MenuItem[] = [
     title: 'Редактировать',
     icon: null,
     action: (page: Page) => emit('onEdit', page)
+  },
+  {
+    key: 'rename',
+    title: 'Переименовать',
+    icon: null,
+    action: () => {
+      folderItem.editName = true
+
+      setTimeout(() => {
+        if (!textarea.value) return
+        textarea.value.style.height = 'auto';
+        textarea.value.style.height = textarea.value.scrollHeight + 'px';
+        textarea.value.focus();
+        textarea.value.select();
+      }, 50)
+
+    }
   },
   {
     key: 'remove',
@@ -75,6 +103,11 @@ function getMenuItems(keys: ActionKey[]): MenuItem[] {
 }
 
 function openPage (page: Page): void {
+  // if (page.blank) {
+  //   emit('onEdit', page)
+  //   return
+  // }
+
   const hiddenWindow = windowsStore.openedWindows.find(item => item.pageId === page.id && item.isHidden)
   if (hiddenWindow) {
     windowsStore.updateWindowParams({ windowId: hiddenWindow.windowId, isHidden: false })
@@ -107,29 +140,62 @@ function restorePage (page: Page): void {
   })
 }
 
+function onFilenameChange() {
+  if (!textarea.value) return
+
+  textarea.value.style.height = 'auto';
+  textarea.value.style.height = textarea.value.scrollHeight + 'px';
+}
+
+async function onRename() {
+  folderItem.editName = false
+  if (authStore.profile.role !== 'admin') return
+  if (folderItem.blank) return
+  await pagesStore.savePage(folderItem)
+}
 </script>
 
 <template>
   <div
     class="file"
-    :class="{ file_hidden: !folderItem.isPublic }"
+    :class="{ file_hidden: !folderItem.isPublic && !folderItem.blank }"
   >
     <nuxt-link
       v-if="!isTrash"
       active-class="file_active"
       @click.stop="openPage(folderItem)"
-      @contextmenu.prevent="emit(
+      @contextmenu.prevent.stop="emit(
         'onContextMenu',
         folderItem,
         getMenuItems(menuItems)
       )"
     >
       <AsyncIcon
+        v-if="folderItem.blank"
+        class="non-saved-icon"
+        name="Save"
+        :size="26"
+        :stroke-width="1.8"
+        color="#646364"
+      />
+      <AsyncIcon
         :name="folderItem.desktop.icon || 'Folder'"
         :size="52"
         :strokeWidth="1.3"
       />
-      <p>{{ folderItem.desktop.title }}</p>
+      <p v-if="!folderItem.editName" ref="fileName">{{ folderItem.desktop.title }}</p>
+      <textarea
+        v-if="folderItem.editName"
+        ref="textarea"
+        v-model="folderItem.desktop.title"
+        :style="`height: ${fileName?.clientHeight}px`"
+        class="file-name-input"
+        rows="1"
+        @click.stop
+        @keydown="onFilenameChange"
+        @keyup="onFilenameChange"
+        @blur="onRename()"
+      ></textarea>
     </nuxt-link>
 
     <div
@@ -158,6 +224,7 @@ function restorePage (page: Page): void {
   justify-content: center;
 
   a, .file-inner {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -183,6 +250,13 @@ function restorePage (page: Page): void {
     flex-shrink: 0;
     border: 1px dotted transparent;
     transition: background-color .2s ease-in-out;
+  }
+
+  .non-saved-icon {
+    position: absolute;
+    top: 16px;
+    border-color: transparent !important;
+    background-color: transparent !important;
   }
 
   p {
@@ -214,6 +288,20 @@ function restorePage (page: Page): void {
       border-color: #aaa;
       background-color: #e4e5e3;
     }
+  }
+
+  &-name-input {
+    padding: 3px 6px 2px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 16px;
+    font-family: inherit;
+    width: 100%;
+    background-color: #e4e5e3;
+    resize: none;
+    min-height: 28px;
+    height: 28px;
+    overflow: hidden;
   }
 }
 </style>

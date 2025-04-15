@@ -9,6 +9,8 @@ const emptyBlock = {
   images: []
 }
 
+const { emptyContentBlock } = usePage()
+
 const { modelValue } = defineProps<{
   modelValue?: any
 }>()
@@ -16,7 +18,7 @@ const { modelValue } = defineProps<{
 function addBlock(n: number) {
   modelValue.blocks = [
     ...modelValue.blocks.slice(0, n + 1),
-    { ...JSON.parse(JSON.stringify(emptyBlock)) },
+    { ...JSON.parse(JSON.stringify(emptyContentBlock)) },
     ...modelValue.blocks.slice(n + 1)
   ]
 }

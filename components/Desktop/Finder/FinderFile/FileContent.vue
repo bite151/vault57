@@ -59,7 +59,8 @@ function imgSrc(src: string): string {
   background-attachment: fixed;
 
   &__block {
-    margin-bottom: 36px;
+    max-width: 980px;
+    margin: 0 auto 36px;
     &:last-of-type {
       margin-bottom: 0;
     }

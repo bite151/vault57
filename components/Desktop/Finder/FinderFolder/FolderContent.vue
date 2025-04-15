@@ -11,6 +11,8 @@ import type { PageWindow } from "~/types/Window";
 import {openWindow} from "~/helpers/app.helpers";
 import {useWindowsStore} from "~/store/windowsStore";
 import {useDialogStore} from "~/store/dialogStore";
+import {useAuthStore} from "~/store/authStore";
+import {usePage} from "~/composables/usePage";
 
 const props = defineProps<{ currentFolder?: PageWindow | undefined }>()
 const currentFolder = toRef(props, 'currentFolder')
@@ -31,6 +33,11 @@ watch(
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
 const dialogStore = useDialogStore()
+const authStore = useAuthStore()
+
+const { createPage } = usePage()
+
+const isAdmin = computed<boolean>(() => authStore.isAuth && authStore.profile.role === 'admin')
 
 const files = computed<Page[]>(() => {
   if (currentFolder.value?.fullUrl === '/my-computer') {
@@ -43,13 +50,18 @@ const files = computed<Page[]>(() => {
       })
   }
 
-  return pagesStore.pages
+  const pages = pagesStore.pages
     .filter(page => page.parentId === currentFolder.value?.id)
     .sort((a: Page, b: Page) => {
       if (a.desktop.title < b.desktop.title) return -1
       if (a.desktop.title > b.desktop.title) return 1
       return 0
     })
+
+  return [
+    ...pages.filter(page => page.type === 'folder'),
+    ...pages.filter(page => page.type === 'file'),
+  ]
 })
 
 const { x, y } = useMouse()
@@ -62,6 +74,8 @@ const menuItems = ref<MenuItem[]>([])
 const isFolderItemActive = ref<boolean | number>(false)
 
 function openContextMenu(page: Page, menuItemsArr: MenuItem[]) {
+  if (!menuItemsArr?.length) return
+
   isFolderItemActive.value = page.id!
 
   menuItems.value = menuItemsArr
@@ -74,6 +88,7 @@ function openContextMenu(page: Page, menuItemsArr: MenuItem[]) {
 
 function closeContextMenu(): void {
   contextMenu.value = null
+  menuItems.value = []
   isFolderItemActive.value = false
 }
 
@@ -131,8 +146,10 @@ function closePropertiesModal (): void {
 
 function onFolderClick (): void {
   const isTrash = currentFolder.value?.fullUrl === '/trash'
+  const isReviews = currentFolder.value?.fullUrl === '/reviews'
   const trash: Page = pagesStore.pages.find(page => page.url === '/trash')!
   const isTrashEmpty = !pagesStore.pages.some(page => page.parentId === trash.id)
+
   if (isTrash && !isTrashEmpty) {
     openContextMenu(currentFolder.value!, [{
       key: 'restore-all',
@@ -140,6 +157,40 @@ function onFolderClick (): void {
       icon: null,
       action: () => restoreAll()
     }])
+    return
+  }
+
+  if (isReviews) {
+    openContextMenu(currentFolder.value!, [{
+      key: 'create-review',
+      title: 'Создать отзыв',
+      icon: null,
+      action: () => {}
+    }])
+    return
+  }
+
+  if (isAdmin.value && !isTrash) {
+    openContextMenu(currentFolder.value!, [
+      {
+        key: 'create-file',
+        title: 'Новый файл',
+        icon: null,
+        action: () => createPage('file', currentFolder.value!.id!)
+      },
+      // {
+      //   key: 'create-folder',
+      //   title: 'Новая папка',
+      //   icon: null,
+      //   action: () => createPage('folder', currentFolder.value!.id!)
+      // },
+      {
+        key: 'properties',
+        title: 'Свойства',
+        icon: null,
+        action: () => openPropertiesModal(currentFolder.value!)
+      }
+    ])
   }
 }
 
@@ -167,7 +218,10 @@ function restoreAll () {
       />
     </template>
 
-    <EmptyFolder v-else-if="!files?.length">
+    <EmptyFolder
+      v-else-if="!files?.length"
+      @contextmenu.prevent="onFolderClick"
+    >
       {{ currentFolder?.fullUrl !== '/trash' ? 'Папка' : 'Корзина' }} пуста
     </EmptyFolder>
 
@@ -187,20 +241,20 @@ function restoreAll () {
         @on-show-props="openPropertiesModal"
       />
 
-      <ContextMenu
-        v-if="contextMenu"
-        :folder-item="contextMenu"
-        :menuItems="menuItems"
-        :menu-position="menuPosition"
-        @on-close="closeContextMenu"
-      />
-
       <PropertiesModal
         v-if="propertiesModal"
         :data="propertiesModal"
         @on-close="closePropertiesModal"
       />
     </div>
+
+    <ContextMenu
+      v-if="contextMenu"
+      :folder-item="contextMenu"
+      :menuItems="menuItems"
+      :menu-position="menuPosition"
+      @on-close="closeContextMenu"
+    />
   </div>
 </template>
 

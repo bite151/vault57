@@ -46,8 +46,7 @@ onClickOutside(propertiesModal, event => emits('on-close'))
               action: () => emits('on-close'),
             }]"
           >
-            <span>{{ data.desktop.title }}</span>
-            — Свойства
+            <span>{{ data.desktop.title }}</span> — Свойства
           </FinderHeader>
 
           <div class="content content_rounded">

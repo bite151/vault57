@@ -279,6 +279,12 @@ async function deletePage() {
     localStorage.removeItem('editedPage')
   }
 
+  if (form.value.id && form.value.blank) {
+    pagesStore.pages = pagesStore.pages.filter(page => page.id !== form.value!.id)
+    clearForm()
+    return
+  }
+
   if (!form.value.id && hasChanges.value) {
     clearForm()
     return
