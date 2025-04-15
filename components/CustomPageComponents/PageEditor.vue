@@ -102,13 +102,13 @@ function openPage(page: Page) {
       buttons: [
         {
           text: 'Open page',
-          action: () => openNewPage(page)
+          action: () => openNewPage()
         },
         {
           text: 'Save',
           action: async () => {
             await savePage()
-            openNewPage(page)
+            openNewPage()
           }
         }
       ]
@@ -116,7 +116,7 @@ function openPage(page: Page) {
     return
   }
 
-  openNewPage(page)
+  openNewPage()
 }
 
 function confirmCloseTab() {

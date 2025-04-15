@@ -104,6 +104,15 @@ function editPage(page: Page): void {
   windowsStore.openedWindows[index].isFullScreen = true
 }
 
+function addReview() {
+  const { pages } = pagesStore
+  const reviewEditor = pages.find(page => page.url === '/add-review')!
+
+  openWindow(reviewEditor)
+  // const index = windowsStore.openedWindows.findIndex(page => page.url === '/page-editor')
+  // windowsStore.openedWindows[index].isFullScreen = true
+}
+
 function removePage(page: Page): void {
   const { pages } = pagesStore
   const trash: Page = pages.find(page => page.url === '/trash')!
@@ -165,7 +174,7 @@ function onFolderClick (): void {
       key: 'create-review',
       title: 'Создать отзыв',
       icon: null,
-      action: () => {}
+      action: () => addReview()
     }])
     return
   }

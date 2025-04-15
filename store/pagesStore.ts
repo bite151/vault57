@@ -45,9 +45,7 @@ export const usePagesStore = defineStore('pages', () => {
       delete page.blank
     }
     
-    if (page.editName) {
-      delete page.editName
-    }
+    delete page.editName
 
     page.content = JSON.stringify(page.content)
     const { children, ...rest } = page
