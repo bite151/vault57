@@ -19,10 +19,15 @@ const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
 const editName = ref<boolean>(false)
 
-onMounted(() => {
-  if(textarea.value) {
-    textarea.value.focus();
-    textarea.value.select();
+onMounted(async () => {
+  if (folderItem?.blank) {
+    editName.value = true
+
+    await sleep(50)
+    if (textarea.value) {
+      textarea.value.focus();
+      textarea.value.select();
+    }
   }
 })
 

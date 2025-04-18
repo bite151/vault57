@@ -45,7 +45,8 @@ export function usePage() {
       contentComponent: null,
       showInFinder: 1,
       resetWidth: 0,
-      hideStatusBar: 0
+      hideStatusBar: 0,
+      background: '/images/backgrounds/fabric.png'
     }
   }
 
@@ -63,7 +64,6 @@ export function usePage() {
     emptyPage.parentId = parentId
     emptyPage.range = ++allFolderItems.length
     emptyPage.blank = true
-    emptyPage.editName = true
     
     const setN = (str: string, separator: string = ' '): string => {
       const newItems = allFolderItems.filter(

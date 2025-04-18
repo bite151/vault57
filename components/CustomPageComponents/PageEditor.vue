@@ -488,6 +488,16 @@ async function deletePage() {
           </el-form-item>
 
           <el-form-item
+            label="Window background"
+            prop="desktop.background"
+          >
+            <el-input
+              size="large"
+              v-model="form[tabName].background"
+            />
+          </el-form-item>
+
+          <el-form-item
             class="mb-0"
           >
             <el-checkbox

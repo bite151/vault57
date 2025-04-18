@@ -12,6 +12,8 @@ import {usePagesStore} from "~/store/pagesStore";
 import {useDialogStore} from "~/store/dialogStore";
 import ReviewsViewer from "~/components/CustomPageComponents/ReviewsViewer.vue";
 
+const config = useRuntimeConfig()
+
 const { currentWindow } = defineProps<{
   currentWindow: PageWindow
 }>()
@@ -66,6 +68,17 @@ const hideEffectClassName = computed<string>(() => {
     return 'animate__fadeOutDown'  // hide in the Dock
   }
   return 'animate__fadeOut' // close window
+})
+
+const background = computed<string | null>(() => {
+  if (!currentWindow.desktop.background) return null
+  console.log(42)
+  if (currentWindow.desktop.background.includes('#')) {
+    return `background-color: ${currentWindow.desktop.background}`
+  }
+  console.log(111)
+
+  return `background: url(${config.public.IMAGES_URL}/uploads/${currentWindow.desktop.background}) repeat`
 })
 
 onMounted(() => {
@@ -219,6 +232,7 @@ function onResizeEnd(): void {
             v-if="currentWindow.type === 'review'"
             class="component-wrapper"
             :class="{'component-wrapper_rounded': currentWindow.desktop.hideStatusBar}"
+            :style="background"
           >
             <ReviewsViewer
               :content="currentWindow.content"
@@ -229,6 +243,7 @@ function onResizeEnd(): void {
             v-else-if="currentWindow.desktop.contentComponent"
             class="component-wrapper"
             :class="{'component-wrapper_rounded': currentWindow.desktop.hideStatusBar}"
+            :style="background"
           >
             <component
               v-if="currentComponent"
@@ -240,6 +255,7 @@ function onResizeEnd(): void {
             <div
               class="content"
               :class="{'content_rounded': currentWindow.desktop.hideStatusBar}"
+              :style="background"
             >
               <FileContent :content="currentWindow?.content" />
             </div>

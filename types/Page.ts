@@ -44,6 +44,7 @@ interface DesktopAppProps {
   showInFinder: number;
   resetWidth: number;
   hideStatusBar: number;
+  background: string;
 }
 
 export interface MenuItem {

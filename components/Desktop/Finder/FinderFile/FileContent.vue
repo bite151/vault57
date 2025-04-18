@@ -17,7 +17,6 @@ function imgSrc(src: string): string {
   <div
     v-if="content && typeof content !== 'string'"
     class="article"
-    :style="`background-image: url(${config.public.MEDIA_URL}/images/backgrounds/236_45fabric.png)`"
   >
     <div
       v-for="(block, i) in content.blocks"
