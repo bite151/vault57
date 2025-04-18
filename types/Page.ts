@@ -3,7 +3,7 @@ interface SEO {
   description: string;
 }
 
-export type PageType = 'file' | 'folder'
+export type PageType = 'file' | 'folder' | 'review'
 
 export interface Page {
   id?: number;

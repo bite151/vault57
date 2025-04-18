@@ -10,6 +10,7 @@ import 'assets/scss/simplebar.css';
 import FileContent from "~/components/Desktop/Finder/FinderFile/FileContent.vue";
 import {usePagesStore} from "~/store/pagesStore";
 import {useDialogStore} from "~/store/dialogStore";
+import ReviewsViewer from "~/components/CustomPageComponents/ReviewsViewer.vue";
 
 const { currentWindow } = defineProps<{
   currentWindow: PageWindow
@@ -213,8 +214,19 @@ function onResizeEnd(): void {
 
       <section class="content-wrapper">
         <div class="main-frame">
+
           <div
-            v-if="currentWindow.desktop.contentComponent"
+            v-if="currentWindow.type === 'review'"
+            class="component-wrapper"
+            :class="{'component-wrapper_rounded': currentWindow.desktop.hideStatusBar}"
+          >
+            <ReviewsViewer
+              :content="currentWindow.content"
+            />
+          </div>
+
+          <div
+            v-else-if="currentWindow.desktop.contentComponent"
             class="component-wrapper"
             :class="{'component-wrapper_rounded': currentWindow.desktop.hideStatusBar}"
           >

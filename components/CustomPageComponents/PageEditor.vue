@@ -23,11 +23,13 @@ import {useDialogStore} from "~/store/dialogStore";
 import TabsPanel from "~/components/CustomPageComponents/PageEditor/TabsPanel.vue";
 import PagesTree from "~/components/CustomPageComponents/PageEditor/PagesTree.vue";
 import Simplebar from "simplebar-vue";
+import Editor from "~/components/CustomPageComponents/ReviewsEditor/Editor.vue";
 
 const pagesStore = usePagesStore()
 const dialogStore = useDialogStore()
 
 const { notify, notifyArray } = useNotify()
+const { emptyPage } = usePage()
 
 const form = ref<Page | null>(null)
 const showTree = ref<boolean>(true)
@@ -163,48 +165,7 @@ function createPage() {
     return
   }
 
-  pagesStore.editedPage = {
-    parentId: 1,
-    url: '/',
-    content: {
-      h1: '',
-      blocks: [
-        {
-          type: 'text',
-          title: '',
-          img: '',
-          p: [],
-          images: []
-        }
-      ]
-    },
-    range: 1,
-    isPublic: 1,
-    type: 'file',
-    permission: 'public',
-    seo: {
-      title: '',
-      description: ''
-    },
-    mobile: {
-      icon: '',
-      title: '',
-      shortTitle: '',
-      description: '',
-      contentComponent: null,
-      showInLauncher: 0,
-      background: '#dededc',
-      loadParentScreens: 1
-    },
-    desktop: {
-      icon: '',
-      title: '',
-      contentComponent: null,
-      showInFinder: 1,
-      resetWidth: 0,
-      hideStatusBar: 0
-    }
-  }
+  pagesStore.editedPage = emptyPage
   form.value = cloneObj(pagesStore.editedPage)
   localStorage.setItem('editedPage', JSON.stringify(form.value))
 }
@@ -352,12 +313,21 @@ async function deletePage() {
       </div>
 
       <div v-if="tabName === 'preview'">
-        <FileContent :content="form.content" />
+        <FileContent
+          v-if="form.type !== 'review'"
+          :content="form.content"
+        />
+        <div
+          v-if="form.type === 'review'"
+          v-html="form.content.review"
+          style="padding: 24px;"
+        />
       </div>
 
       <el-form
         v-else
         class="form"
+        :class="{'form_p0': tabName === 'content' && form.type === 'review'}"
         label-position="top"
       >
         <div
@@ -652,7 +622,12 @@ async function deletePage() {
           class="form-block form-block_full-width"
         >
           <ContentEditor
+            v-if="form.type !== 'review'"
             v-model="form.content"
+          />
+          <Editor
+            v-if="form.type === 'review'"
+            v-model="form.content.review"
           />
         </div>
       </el-form>
@@ -721,6 +696,10 @@ async function deletePage() {
   height: 100%;
   padding: 24px;
 
+  &_p0 {
+    padding: 0;
+  }
+
   &-block {
     max-width: 676px;
     height: 100%;
@@ -729,6 +708,14 @@ async function deletePage() {
       width: 100%;
       max-width: 100%;
     }
+  }
+
+  &:deep(.editor) {
+    height: 100%;
+  }
+  &:deep(.el-tiptap-editor__menu-bar),
+  &:deep(.el-tiptap-editor__content) {
+    border-radius: 0;
   }
 
   .el-input-number {

@@ -193,7 +193,7 @@ async function submitForm() {
   position: relative;
   height: 100%;
   padding: 0 28px 24px 24px;
-  overflow: hidden;
+  overflow: auto;
 
   background: #f5f6ef;
   &__logo {

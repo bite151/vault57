@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import Page from "~/pages/page.vue";
+
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
 import {usePagesStore} from "~/store/pagesStore";
+import type {Page} from "~/types/Page";
 
 interface TreeNode extends Page{
   children?: TreeNode[];
@@ -20,10 +21,8 @@ const sortedNodes = computed(() => {
     return [...props.nodes].sort((a, b) => (a.range || 0) - (b.range || 0));
   }
   const sortedNodes = [...props.nodes].sort((a, b) => a.desktop.title.localeCompare(b.desktop.title));
-  return [
-    ...sortedNodes.filter(n => n.type === 'folder'),
-    ...sortedNodes.filter(n => n.type === 'file')
-  ];
+  const typePriority = (type: string) => ['folder', 'file'].indexOf(type) + 1 || Infinity;
+  return sortedNodes.sort((a, b) => typePriority(a.type) - typePriority(b.type));
 });
 
 function getIcon(page: Page) {

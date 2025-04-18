@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, fro
   const windowsStore = useWindowsStore()
   const galleryStore = useGalleryStore()
 
-  if (to.params.folder === 'gallery' && !galleryStore.images.length) {
+  if (!galleryStore.images.length) {
     await galleryStore.fetchImages()
   }
   

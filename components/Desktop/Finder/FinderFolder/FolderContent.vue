@@ -58,10 +58,8 @@ const files = computed<Page[]>(() => {
       return 0
     })
 
-  return [
-    ...pages.filter(page => page.type === 'folder'),
-    ...pages.filter(page => page.type === 'file'),
-  ]
+  const typePriority = (type: string) => ['folder', 'file'].indexOf(type) + 1 || Infinity;
+  return pages.sort((a, b) => typePriority(a.type) - typePriority(b.type));
 })
 
 const { x, y } = useMouse()

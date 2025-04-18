@@ -2,8 +2,8 @@ import type {DesktopItem, Page} from "~/types/Page";
 import {useWindowsStore} from "~/store/windowsStore";
 
 export const usePagesStore = defineStore('pages', () => {
-  const windowsStore = useWindowsStore();
-  const { apiRequest } = useAPI();
+  const windowsStore = useWindowsStore()
+  const { apiRequest } = useAPI()
   
   const config = useRuntimeConfig()
   const loading = ref<boolean>(false)
