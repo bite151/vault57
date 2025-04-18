@@ -66,7 +66,7 @@ function onUpdate() {}
 <style scoped lang="scss">
 .editor {
   margin: 0;
-  flex: 1 0 auto;
+  width: 100%;
 
   &:deep(.el-tiptap-editor__menu-bar) {
     padding: 8px 16px;

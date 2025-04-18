@@ -17,6 +17,7 @@ const emit = defineEmits(['onContextMenu', 'onRemove', 'onShowProps', 'onEdit'])
 const authStore = useAuthStore()
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
+const editName = ref<boolean>(false)
 
 onMounted(() => {
   if(textarea.value) {
@@ -63,7 +64,7 @@ const menuItemsList: MenuItem[] = [
     title: 'Переименовать',
     icon: null,
     action: () => {
-      folderItem.editName = true
+      editName.value = true
 
       setTimeout(() => {
         if (!textarea.value) return
@@ -71,7 +72,7 @@ const menuItemsList: MenuItem[] = [
         textarea.value.style.height = textarea.value.scrollHeight + 'px';
         textarea.value.focus();
         textarea.value.select();
-      }, 50)
+      }, 100)
 
     }
   },
@@ -148,7 +149,7 @@ function onFilenameChange() {
 }
 
 async function onRename() {
-  folderItem.editName = false
+  editName.value = false
   if (authStore.profile.role !== 'admin') return
   if (folderItem.blank) return
   await pagesStore.savePage(folderItem)
@@ -183,9 +184,9 @@ async function onRename() {
         :size="52"
         :strokeWidth="1.3"
       />
-      <p v-if="!folderItem.editName" ref="fileName">{{ folderItem.desktop.title }}</p>
+      <p v-if="!editName" ref="fileName">{{ folderItem.desktop.title }}</p>
       <textarea
-        v-if="folderItem.editName"
+        v-if="editName"
         ref="textarea"
         v-model="folderItem.desktop.title"
         :style="`height: ${fileName?.clientHeight}px`"

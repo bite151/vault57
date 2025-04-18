@@ -44,8 +44,6 @@ export const usePagesStore = defineStore('pages', () => {
       delete page.id
       delete page.blank
     }
-    
-    delete page.editName
 
     page.content = JSON.stringify(page.content)
     const { children, ...rest } = page
@@ -85,6 +83,17 @@ export const usePagesStore = defineStore('pages', () => {
     
     loading.value = false
   }
+  
+  async function deletePagesArray(ids: number[]) {
+    loading.value = true
+    
+    await apiRequest<{ ids: number[], message: string }>('/pages/delete-array', 'POST', { body: ids })
+    
+    pages.value = pages.value.filter(page => !ids.includes(page.id!))
+    windowsStore.openedWindows = windowsStore.openedWindows.filter(window => !ids.includes(window.id!))
+    
+    loading.value = false
+  }
 
   return {
     loading,
@@ -96,5 +105,6 @@ export const usePagesStore = defineStore('pages', () => {
     fetchPages,
     savePage,
     deletePage,
+    deletePagesArray,
   }
 })

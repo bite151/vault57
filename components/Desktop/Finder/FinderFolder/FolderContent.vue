@@ -13,6 +13,7 @@ import {useWindowsStore} from "~/store/windowsStore";
 import {useDialogStore} from "~/store/dialogStore";
 import {useAuthStore} from "~/store/authStore";
 import {usePage} from "~/composables/usePage";
+import {useNotify} from "~/composables/useNotify";
 
 const props = defineProps<{ currentFolder?: PageWindow | undefined }>()
 const currentFolder = toRef(props, 'currentFolder')
@@ -36,6 +37,7 @@ const dialogStore = useDialogStore()
 const authStore = useAuthStore()
 
 const { createPage } = usePage()
+const { notify, notifyArray } = useNotify()
 
 const isAdmin = computed<boolean>(() => authStore.isAuth && authStore.profile.role === 'admin')
 
@@ -158,12 +160,20 @@ function onFolderClick (): void {
   const isTrashEmpty = !pagesStore.pages.some(page => page.parentId === trash.id)
 
   if (isTrash && !isTrashEmpty) {
-    openContextMenu(currentFolder.value!, [{
-      key: 'restore-all',
-      title: 'Восстановить все',
-      icon: null,
-      action: () => restoreAll()
-    }])
+    openContextMenu(currentFolder.value!, [
+      {
+        key: 'restore-all',
+        title: 'Восстановить все',
+        icon: null,
+        action: () => restoreAll()
+      },
+      {
+        key: 'delete-all',
+        title: 'Очистить корзину',
+        icon: null,
+        action: () => deleteAll()
+      },
+    ])
     return
   }
 
@@ -210,6 +220,24 @@ function restoreAll () {
 
     pagesStore.pages = pagesStore.pages.map(page => page.id === item.id ? item : page)
   })
+}
+
+async function deleteAll () {
+  const trashId: number = pagesStore.pages.find(page => page.url === '/trash')!.id!
+  const trashItems = pagesStore.pages.filter(page => page.id && page.parentId === trashId).map(item => item.id!)
+
+  try {
+    await pagesStore.deletePagesArray(trashItems)
+    notify('success', 'Success', 'Trash cleared successfully')
+  } catch (e: any) {
+    if (e?.data?.error && typeof e?.data?.message !== 'string') {
+      notifyArray('error', e.data.error, e.data)
+    } else if (e?.data?.error) {
+      notify('error', e.data.error, e.message)
+    } else {
+      notify('error', e.statusCode.toString(), e.statusMessage)
+    }
+  }
 }
 </script>
 

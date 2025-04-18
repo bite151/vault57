@@ -24,7 +24,6 @@ export interface Page {
   desktop: DesktopAppProps;
   children?: Page[];
   blank?: boolean;
-  editName?: boolean;
 }
 
 interface MobileAppProps {
