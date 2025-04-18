@@ -268,7 +268,6 @@ async function deletePage() {
     }
   }
 }
-
 </script>
 
 <template>
@@ -626,6 +625,7 @@ async function deletePage() {
             v-model="form.content"
           />
           <Editor
+            :key="form.id"
             v-if="form.type === 'review'"
             v-model="form.content.review"
           />

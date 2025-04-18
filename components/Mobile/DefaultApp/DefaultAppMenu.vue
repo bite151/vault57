@@ -21,13 +21,16 @@ const currentScreen = computed<PageWindow | undefined>(() => windowsStore.curren
 const links = computed<Page[]>(() => {
   const screens = windowsStore.openedWindows
   if (!screens.length) return []
-  return pagesStore.pages
+  const items = pagesStore.pages
     .filter(page => page.parentId === firstScreen.value.id)
     .sort((a: Page, b: Page) => {
-      if (a.mobile.title < b.mobile.title) return -1
-      if (a.mobile.title > b.mobile.title) return 1
+      if (a.desktop.title < b.desktop.title) return -1
+      if (a.desktop.title > b.desktop.title) return 1
       return 0
     })
+
+  const typePriority = (type: string) => ['folder', 'file'].indexOf(type) + 1 || Infinity;
+  return items.sort((a, b) => typePriority(a.type) - typePriority(b.type));
 })
 
 const realizeRedirect = (url: string): void => {

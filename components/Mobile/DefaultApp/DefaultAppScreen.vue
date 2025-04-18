@@ -63,13 +63,16 @@ useEventListener(screenEl, 'scroll', () => offsetTitle())
 onMounted(() => offsetTitle())
 
 const content = computed<Page[]>(() => {
-  return pagesStore.pages
+  const items = pagesStore.pages
     .filter(page => page.parentId === screen.id)
     .sort((a: Page, b: Page) => {
-      if (a.mobile.title < b.mobile.title) return -1
-      if (a.mobile.title > b.mobile.title) return 1
+      if (a.desktop.title < b.desktop.title) return -1
+      if (a.desktop.title > b.desktop.title) return 1
       return 0
     })
+
+  const typePriority = (type: string) => ['folder', 'file'].indexOf(type) + 1 || Infinity;
+  return items.sort((a, b) => typePriority(a.type) - typePriority(b.type));
 })
 
 function offsetTitle() {
@@ -296,7 +299,7 @@ function closeScreenBySwipe(): void {
     transition: .3s ease-in-out;
     h1 {
       font-family: Play-Bold, sans-serif;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 600;
       line-height: 36px;
       transition: .5s ease-in-out;

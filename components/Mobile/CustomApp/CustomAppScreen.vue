@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {PageWindow} from "~/types/Window";
+import ReviewsViewer from "~/components/CustomPageComponents/ReviewsViewer.vue";
 
 const { screen } = defineProps<{
   screen: PageWindow
@@ -32,8 +33,17 @@ watch(
       <h1>{{ screen.mobile.title }}</h1>
     </div>
     <component
-      v-if="currentComponent"
+      v-if="currentComponent && screen.type !== 'review'"
       :is="currentComponent"
+      class="custom-component-content"
+      :class="{
+        'content_full-height': fullHeightComponents.includes(screen.mobile.contentComponent || ''),
+      }"
+    />
+
+    <ReviewsViewer
+      v-if="screen.type === 'review'"
+      :content="screen.content"
       class="custom-component-content"
       :class="{
         'content_full-height': fullHeightComponents.includes(screen.mobile.contentComponent || ''),
@@ -104,7 +114,7 @@ watch(
     transition: .3s ease-in-out;
     h1 {
       font-family: Play-Bold, sans-serif;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 600;
       line-height: 36px;
       transition: .5s ease-in-out;

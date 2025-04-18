@@ -20,7 +20,7 @@ defineProps<({
     >
       <NuxtImg
         v-if="block.img"
-        :src="config.public.MEDIA_URL + block.img"
+        :src="config.public.IMAGES_URL + block.img"
         :placeholder="[50, 25, 75, 5]"
         format="webp"
         class="cover"
@@ -35,7 +35,7 @@ defineProps<({
       >
         <NuxtImg
           v-for="img in block.images"
-          :src="config.public.MEDIA_URL + img"
+          :src="config.public.IMAGES_URL + img"
           :placeholder="[50, 25, 75, 5]"
           format="webp"
           loading="lazy"

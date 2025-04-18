@@ -22,5 +22,10 @@ const { content } = props
 <style scoped lang="scss">
 .reviews-viewer {
   padding: 16px;
+  &:deep(p) {
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
 }
+
 </style>

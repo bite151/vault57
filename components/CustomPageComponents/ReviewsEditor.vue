@@ -44,18 +44,24 @@ async function saveReview() {
 </script>
 
 <template>
-  <ControlPanel
-    key="reviews-control-panel"
-    @on-save="saveReview"
-  />
-  <div class="reviews-editor">
-    <Editor
-      v-model="review"
+  <div class="editor-wrapper">
+    <ControlPanel
+      key="reviews-control-panel"
+      @on-save="saveReview"
     />
+    <div class="reviews-editor">
+      <Editor
+        v-model="review"
+      />
+    </div>
   </div>
+
 </template>
 
 <style scoped lang="scss">
+.editor-wrapper {
+  height: 100%;
+}
 .reviews-editor {
   position: sticky;
   display: flex;
