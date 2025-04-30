@@ -8,7 +8,7 @@ defineProps<({
 
 function imgSrc(src: string): string {
   return !src.includes(';base64')
-    ? config.public.IMAGES_URL + '/images-webp/' + src.split('/').at(-1)
+    ? config.public.IMAGES_URL + '/' + src.split('/').at(-1)
     : src
 }
 </script>

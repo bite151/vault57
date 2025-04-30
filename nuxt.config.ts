@@ -3,7 +3,7 @@ import process from "node:process";
 export default defineNuxtConfig({
   devtools: {
     enabled: true,
-
+    
     timeline: {
       enabled: true,
     },
@@ -23,7 +23,6 @@ export default defineNuxtConfig({
   
   runtimeConfig: {
     public: {
-      API_URL: process.env.API_URL,
       API_BASE_URL: process.env.API_BASE_URL,
       MEDIA_URL: process.env.MEDIA_URL,
       IMAGES_URL: process.env.IMAGES_URL,
@@ -104,7 +103,7 @@ export default defineNuxtConfig({
     families: [
       { name: 'Play', global: true, src: '/fonts/Play/Play-Regular.ttf' },
       { name: 'Play-Bold', global: true, src: '/fonts/Play/Play-Bold.ttf' },
-
+      
       { name: 'IBM', global: true, src: '/fonts/IBMPlexSans/IBMPlexSans-Regular.ttf' },
       { name: 'IBM-Thin', global: true, src: '/fonts/IBMPlexSans/IBMPlexSans-Thin.ttf' },
       { name: 'IBM-ExtraLight', global: true, src: '/fonts/IBMPlexSans/IBMPlexSans-ExtraLight.ttf' },
@@ -112,18 +111,23 @@ export default defineNuxtConfig({
       { name: 'IBM-Medium', global: true, src: '/fonts/IBMPlexSans/IBMPlexSans-Medium.ttf' },
       { name: 'IBM-SemiBold', global: true, src: '/fonts/IBMPlexSans/IBMPlexSans-SemiBold.ttf' },
       { name: 'IBM-Bold', global: true, src: '/fonts/IBMPlexSans/IBMPlexSans-Bold.ttf' },
-
+      
       { name: 'PxPlusIBM', global: true, src: '/fonts/pxplusibmmda.ttf' },
       { name: 'Roco-Pixel', global: true, src: '/fonts/roco-pixel-rus.ttf' },
     ]
   },
-
+  
   css: [
     'animate.css/animate.min.css',
     '~/assets/scss/utils/_reset.scss',
     '~/assets/scss/main.scss'
   ],
+  
+  sourcemap: false,
   vite: {
+    build: {
+      sourcemap: false,
+    },
     css: {
       preprocessorOptions: {
         scss: {
