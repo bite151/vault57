@@ -1,18 +1,18 @@
 import type {GalleryImage} from "~/types/Gallery";
 
 export const useGalleryStore = defineStore('gallery', () => {
-  const config = useRuntimeConfig()
+  const { apiRequest } = useAPI()
   const images = ref<GalleryImage[]>([])
   
   const loading = ref<boolean>(false)
   
   async function fetchImages(): Promise<GalleryImage[]> {
     loading.value = true
-    const res = await $fetch<GalleryImage[]>('/api/gallery')
+    const data = await apiRequest<GalleryImage[]>('/gallery', 'GET')
     loading.value = false
-    if (res) {
-      images.value = res
-      return res
+    if (data) {
+      images.value = data
+      return data
     }
     return []
   }

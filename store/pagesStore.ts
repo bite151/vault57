@@ -16,11 +16,11 @@ export const usePagesStore = defineStore('pages', () => {
   
   async function fetchDesktopItems(): Promise<DesktopItem[]> {
     loading.value = true
-    const { data } = await useFetch<DesktopItem[]>('/api/desktop')
+    const data = await apiRequest<DesktopItem[]>('/desktop', 'GET')
     loading.value = false
-    if (data.value) {
-      desktopItems.value = data.value
-      return data.value
+    if (data) {
+      desktopItems.value = data
+      return data
     }
     return []
   }
