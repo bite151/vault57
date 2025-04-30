@@ -46,8 +46,8 @@ export default defineNuxtConfig({
         // },
         {
           rel: 'icon',
-          type: 'image/png',
-          href: '/favicon-64.png'
+          type: 'image/svg+xml',
+          href: '/vault57.svg'
         }
       ]
     }
@@ -56,6 +56,11 @@ export default defineNuxtConfig({
   hooks: {
     "pages:extend"(pages) {
       pages.push(
+        {
+          name: "contacts",
+          path: "/contacts",
+          file: "~/pages/contacts.vue",
+        },
         {
           name: "games-folder",
           path: "/games/:folder",
@@ -69,6 +74,16 @@ export default defineNuxtConfig({
         {
           name: "games-file-2",
           path: "/games/:folder/:file",
+          file: "~/pages/page.vue",
+        },
+        {
+          name: "js-folder",
+          path: "/js/:folder",
+          file: "~/pages/page.vue",
+        },
+        {
+          name: "js-file-2",
+          path: "/js/:folder/:file",
           file: "~/pages/page.vue",
         },
         {

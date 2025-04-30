@@ -2,7 +2,7 @@
 import {usePagesStore} from "~/store/pagesStore";
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
 import type {Page} from "~/types/Page";
-import {generateUrl, getPageParams} from "~/helpers/app.helpers";
+import {findPageByUrl, generateUrl, getPageParams} from "~/helpers/app.helpers";
 import {useWindowsStore} from "~/store/windowsStore";
 import {usePWA} from "@/composables/usePWA";
 import {useThemeColor} from "~/composables/useThemeColor";
@@ -23,6 +23,13 @@ function launchApp(app: Page) {
     window.history.pushState({}, '', url)
   }
 }
+
+function launchWidget(url: string) {
+  const page = findPageByUrl(url)
+  if (!page) return
+
+  launchApp(page)
+}
 </script>
 
 <template>
@@ -39,15 +46,18 @@ function launchApp(app: Page) {
         </p>
       </div>
     </div>
-    <div class="launcher-item launcher-item-2">
+    <div
+      class="launcher-item launcher-item-2"
+      @click="launchWidget('/contacts/social-networks')"
+    >
       <div class="launcher-widget">
         <AsyncIcon
-          name="Ghost"
+          name="QrCode"
           :size="56"
           :stroke-width="1.2"
         />
         <p class="widget-title">
-          Another Widget
+          Наши соцсети
         </p>
       </div>
       <div class="launcher-title">

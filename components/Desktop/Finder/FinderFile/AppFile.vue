@@ -72,11 +72,9 @@ const hideEffectClassName = computed<string>(() => {
 
 const background = computed<string | null>(() => {
   if (!currentWindow.desktop.background) return null
-  console.log(42)
   if (currentWindow.desktop.background.includes('#')) {
     return `background-color: ${currentWindow.desktop.background}`
   }
-  console.log(111)
 
   return `background: url(${config.public.IMAGES_URL}/uploads/${currentWindow.desktop.background}) repeat`
 })

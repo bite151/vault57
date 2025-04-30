@@ -23,7 +23,7 @@ import {useDialogStore} from "~/store/dialogStore";
 import TabsPanel from "~/components/CustomPageComponents/PageEditor/TabsPanel.vue";
 import PagesTree from "~/components/CustomPageComponents/PageEditor/PagesTree.vue";
 import Simplebar from "simplebar-vue";
-import Editor from "~/components/CustomPageComponents/ReviewsEditor/Editor.vue";
+import Editor from "~/components/CustomPageComponents/ReviewsEditor/ReviewEditor.vue";
 
 const pagesStore = usePagesStore()
 const dialogStore = useDialogStore()

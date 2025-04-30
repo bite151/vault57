@@ -8,7 +8,7 @@ export const useGalleryStore = defineStore('gallery', () => {
   
   async function fetchImages(): Promise<GalleryImage[]> {
     loading.value = true
-    const res = await $fetch<GalleryImage[]>(config.public.API_URL + '/gallery.json')
+    const res = await $fetch<GalleryImage[]>('/api/gallery')
     loading.value = false
     if (res) {
       images.value = res

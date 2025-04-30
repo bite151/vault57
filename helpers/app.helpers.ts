@@ -66,7 +66,7 @@ export const getPageParams = (url: string): { folder: string, file?: string } | 
     }
   }
   
-  urlParts = urlParts.filter(item => !['games'].includes(item))
+  urlParts = urlParts.filter(item => !['games', 'js'].includes(item))
   
   if (urlParts.length === 1) {
     return {

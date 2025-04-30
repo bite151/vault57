@@ -14,7 +14,8 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, fro
   
   const page = findPageByUrl(to.path)
   
-  if (to.path !== '/' && !page) {
+  const exceptionPaths = ['/', '/contacts']
+  if (!exceptionPaths.includes(to.path) && !page) {
     abortNavigation({
       statusCode: 404,
       message: 'Page not found',

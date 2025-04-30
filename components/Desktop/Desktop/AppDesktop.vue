@@ -123,4 +123,5 @@ function handleAlertDialog() {
 .block3 { grid-area: 7 / 12 / 8 / 13; }
 .block4 { grid-area: 1 / 12 / 2 / 13; }
 .block5 { grid-area: 1 / 11 / 2 / 12; }
+.block6 { grid-area: 2 / 12 / 2 / 12; }
 </style>

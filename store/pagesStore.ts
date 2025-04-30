@@ -16,7 +16,7 @@ export const usePagesStore = defineStore('pages', () => {
   
   async function fetchDesktopItems(): Promise<DesktopItem[]> {
     loading.value = true
-    const { data } = await useFetch<DesktopItem[]>(config.public.API_URL + '/desktop.json')
+    const { data } = await useFetch<DesktopItem[]>('/api/desktop')
     loading.value = false
     if (data.value) {
       desktopItems.value = data.value
