@@ -123,11 +123,11 @@ export default defineNuxtConfig({
     '~/assets/scss/main.scss'
   ],
   
-  sourcemap: false,
+  // sourcemap: false,
   vite: {
-    build: {
-      sourcemap: false,
-    },
+    // build: {
+    //   sourcemap: false,
+    // },
     css: {
       preprocessorOptions: {
         scss: {

@@ -64,7 +64,7 @@ function removeImg(n: number) {
     </el-button>
 
     <ContentBlockImages
-      :key="randomKey"
+      :key="block.images"
       :images="block.images"
       class="content-block-images"
       @add:image="addImg"

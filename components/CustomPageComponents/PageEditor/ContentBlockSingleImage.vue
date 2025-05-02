@@ -14,9 +14,10 @@ const fileList = ref<UploadUserFile[]>([])
 
 onMounted(() => {
   if (image) {
+    const img = image.replace('/uploads/images', '')
     fileList.value = [{
       name: 'image',
-      url: !image.includes(';base64') ? config.public.IMAGES_URL + image : image
+      url: !image.includes(';base64') ? config.public.IMAGES_URL + img : image
     }]
   }
 })

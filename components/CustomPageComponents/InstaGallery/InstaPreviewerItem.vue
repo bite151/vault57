@@ -11,7 +11,7 @@ const config = useRuntimeConfig()
     <header class="item-header">
       <div class="avatar-wrapper">
         <nuxt-img
-          :src="`${config.public.MEDIA_URL}/images/brand/insta-logo.jpg`"
+          :src="`${config.public.IMAGES_URL}/brand/insta-logo.jpg`"
           alt=""
           loading="lazy"
         />
@@ -22,7 +22,7 @@ const config = useRuntimeConfig()
       </div>
     </header>
     <NuxtImg
-      :src="config.public.MEDIA_URL + image.src"
+      :src="config.public.IMAGES_URL + image.src"
       :placeholder="[50, 25, 75, 5]"
       class="item-img"
       format="webp"

@@ -102,7 +102,7 @@ async function submitForm() {
 <template>
   <div
     class="feedback"
-    :style="`background: url(${config.public.MEDIA_URL}/images/backgrounds/306_185.png)`"
+    :style="`background: url(${config.public.IMAGES_URL}/backgrounds/306_185.png)`"
   >
     <div class="feedback__logo">
       <RunningLine

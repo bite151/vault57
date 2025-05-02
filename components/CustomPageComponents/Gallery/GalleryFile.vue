@@ -82,7 +82,7 @@ function closeWindow(): void {
       <div class="main-frame">
         <div class="content">
           <img
-            :src="`${config.public.MEDIA_URL}${currentImage.src}`"
+            :src="`${config.public.IMAGES_URL}${currentImage.src}`"
             alt=""
           >
         </div>

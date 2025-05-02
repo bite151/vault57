@@ -48,7 +48,7 @@ function launchWidget(url: string) {
     </div>
     <div
       class="launcher-item launcher-item-2"
-      @click="launchWidget('/contacts/social-networks')"
+      @click="launchWidget('/contacts-info/social-networks')"
     >
       <div class="launcher-widget">
         <AsyncIcon

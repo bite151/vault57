@@ -28,7 +28,7 @@ onMounted(async () => {
     <header class="header">
       <div class="header-avatar-wrapper">
         <nuxt-img
-          :src="`${config.public.MEDIA_URL}/images/brand/insta-logo.jpg`"
+          :src="`${config.public.IMAGES_URL}/brand/insta-logo.jpg`"
           alt=""
           loading="lazy"
         />
@@ -48,7 +48,7 @@ onMounted(async () => {
         @click="openPreviewer(image.id)"
       >
         <NuxtImg
-          :src="config.public.MEDIA_URL + image.src"
+          :src="config.public.IMAGES_URL + image.src"
           :placeholder="[50, 25, 75, 5]"
           format="webp"
           loading="lazy"

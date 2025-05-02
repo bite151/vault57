@@ -33,7 +33,7 @@ function openPreviewer(image: GalleryImage) {
       >
         <div class="img-wrapper">
           <NuxtImg
-            :src="config.public.MEDIA_URL + image.src"
+            :src="config.public.IMAGES_URL + image.src"
             format="webp"
             :placeholder="[50, 25, 75, 5]"
             loading="lazy"

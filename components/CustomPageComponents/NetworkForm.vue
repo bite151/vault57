@@ -108,7 +108,7 @@ async function handleLogOut() {
     class="auth"
   >
     <div class="img-container">
-      <nuxt-img :src="`${config.public.MEDIA_URL}/images/desktop/network-3-min.png`" alt="" loading="lazy"/>
+      <nuxt-img :src="`${config.public.IMAGES_URL}/desktop/network-3-min.png`" alt="" loading="lazy"/>
     </div>
 
     <form

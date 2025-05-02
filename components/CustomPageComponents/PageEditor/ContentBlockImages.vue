@@ -16,9 +16,10 @@ const fileList = ref<UploadFile[]>([])
 onMounted(() => {
   if (images.length > 0) {
     const list = images.map((file: string) => {
+      const img = file.replace('/uploads/images', '')
       return {
         name: randomKey(),
-        url: !file.includes(';base64') ? config.public.IMAGES_URL + file : file
+        url: !file.includes(';base64') ? config.public.IMAGES_URL + img : file
       }
     })
 

@@ -46,7 +46,7 @@ const customization = shallowRef<VectorCustomization>([
         coordinates: [36.079531, 52.969292]
       }"
     >
-      <img :src="`${config.public.MEDIA_URL}/images/brand/map-logo.png`" class="pin"/>
+      <img :src="`${config.public.IMAGES_URL}/brand/map-logo.png`" class="pin"/>
     </yandex-map-marker>
   </yandex-map>
 </template>

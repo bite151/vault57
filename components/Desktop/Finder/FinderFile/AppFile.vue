@@ -76,7 +76,7 @@ const background = computed<string | null>(() => {
     return `background-color: ${currentWindow.desktop.background}`
   }
 
-  return `background: url(${config.public.IMAGES_URL}/uploads/${currentWindow.desktop.background}) repeat`
+  return `background: url(${config.public.IMAGES_URL}${currentWindow.desktop.background}) repeat`
 })
 
 onMounted(() => {

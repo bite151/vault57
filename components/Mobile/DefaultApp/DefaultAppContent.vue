@@ -5,6 +5,12 @@ const config = useRuntimeConfig()
 defineProps<({
   content: PageContent | null
 })>()
+
+function imgSrc(src: string): string {
+  return !src.includes(';base64')
+    ? config.public.IMAGES_URL + '/' + src.split('/').at(-1)
+    : src
+}
 </script>
 
 <template>
@@ -20,7 +26,7 @@ defineProps<({
     >
       <NuxtImg
         v-if="block.img"
-        :src="config.public.IMAGES_URL + block.img"
+        :src="imgSrc(block.img)"
         :placeholder="[50, 25, 75, 5]"
         format="webp"
         class="cover"
@@ -35,7 +41,7 @@ defineProps<({
       >
         <NuxtImg
           v-for="img in block.images"
-          :src="config.public.IMAGES_URL + img"
+          :src="imgSrc(img)"
           :placeholder="[50, 25, 75, 5]"
           format="webp"
           loading="lazy"
