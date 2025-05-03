@@ -24,7 +24,7 @@ const text = [
           subtitle: 'Уважай технику — это артефакты',
           img: null,
           p: [
-            'Эти компьютеры и консоли старше, чем Instagram и TikTok . Не бей по клавишам, не пинай корпус и не ставь чай на системник.',
+            'Эти компьютеры и консоли старше, чем Instagram и TikTok . Не бей по клавишам, не пинай корпус и не ставь пивко на системник.',
             'Если что-то не работает — не чини сам, зови Стаса. Он в этом шарит.',
             'Если Стаса нет — зови Диму. Он тоже шарит ;)',
             'Не выдёргивай шнуры. Даже если «мне просто зарядиться».'
@@ -35,7 +35,7 @@ const text = [
           img: null,
           p: [
             'Читы, крики и ломание джойстиков — мимо. Здесь не киберспорт, здесь ламповость.',
-            'Если очередь — не жульничай. Сыграл раунд — уступи, как в старом клубе.',
+            'Если очередь — не жульничай. Сыграл раунд — уступи.',
             'Не сохраняйся поверх чужих сейвов. Это как затереть чью-то детскую фотку.'
           ]
         },
@@ -80,7 +80,7 @@ const text = [
           img: null,
           p: [
             'Мы за уют, но помни: это общее пространство. Веди себя по-людски.',
-            'Найдено — отдай. Потерял — спроси у бармена/админа.',
+            'Найдено — отдай. Потерял — обратись к админу.',
             'Уважай границы других. Не лезь в чужие сохранения, рюкзаки и личное пространство.'
           ]
         }
@@ -90,7 +90,7 @@ const text = [
   {
     id: 2,
     block: {
-      title: 'Система штрафов:<br><span>"Влепили бан по-братски"</span>',
+      title: 'Система штрафов:<br><span>«Влепили бан по-братски»</span>',
       subBlocks: [
         {
           subtitle: 'Система штрафов',
@@ -119,7 +119,7 @@ const text = [
           ]
         },
         {
-          subtitle: 'Бан — "Game Over, дружище"',
+          subtitle: 'Бан — «Game Over, дружище»',
           img: null,
           p: [
             'Ты серьёзно накосячил: сломал технику, украл, вёл себя как финальный босс.',
@@ -347,7 +347,8 @@ onBeforeUnmount(() => {
 }
 
 .content-wrapper {
-  padding: 28px 24px 24px 40px;
+  padding: 28px 0 24px 0;
+  //padding: 28px 24px 24px 40px;
   overflow: auto;
   z-index: 1;
 }
@@ -387,10 +388,30 @@ onBeforeUnmount(() => {
 }
 
 .mobile-title {
-  display: none;
+  display: block;
+  margin-bottom: 24px;
+  //white-space: nowrap;
+
+  font-size: 28px;
+  color: #61615c;
+  line-height: 1.2;
+  font-family: Play-Bold;
+  user-select: none;
+
+  &:deep(span) {
+    font-size: 24px;
+    font-weight: 600;
+    color: #acaca6;
+    font-family: Play-Bold;
+  }
 }
+
+
 .block {
-  padding: 36px 0;
+  padding: 36px 24px 36px 40px;
+  &:nth-child(even) {
+    background-color: rgba(#61615d, 0.1);
+  }
 }
 .sub-title {
   margin-bottom: 20px;
@@ -436,14 +457,20 @@ onBeforeUnmount(() => {
   overflow: hidden;
 
   .content-wrapper {
-    padding: 24px;
+    //padding: 24px;
     .block  {
+      padding: 36px 24px;
+    }
+
+    .block:first-of-type {
       padding-top: 0;
-      padding-bottom: 32px;
     }
   }
   .text-block {
     margin-bottom: 32px;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
   }
   .left-column {
     display: none;

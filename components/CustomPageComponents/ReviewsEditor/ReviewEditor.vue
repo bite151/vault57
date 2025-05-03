@@ -12,7 +12,7 @@ import {
   FontSize,
   // CodeView,
   Strike,
-  Blockquote,
+  // Blockquote,
   FormatClear,
   SelectAll,
   Commands,
@@ -30,7 +30,7 @@ const extensions = [
   Strike.configure({}),
   // CodeView,
   FontSize,
-  Blockquote,
+  // Blockquote,
   FormatClear,
   SelectAll,
   Commands.configure({
