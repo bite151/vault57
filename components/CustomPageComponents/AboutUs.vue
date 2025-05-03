@@ -108,7 +108,7 @@ const text = [
             'Наш Compaq Presario 433 сейчас на «реанимации» — Стас ковыряется в нём, как хирург. Когда оживим, он снова будет играть ту самую «квадратную» Цивилизацию.',
             'Особая гордость — Intel 486 с оригинальной MS-DOS начала 90-х. Это как капсула времени: система не переустанавливалась с тех пор, когда «железный занавес» только рухнул. Здесь даже есть папка «Games» с тем самым Prince of Persia, где принц бегал как на шарнирах.',
             'Cyrix M2 — редкий зверь из прошлого. В 90-е эти процессоры покупали те, кому Pentium был не по карману. Сейчас он работает медленнее смартфона, но зато как атмосферно гудит при запуске Heroes of Might and Magic II!',
-            'Pentium II с Windows 98 — наш рекордсмен. 25 лет без переустановки! Эта система пережила Y2K, все вирусы «нулевых» и до сих пор загружается. Когда дети видят «синий экран смерти» вживую — это для них как встреча с мифологическим существом.',
+            'Pentium II с Windows 98 — наш рекордсмен. 25 лет без переустановки! Эта система пережила Y2K, все вирусы «нулевых» и до сих пор загружается.',
             'А советский клон ZX Spectrum — вообще артефакт. На нём до сих пор можно запускать те самые игры, которые загружались с кассет по 20 минут. И да, если игра не грузилась — надо было перематывать кассету карандашом. Попробуй объясни это поколению SSD!'
           ]
         },
@@ -140,7 +140,7 @@ const text = [
       title: 'Консольные легенды: <br/><span>от 8 бит до первых 3D</span>',
       subBlocks: [
         {
-          subtitle: 'Dendy Junior — наше всё',
+          subtitle: 'Dendy Junior',
           img: null,
           p: [
             'Это та самая приставка, с которой для многих начался игровой мир. Наш экземпляр до сих пор пахнет тем самым пластиком из 90-х. Здесь есть все хиты: «Черепашки-ниндзя», «Контра», «Марио».',
@@ -259,7 +259,6 @@ const setBlockRef = (el: HTMLDivElement | null, id: number) => {
   }
 }
 
-
 async function animate() {
   currentTitle.value = null
   pageNumber.value = null
@@ -284,7 +283,10 @@ function scrollPage(n: number) {
 }
 
 onMounted(() => {
-  scrollPage(1)
+  if (!isMobile.value) {
+    scrollPage(1)
+  }
+
   currentTitle.value = text[0].block.title
   cleanup = observeBlocks()
 })
@@ -350,6 +352,8 @@ onBeforeUnmount(() => {
         :ref="el => setBlockRef(el, id)"
         class="block"
       >
+        <h2 v-html="block.title" class="mobile-title"/>
+
         <div
           v-for="item in block.subBlocks"
           class="text-block"
@@ -459,6 +463,9 @@ onBeforeUnmount(() => {
   }
 }
 
+.mobile-title {
+  display: none;
+}
 .block {
   padding: 36px 0;
 }
@@ -504,12 +511,49 @@ onBeforeUnmount(() => {
 
 .about-us_mobile {
   overflow: hidden;
+
+  .content-wrapper {
+    padding: 24px;
+    .block  {
+      padding-top: 0;
+      padding-bottom: 32px;
+    }
+  }
+  .text-block {
+    margin-bottom: 32px;
+  }
   .left-column {
     display: none;
   }
   .title-wrapper {
-    width: 120px;
-    padding: 24px 16px 24px 8px;
+    display: none;
+  }
+  .mobile-title {
+    display: block;
+    margin-bottom: 24px;
+    //white-space: nowrap;
+
+    font-size: 24px;
+    color: #3e403b;
+    line-height: 1.2;
+    font-family: Play-Bold;
+    user-select: none;
+
+    &:deep(span) {
+      font-weight: 600;
+      color: #61615d;
+      font-family: Play-Bold;
+    }
+  }
+
+  .sub-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+    font-family: Play-Bold;
+  }
+
+  .page-number {
+    color: #d5d3ce;
   }
 }
 

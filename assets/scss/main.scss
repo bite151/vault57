@@ -19,4 +19,8 @@ body {
   &.nwse-resize > * {
     cursor: nwse-resize !important;
   }
+
+  ::selection {
+    background: rgba(#bebfb8, .3);
+  }
 }

@@ -5,7 +5,6 @@ import type {Page} from "~/types/Page";
 import {findPageByUrl, generateUrl, getPageParams} from "~/helpers/app.helpers";
 import {useWindowsStore} from "~/store/windowsStore";
 import {usePWA} from "@/composables/usePWA";
-import {useThemeColor} from "~/composables/useThemeColor";
 
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
@@ -35,7 +34,10 @@ function launchWidget(url: string) {
 <template>
   <div class="launcher">
     <div class="launcher-item launcher-item-1">
-      <div class="launcher-widget">
+      <div
+        class="launcher-widget"
+        @click="launchWidget('/about/history')"
+      >
         <AsyncIcon
           name="Rocket"
           :size="42"

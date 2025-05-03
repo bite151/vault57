@@ -48,7 +48,7 @@ export default defineNuxtConfig({
           type: 'image/svg+xml',
           href: '/vault57.svg'
         },
-        { rel: 'preload', href: '/fonts/pxplusibmmda.ttf', as: 'font', crossorigin: '' }
+        // { rel: 'preload', href: '/fonts/pxplusibmmda.ttf', as: 'font', crossorigin: '' }
       ]
     }
   },
