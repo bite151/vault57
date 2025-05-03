@@ -47,7 +47,8 @@ export default defineNuxtConfig({
           rel: 'icon',
           type: 'image/svg+xml',
           href: '/vault57.svg'
-        }
+        },
+        { rel: 'preload', href: '/fonts/pxplusibmmda.ttf', as: 'font', crossorigin: '' }
       ]
     }
   },
@@ -101,6 +102,8 @@ export default defineNuxtConfig({
   
   fonts: {
     families: [
+      // { name: 'PxPlusIBM', global: true, src: '/fonts/pxplusibmmda.ttf' },
+      
       { name: 'Play', global: true, src: '/fonts/Play/Play-Regular.ttf' },
       { name: 'Play-Bold', global: true, src: '/fonts/Play/Play-Bold.ttf' },
       
@@ -112,7 +115,6 @@ export default defineNuxtConfig({
       { name: 'IBM-SemiBold', global: true, src: '/fonts/IBMPlexSans/IBMPlexSans-SemiBold.ttf' },
       { name: 'IBM-Bold', global: true, src: '/fonts/IBMPlexSans/IBMPlexSans-Bold.ttf' },
       
-      { name: 'PxPlusIBM', global: true, src: '/fonts/pxplusibmmda.ttf' },
       { name: 'Roco-Pixel', global: true, src: '/fonts/roco-pixel-rus.ttf' },
     ]
   },
