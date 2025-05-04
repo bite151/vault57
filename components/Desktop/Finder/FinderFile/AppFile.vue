@@ -320,7 +320,8 @@ function onResizeEnd(): void {
 
     //border-width: 2px;
     border-radius: 0;
-    &:deep(.title-bar) {
+    &:deep(.title-bar),
+    &:deep(.component-wrapper) {
       border-radius: 0;
     }
   }

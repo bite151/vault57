@@ -157,7 +157,7 @@ const observeBlocks = () => {
   const callback = async (entries: IntersectionObserverEntry[]) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        const id = entry.target.getAttribute('data-block-id')
+        const id = entry.target.getAttribute('data-rules-block-id')
         if (id) {
           currentBlockId.value = +id
           animate()
@@ -168,7 +168,7 @@ const observeBlocks = () => {
 
   const observer = new IntersectionObserver(callback, options)
 
-  const blockElements = document.querySelectorAll('[data-block-id]')
+  const blockElements = document.querySelectorAll('[data-rules-block-id]')
   blockElements.forEach(el => observer.observe(el))
 
   return () => observer.disconnect()
@@ -269,8 +269,8 @@ onBeforeUnmount(() => {
     >
       <div
         v-for="({ block, id }, index) in text"
-        :data-block-id="id"
-        :key="id"
+        :data-rules-block-id="id"
+        :key="`rules-block-${id}`"
         :id="`block-${id}`"
         :ref="el => setBlockRef(el, id)"
         class="block"
@@ -347,7 +347,7 @@ onBeforeUnmount(() => {
 }
 
 .content-wrapper {
-  padding: 28px 0 24px 0;
+  padding: 28px 0 0 0;
   //padding: 28px 24px 24px 40px;
   overflow: auto;
   z-index: 1;
@@ -389,7 +389,7 @@ onBeforeUnmount(() => {
 
 .mobile-title {
   display: block;
-  margin-bottom: 24px;
+  margin-bottom: 36px;
   //white-space: nowrap;
 
   font-size: 28px;
@@ -409,6 +409,7 @@ onBeforeUnmount(() => {
 
 .block {
   padding: 36px 24px 36px 40px;
+  min-height: 100%;
   &:nth-child(even) {
     background-color: rgba(#61615d, 0.1);
   }

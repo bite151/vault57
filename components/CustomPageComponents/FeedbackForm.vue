@@ -202,9 +202,9 @@ async function submitForm() {
     align-items: end;
     height: 90px;
     .top-line {
-      width: 376px;
+      width: 338px;
       font-family: Roco-Pixel, 'sans-serif';
-      font-size: 43px;
+      font-size: 39px;
       line-height: 68px;
       font-weight: 600;
       font-style: italic;

@@ -8,7 +8,15 @@ import {usePWA} from "@/composables/usePWA";
 
 const pagesStore = usePagesStore()
 const windowsStore = useWindowsStore()
-const mainScreenIcons = computed<Page[]>(() => pagesStore.pages.filter(page => page.mobile.showInLauncher))
+const mainScreenIcons = computed<Page[]>(() => pagesStore.pages
+  .filter(page => page.mobile.showInLauncher)
+  .sort((a, b) => {
+    if (a.range < b.range) return -1
+    if (a.range > b.range) return 1
+    return 0
+  })
+)
+
 
 const { installPWA, installPromptEvent, isInstalled } = usePWA();
 
