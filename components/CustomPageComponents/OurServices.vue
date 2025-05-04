@@ -22,7 +22,7 @@ const text = [
           subtitle: 'Групповые игровые сессии\r\n(до 10 игроков)',
           img: null,
           p: [
-            'Собирай команду и устраивай локальную зарубу: Half-life, Counter Strike, Quake, Warcraft III или даже Worms или Heroes of Might And Magic III. Битва всех против всех или кооператив — решать вам.'
+            'Собирай команду и устраивай локальную зарубу: Half-Life, Counter-Strike, Quake, Warcraft III или даже Worms или Heroes of Might and Magic III. Битва всех против всех или кооператив — решать вам.'
           ]
         },
         {

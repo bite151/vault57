@@ -23,7 +23,7 @@ import {useDialogStore} from "~/store/dialogStore";
 import TabsPanel from "~/components/CustomPageComponents/PageEditor/TabsPanel.vue";
 import PagesTree from "~/components/CustomPageComponents/PageEditor/PagesTree.vue";
 import Simplebar from "simplebar-vue";
-import Editor from "~/components/CustomPageComponents/ReviewsEditor/ReviewEditor.vue";
+import ReviewEditor from "~/components/CustomPageComponents/ReviewsEditor/ReviewEditor.vue";
 
 const pagesStore = usePagesStore()
 const dialogStore = useDialogStore()
@@ -634,11 +634,13 @@ async function deletePage() {
             v-if="form.type !== 'review'"
             v-model="form.content"
           />
-          <Editor
-            :key="form.id"
-            v-if="form.type === 'review'"
-            v-model="form.content.review"
-          />
+          <ClientOnly >
+            <ReviewEditor
+              :key="form.id"
+              v-if="form.type === 'review'"
+              v-model="form.content.review"
+            />
+          </ClientOnly>
         </div>
       </el-form>
     </div>
