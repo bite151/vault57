@@ -49,19 +49,17 @@ function onUpdate() {}
 
 <template>
   <div class="editor">
-    <ClientOnly >
-      <element-tiptap
-        ref="editor"
-        v-model:content="content"
-        :extensions="extensions"
-        :enable-char-count="false"
-        editor-bubble-menu-class="hidden-bubble"
-        lang="ru"
-        height="100%"
-        output="html"
-        @onUpdate="onUpdate"
-      />
-    </ClientOnly>
+    <element-tiptap
+      ref="editor"
+      v-model:content="content"
+      :extensions="extensions"
+      :enable-char-count="false"
+      editor-bubble-menu-class="hidden-bubble"
+      lang="ru"
+      height="100%"
+      output="html"
+      @onUpdate="onUpdate"
+    />
   </div>
 </template>
 

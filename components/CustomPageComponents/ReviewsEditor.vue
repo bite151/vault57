@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import ControlPanel from "~/components/CustomPageComponents/ReviewsEditor/ControlPanel.vue";
-import Editor from "~/components/CustomPageComponents/ReviewsEditor/ReviewEditor.vue";
+import ReviewEditor from "~/components/CustomPageComponents/ReviewsEditor/ReviewEditor.vue";
 import {useReviewsStore} from "~/store/reviewsStore";
 import {useWindowsStore} from "~/store/windowsStore";
 
@@ -49,9 +49,11 @@ async function saveReview() {
       @on-save="saveReview"
     />
     <div class="reviews-editor">
-      <Editor
-        v-model="review"
-      />
+      <ClientOnly>
+        <ReviewEditor
+          v-model="review"
+        />
+      </ClientOnly>
     </div>
   </div>
 
