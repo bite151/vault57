@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import ControlPanel from "~/components/CustomPageComponents/ReviewsEditor/ControlPanel.vue";
-import ReviewEditor from "~/components/CustomPageComponents/ReviewsEditor/ReviewEditor.vue";
+import ReviewEditor from "~/components/CustomPageComponents/ReviewsEditor/ReviewEditor.client.vue";
 import {useReviewsStore} from "~/store/reviewsStore";
 import {useWindowsStore} from "~/store/windowsStore";
 

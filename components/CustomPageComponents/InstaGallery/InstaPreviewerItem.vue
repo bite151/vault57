@@ -21,12 +21,18 @@ const config = useRuntimeConfig()
         <p>{{ image.title }}</p>
       </div>
     </header>
-    <NuxtImg
+<!--    <nuxt-img-->
+<!--      :src="config.public.IMAGES_URL + image.src"-->
+<!--      :placeholder="[50, 25, 75, 5]"-->
+<!--      class="item-img"-->
+<!--      format="webp"-->
+<!--      loading="lazy"-->
+<!--      :alt="image.alt"-->
+<!--    />-->
+    <img
       :src="config.public.IMAGES_URL + image.src"
-      :placeholder="[50, 25, 75, 5]"
       class="item-img"
-      format="webp"
-      loading="lazy"
+      :alt="image.alt"
     />
     <footer class="item-footer">
       <p class="item-description">

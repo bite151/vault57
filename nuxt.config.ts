@@ -1,4 +1,6 @@
 import process from "node:process";
+import type {Page} from "~/types/Page";
+// import buildRoutesFromPages from './helpers/app.helpers'
 
 export default defineNuxtConfig({
   devtools: {
@@ -19,6 +21,9 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/fonts',
     'vue-yandex-maps/nuxt',
+    '@nuxtjs/robots',
+    '@nuxtjs/sitemap',
+    'nuxt-yandex-metrika'
   ],
   
   runtimeConfig: {
@@ -26,6 +31,7 @@ export default defineNuxtConfig({
       API_BASE_URL: process.env.API_BASE_URL,
       MEDIA_URL: process.env.MEDIA_URL,
       IMAGES_URL: process.env.IMAGES_URL,
+      YANDEX_METRIKA_ID: process.env.YANDEX_METRIKA_ID,
     },
   },
   
@@ -140,6 +146,54 @@ export default defineNuxtConfig({
       }
     }
   },
+  robots: {
+    blockNonSeoBots: true,
+    disallow: ['/trash', '/system'],
+  },
+  routeRules: {
+    '/system/**': { robots: false },
+  },
+  site: {
+    url: 'https://vault57',
+    name: 'Vault57 - ретро-компьютерный клуб'
+  },
+  sitemap: {
+    hostname: 'https://vault57.ru',
+    gzip: true,
+    // urls: async () => {
+    //   // fetch your URLs from a database or other source
+    //   const urls = await fetch('https://dev.vault57.ru/api/pages')
+    //   return urls
+    // },
+    
+    urls: async () => {
+      const buildFullPaths = (pages: Page[]): string[] => {
+        const pageMap = new Map<number, Page>();
+        pages.forEach(p => pageMap.set(p.id!, p));
+        
+        function getFullUrl(page: Page): string {
+          let path = page.url;
+          let current = page;
+          while (current.parentId) {
+            const parent = pageMap.get(current.parentId);
+            if (!parent) break;
+            path = parent.url.replace(/\/$/, '') + path;
+            current = parent;
+          }
+          return path;
+        }
+        
+        return pages
+          .filter(p => p.isPublic)
+          .map(p => getFullUrl(p));
+      }
+      
+      const res = await fetch('https://dev.vault57.ru/api/pages')
+      const pages = await res.json()
+      return buildFullPaths(pages);
+      // return []
+    },
+  },
   // pwa: {
   //   registerType: 'autoUpdate',
   //   manifest: {
@@ -204,5 +258,15 @@ export default defineNuxtConfig({
   // },
   yandexMaps: {
     apikey: '49b703ae-b1f3-4b42-bc45-dc0860f1af3c',
+  },
+  yandexMetrika: {
+    id: process.env.YANDEX_METRIKA_ID,
+    debug: process.env.NODE_ENV !== "production",
+    delay: 0,
+    cdn: false,
+    verification: null,
+    options: {
+     webvisor: true
+    },
   }
 })
