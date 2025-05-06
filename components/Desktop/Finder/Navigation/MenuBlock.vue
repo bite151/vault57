@@ -68,7 +68,7 @@ function redirectTo(page: Page) {
       :key="page.id"
     >
       <nuxt-link
-        :class="{ active: activeClassName(page.url) }"
+        :class="{ active: activeClassName(page.url), hidden: !page.isPublic && !page.blank }"
         @click="redirectTo(page)"
       >
         <AsyncIcon
@@ -182,6 +182,13 @@ function redirectTo(page: Page) {
 
     &.active {
       background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    &.hidden {
+      color: #a7a7a5;
+      svg {
+        stroke: #a7a7a5;
+      }
     }
   }
 }

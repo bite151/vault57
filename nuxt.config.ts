@@ -1,6 +1,5 @@
 import process from "node:process";
 import type {Page} from "~/types/Page";
-// import buildRoutesFromPages from './helpers/app.helpers'
 
 export default defineNuxtConfig({
   devtools: {
@@ -154,18 +153,12 @@ export default defineNuxtConfig({
     '/system/**': { robots: false },
   },
   site: {
-    url: 'https://vault57',
+    url: 'https://vault57.ru',
     name: 'Vault57 - ретро-компьютерный клуб'
   },
   sitemap: {
     hostname: 'https://vault57.ru',
     gzip: true,
-    // urls: async () => {
-    //   // fetch your URLs from a database or other source
-    //   const urls = await fetch('https://dev.vault57.ru/api/pages')
-    //   return urls
-    // },
-    
     urls: async () => {
       const buildFullPaths = (pages: Page[]): string[] => {
         const pageMap = new Map<number, Page>();
@@ -191,7 +184,6 @@ export default defineNuxtConfig({
       const res = await fetch('https://dev.vault57.ru/api/pages')
       const pages = await res.json()
       return buildFullPaths(pages);
-      // return []
     },
   },
   // pwa: {
