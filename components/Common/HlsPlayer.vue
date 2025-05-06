@@ -17,7 +17,6 @@ const isPlaying = ref(false);
 const duration = ref(0);
 const volume = ref(false);
 const showControls = ref(false);
-const isMobile = ref(false);
 
 
 const loadHls = async () => {
@@ -31,13 +30,9 @@ const loadHls = async () => {
 };
 
 const initPlayer = async () => {
-  if (!process.client) return;
+  if (!import.meta.client) return;
 
   try {
-    isMobile.value = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
-
     const Hls = await loadHls();
     if (!Hls) return;
 

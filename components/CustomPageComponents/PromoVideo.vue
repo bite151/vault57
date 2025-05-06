@@ -3,6 +3,9 @@
 import HlsPlayer from "~/components/Common/HlsPlayer.vue";
 
 const { isMobile } = useDevice()
+const style = computed(() => {
+  return isMobile.value ? [{ height: '100dvh !important'}] : []
+})
 
 </script>
 
@@ -10,7 +13,7 @@ const { isMobile } = useDevice()
   <div
     class="promo-video"
     :class="{'promo-video_mobile': isMobile}"
-    :style="[ isMobile ? { height: '100dvh !important '} : null]"
+    :style="style"
   >
     <HlsPlayer
       src="https://dev.vault57.ru/uploads/videos/promo/promo.m3u8"
