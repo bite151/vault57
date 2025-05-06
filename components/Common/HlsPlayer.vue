@@ -6,7 +6,7 @@ const props = defineProps({
   src: { type: String, required: true },
   posterUrl: { type: String, default: '' },
   autoplay: { type: Boolean, default: false },
-  muted: { type: Boolean, default: false }
+  muted: { type: Boolean, default: true }
 });
 
 const videoEl = ref(null);
@@ -17,7 +17,6 @@ const isPlaying = ref(false);
 const duration = ref(0);
 const volume = ref(false);
 const showControls = ref(false);
-
 
 const loadHls = async () => {
   try {
@@ -121,7 +120,7 @@ const setVolume = () => {
 onMounted(() => {
   initPlayer();
   volume.value = false
-  videoEl.value.muted = true
+  videoEl.value.muted = props.muted
 });
 
 onBeforeUnmount(() => {
@@ -132,7 +131,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="hls-player-container" :class="{ 'is-loading': isLoading }">
+  <div
+    v-show="!isLoading"
+    class="hls-player-container"
+    :class="{ 'is-loading': isLoading }"
+  >
     <video
       ref="videoEl"
       playsinline
@@ -147,6 +150,12 @@ onBeforeUnmount(() => {
         <AsyncIcon v-if="!volume" name="VolumeOff" color="#fff" :size="18" :stroke-width="1.9"/>
       </button>
     </div>
+  </div>
+  <div
+    v-show="isLoading"
+    class="hls-player-loading"
+  >
+    <AsyncIcon name="Loader" :size="24" :stroke-width="2.2" color="#bebfb8"/>
   </div>
 </template>
 
@@ -213,5 +222,18 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   color: #31322d;
+}
+
+.hls-player-loading {
+  animation: spin 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
