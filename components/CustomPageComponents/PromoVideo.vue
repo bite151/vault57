@@ -16,7 +16,7 @@ const style = computed(() => {
       :class="{'promo-video_mobile': isMobile}"
     >
       <HlsPlayer
-        src="https://dev.vault57.ru/uploads/videos/promo/promo.m3u8"
+        src="https://vault57.ru/uploads/videos/promo/promo.m3u8"
         poster-url="/preview.jpg"
         :autoplay="true"
         :muted="true"
