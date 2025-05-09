@@ -4,7 +4,7 @@ import { useWindowsStore } from "~/store/windowsStore";
 import FinderHeader from "~/components/Desktop/Finder/FinderHeader.vue";
 import FinderStatusBar from "~/components/Desktop/Finder/FinderStatusBar.vue";
 import type { PageWindow } from "~/types/Window";
-import {generateUrl} from "~/helpers/app.helpers";
+import {generateUrl, parseQueryString} from "~/helpers/app.helpers";
 import Simplebar from "simplebar-vue";
 import 'assets/scss/simplebar.css';
 import FileContent from "~/components/Desktop/Finder/FinderFile/FileContent.vue";
@@ -22,12 +22,22 @@ const fileWindowElement = ref<HTMLElement | null>(null)
 provide('parentElement', fileWindowElement);
 
 const currentComponent = shallowRef(null);
+const componentParams = ref<Record<string, string> | null>(null)
 watch(
   () => currentWindow?.desktop.contentComponent,
-  (componentName) => {
-    if (componentName) {
+  (component) => {
+    if (!component) {
+      componentParams.value = null
+      currentComponent.value = null
+      return
+    }
+    const [name, paramsStr] = component!.split('?')
+
+    componentParams.value = paramsStr ? parseQueryString(paramsStr) : null
+
+    if (name) {
       currentComponent.value = defineAsyncComponent(() =>
-        import(`~/components/CustomPageComponents/${componentName}.vue`)
+        import(`~/components/CustomPageComponents/${name}.vue`)
       );
     }
   },
@@ -246,6 +256,7 @@ function onResizeEnd(): void {
             <component
               v-if="currentComponent"
               :is="currentComponent"
+              v-bind="componentParams"
             />
           </div>
 

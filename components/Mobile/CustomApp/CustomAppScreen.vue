@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type {PageWindow} from "~/types/Window";
 import ReviewsViewer from "~/components/CustomPageComponents/ReviewsViewer.vue";
+import {parseQueryString} from "~/helpers/app.helpers";
+import {ref} from "vue";
 
 const { screen } = defineProps<{
   screen: PageWindow
@@ -8,13 +10,23 @@ const { screen } = defineProps<{
 
 const fullHeightComponents = ['MapComponent']
 const currentComponent = shallowRef(null)
+const componentParams = ref<Record<string, string> | null>(null)
 
 watch(
   () => screen.mobile.contentComponent,
-  (componentName) => {
-    if (componentName) {
+  (component) => {
+    if (!component) {
+      componentParams.value = null
+      currentComponent.value = null
+      return
+    }
+    const [name, paramsStr] = component!.split('?')
+
+    componentParams.value = paramsStr ? parseQueryString(paramsStr) : null
+
+    if (name) {
       currentComponent.value = defineAsyncComponent(() =>
-        import(`~/components/CustomPageComponents/${componentName}.vue`)
+        import(`~/components/CustomPageComponents/${name}.vue`)
       );
     }
   },
@@ -35,6 +47,7 @@ watch(
     <component
       v-if="currentComponent && screen.type !== 'review'"
       :is="currentComponent"
+      v-bind="componentParams"
       class="custom-component-content"
       :class="{
         'content_full-height': fullHeightComponents.includes(screen.mobile.contentComponent || ''),

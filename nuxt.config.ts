@@ -181,7 +181,7 @@ export default defineNuxtConfig({
           .map(p => getFullUrl(p));
       }
       
-      const res = await fetch('https://dev.vault57.ru/api/pages')
+      const res = await fetch('https://vault57.ru/api/pages')
       const pages = await res.json()
       return buildFullPaths(pages);
     },

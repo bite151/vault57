@@ -156,3 +156,16 @@ export const translitUrl = (str: string) => {
     .toLowerCase()
     .substring(0, 60)
 }
+
+
+export const parseQueryString = (query: string): Record<string, string> => {
+  const params: Record<string, string> = {};
+  const pairs = query.split('&');
+  
+  for (const pair of pairs) {
+    const [key, value] = pair.split('=');
+    params[key] = decodeURIComponent(value || '');
+  }
+  
+  return params;
+};
