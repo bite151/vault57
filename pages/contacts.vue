@@ -81,6 +81,7 @@ const Component = computed(() => isMobile.value
   .address {
     .text {
       font-size: 22px;
+      white-space: nowrap;
     }
   }
 }
