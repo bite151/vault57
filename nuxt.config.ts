@@ -121,6 +121,7 @@ export default defineNuxtConfig({
       { name: 'IBM-Bold', global: true, src: '/fonts/IBMPlexSans/IBMPlexSans-Bold.ttf' },
       
       { name: 'Roco-Pixel', global: true, src: '/fonts/roco-pixel-rus.ttf' },
+      { name: 'Pixy', global: true, src: '/fonts/pixy.ttf' },
     ]
   },
   

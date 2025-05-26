@@ -3,17 +3,20 @@ import {X, ChevronLeft, ChevronRight} from "lucide-vue-next";
 import {useGalleryStore} from "~/store/galleryStore";
 import {ref} from "vue";
 import FinderHeader from "~/components/Desktop/Finder/FinderHeader.vue";
+import type {GalleryImage} from "~/types/Gallery";
 
 const config = useRuntimeConfig()
-const { $bus } = useNuxtApp()
-const emit = defineEmits(['handleClose'])
-const galleryStore = useGalleryStore()
 
-const images = computed(() => galleryStore.images)
+const emit = defineEmits(['handleClose'])
+
+const { images } = defineProps<{
+  images: GalleryImage[],
+}>()
+
 const model = defineModel()
 const imageIndex = ref<number>(0)
 
-const currentImage = computed(() => imageIndex.value !== null ? images.value[imageIndex.value] : null)
+const currentImage = computed(() => imageIndex.value !== null ? images[imageIndex.value] : null)
 
 const isFullScreen = ref<boolean>(false)
 const isHidden = ref<boolean>(false)
@@ -32,13 +35,13 @@ watch(
 )
 
 function setImageIndex() {
-  imageIndex.value = images.value.findIndex(img => img.src === model.value)
+  imageIndex.value = images.findIndex(img => img.src === model.value)
 }
 
 function changeImageIndex(n: number) {
   imageIndex.value += n
-  if (imageIndex.value < 0) imageIndex.value = images.value.length - 1
-  if (imageIndex.value > images.value.length - 1) imageIndex.value = 0
+  if (imageIndex.value < 0) imageIndex.value = images.length - 1
+  if (imageIndex.value > images.length - 1) imageIndex.value = 0
 }
 
 function closeWindow(): void {
@@ -57,7 +60,7 @@ function closeWindow(): void {
       'content-file_hidden': isHidden,
       'content-file_cursor-pointer': cursorPointer
     }"
-    @click="() => { $bus.$emit('resetFront', false); cursorPointer = false }"
+    @click="() => { cursorPointer = false }"
   >
     <FinderHeader
       :moveable="true"

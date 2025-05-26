@@ -49,6 +49,7 @@ function openPreviewer(image: GalleryImage) {
       <GalleryFile
         v-if="previewer"
         v-model="previewer"
+        :images="images"
         @handle-close="() => previewer = null"
       />
     </Teleport>
