@@ -32,7 +32,7 @@
     "hls.js": "^1.6.2",
     "iron-session": "^8.0.4",
     "lucide-vue-next": "^0.474.0",
-    "nuxt": "^3.12.2",
+    "nuxt": "^3.16.2",
     "nuxt-lucide-icons": "^1.0.5",
     "nuxt-yandex-metrika": "^1.2.9",
     "simplebar-vue": "^2.4.0",
