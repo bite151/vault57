@@ -31,6 +31,8 @@ export default defineNuxtConfig({
       MEDIA_URL: process.env.MEDIA_URL,
       IMAGES_URL: process.env.IMAGES_URL,
       YANDEX_METRIKA_ID: process.env.YANDEX_METRIKA_ID,
+      SITE_URL: process.env.SITE_URL,
+      SITE_NAME: process.env.SITE_NAME
     },
   },
   
@@ -38,7 +40,7 @@ export default defineNuxtConfig({
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
-      titleTemplate: 'Vault57 - %s',
+      titleTemplate: process.env.SITE_NAME + ' - %s',
       htmlAttrs: {
         lang: 'ru'
       },
@@ -154,11 +156,11 @@ export default defineNuxtConfig({
     '/system/**': { robots: false },
   },
   site: {
-    url: 'https://vault57.ru',
-    name: 'Vault57 - ретро-компьютерный клуб'
+    url: process.env.SITE_URL,
+    name: process.env.SITE_NAME + ' - ретро-компьютерный клуб',
   },
   sitemap: {
-    hostname: 'https://vault57.ru',
+    hostname: process.env.SITE_URL,
     gzip: true,
     urls: async () => {
       const buildFullPaths = (pages: Page[]): string[] => {
@@ -182,7 +184,7 @@ export default defineNuxtConfig({
           .map(p => getFullUrl(p));
       }
       
-      const res = await fetch('https://vault57.ru/api/pages')
+      const res = await fetch(process.env.SITE_URL + '/api/pages')
       const pages = await res.json()
       return buildFullPaths(pages);
     },
@@ -190,8 +192,8 @@ export default defineNuxtConfig({
   // pwa: {
   //   registerType: 'autoUpdate',
   //   manifest: {
-  //     name: 'Vault57',
-  //     short_name: 'Vault57',
+  //     name: process.env.SITE_URL,
+  //     short_name: process.env.SITE_URL,
   //     description: 'Ретро компьютерный клуб',
   //     theme_color: '#BEBFB8',
   //     orientation: 'portrait-primary',

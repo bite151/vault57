@@ -1,4 +1,4 @@
-interface SEO {
+export interface SEO {
   title: string;
   description: string;
 }
