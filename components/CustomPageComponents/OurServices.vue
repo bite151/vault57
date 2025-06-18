@@ -523,7 +523,7 @@ onBeforeUnmount(() => {
 
 .block {
   padding: 36px 24px 36px 40px;
-  min-height: 100%;
+  min-height: calc(80vh - 48px);
   &:nth-child(even) {
     background-color: rgba(#61615d, 0.1);
   }

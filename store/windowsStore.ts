@@ -2,8 +2,10 @@ import {findPageByUrl} from "~/helpers/app.helpers";
 import type {PageWindow, WindowParams} from "~/types/Window";
 import type {Page} from "~/types/Page";
 import type {RouteParams} from "vue-router";
+import {useMetaTags} from "~/composables/useMetaTags";
 
 export const useWindowsStore = defineStore('windowsStore', () => {
+  const { setMetaTags } = useMetaTags()
   const openedWindows = ref<PageWindow[]>([])
   const isLoaded = ref<boolean>(false)
   
@@ -77,10 +79,9 @@ export const useWindowsStore = defineStore('windowsStore', () => {
     openedWindows.value = openedWindows.value
       .map((item) => {
         if (item.windowId === windowId) {
-          useSeoMeta({
-            title: item.seo.title,
-            description: item.seo.description
-          })
+          
+          setMetaTags(item.seo, item.fullUrl)
+          
           if (import.meta.browser) {
             window.history.pushState({}, '', item.fullUrl)
           }

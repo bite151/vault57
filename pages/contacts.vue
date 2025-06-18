@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
+import {useMetaTags} from "~/composables/useMetaTags";
+
+const { setMetaTags } = useMetaTags()
+setMetaTags(
+  {
+    title: "Контакты в Орле | Запись на экскурсии и турниры",
+    description: "Как нас найти в Орле: адрес, телефон, график работы. Vault57 – ретро-клуб с играми 90-х/2000-х, турнирами и VHS-вечерами",
+  },
+  '/contacts'
+)
 
 const { isMobile } = useDevice()
 
