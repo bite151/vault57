@@ -2,7 +2,7 @@
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
 import { usePagesStore } from "~/store/pagesStore";
 import { useWindowsStore } from "~/store/windowsStore";
-import {openWindow, sleep} from "~/helpers/app.helpers";
+import {generateUrl, openWindow, sleep} from "~/helpers/app.helpers";
 import type { MenuItem, Page } from "~/types/Page";
 import type {PageWindow} from "~/types/Window";
 import {useAuthStore} from "~/store/authStore";
@@ -165,10 +165,11 @@ async function onRename() {
     class="file"
     :class="{ file_hidden: !folderItem.isPublic && !folderItem.blank }"
   >
-    <nuxt-link
+    <a
       v-if="!isTrash"
+      :href="generateUrl(folderItem)"
       active-class="file_active"
-      @click.stop="openPage(folderItem)"
+      @click.prevent.stop="openPage(folderItem)"
       @contextmenu.prevent.stop="emit(
         'onContextMenu',
         folderItem,
@@ -201,7 +202,7 @@ async function onRename() {
         @keyup="onFilenameChange"
         @blur="onRename()"
       ></textarea>
-    </nuxt-link>
+    </a>
 
     <div
       v-else

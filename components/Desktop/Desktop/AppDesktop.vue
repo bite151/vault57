@@ -45,8 +45,9 @@ function handleAlertDialog() {
 <template>
   <div class="desktop-grid">
     <template v-for="block in icons">
-      <nuxt-link
+      <a
         v-if="block.url !== '#'"
+        :href="block.url"
         :key="block.key"
         class="block"
         :class="`block${block.key}`"
@@ -57,7 +58,7 @@ function handleAlertDialog() {
           :stroke-width="1.4"
         />
         <span>{{ block.title }}</span>
-      </nuxt-link>
+      </a>
       <div
         v-else
         class="block"

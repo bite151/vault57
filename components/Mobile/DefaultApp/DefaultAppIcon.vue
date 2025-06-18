@@ -42,6 +42,7 @@ defineProps<{
       border-top: 1px solid #31322d;
       font-family: Play-Bold, sans-serif;
       font-size: 18px;
+      color: #3e403b;
       user-select: none;
     }
   }

@@ -6,7 +6,7 @@ import MenuBlock from "~/components/Desktop/Finder/Navigation/MenuBlock.vue";
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
 import type { Page } from "~/types/Page";
 import type { PageWindow } from "~/types/Window";
-import {openWindow} from "~/helpers/app.helpers";
+import {generateUrl, openWindow} from "~/helpers/app.helpers";
 
 const windowsStore = useWindowsStore()
 const pagesStore = usePagesStore()
@@ -67,9 +67,10 @@ function redirectTo(page: Page) {
       v-for="page in pages"
       :key="page.id"
     >
-      <nuxt-link
+      <a
+        :href="generateUrl(page)"
         :class="{ active: activeClassName(page.url), hidden: !page.isPublic && !page.blank }"
-        @click="redirectTo(page)"
+        @click.prevent="redirectTo(page)"
       >
         <AsyncIcon
           v-if="page.desktop.icon && page.desktop.icon !== 'Folder'"
@@ -88,7 +89,7 @@ function redirectTo(page: Page) {
           color="#31322d"
         />
         <span>{{ page.desktop.title }}</span>
-      </nuxt-link>
+      </a>
 
       <MenuBlock
         v-if="isActive(page.url) && hasChildren(page.id!)"

@@ -42,9 +42,10 @@ function launchWidget(url: string) {
 <template>
   <div class="launcher">
     <div class="launcher-item launcher-item-1">
-      <div
+      <a
+        href="/about/history"
         class="launcher-widget"
-        @click="launchWidget('/about/history')"
+        @click.prevent="launchWidget('/about/history')"
       >
         <AsyncIcon
           name="Rocket"
@@ -54,11 +55,12 @@ function launchWidget(url: string) {
         <p class="widget-title">
           VAULT 57
         </p>
-      </div>
+      </a>
     </div>
-    <div
+    <a
+      href="/contacts-info/social-networks"
       class="launcher-item launcher-item-2"
-      @click="launchWidget('/contacts-info/social-networks')"
+      @click.prevent="launchWidget('/contacts-info/social-networks')"
     >
       <div class="launcher-widget">
         <AsyncIcon
@@ -71,15 +73,16 @@ function launchWidget(url: string) {
         </p>
       </div>
       <div class="launcher-title">
-        Title
+        Наши соцсети
       </div>
-    </div>
-    <div
+    </a>
+    <a
       v-for="(item, n) in mainScreenIcons"
+      :href="generateUrl(item)"
       :key="item.id"
       class="launcher-item"
       :class="`launcher-item-${n + 3}`"
-      @click="launchApp(item)"
+      @click.prevent="launchApp(item)"
     >
       <div class="launcher-icon">
         <div>
@@ -93,7 +96,7 @@ function launchWidget(url: string) {
       <div class="launcher-item-title">
         {{ item.mobile.shortTitle || item.mobile.title }}
       </div>
-    </div>
+    </a>
 
     <div
       v-if="installPromptEvent && !isInstalled"
@@ -135,6 +138,7 @@ function launchWidget(url: string) {
       align-items: center;
       gap: 10px;
       position: relative;
+      color: #3e403b;
       &-title {
         height: 20px;
         font-size: 14px;
@@ -228,6 +232,7 @@ function launchWidget(url: string) {
         border-top: 1px solid #31322d;
         font-family: Play-Bold, sans-serif;
         font-size: 18px;
+        color: #3e403b;
         user-select: none;
       }
     }

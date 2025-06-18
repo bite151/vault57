@@ -472,6 +472,15 @@ async function deletePage() {
                 v-model="form[tabName].ogDescription"
               />
             </el-form-item>
+
+            <el-form-item
+              label="OG Image Url"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].ogImageUrl"
+              />
+            </el-form-item>
           </div>
 
           <div

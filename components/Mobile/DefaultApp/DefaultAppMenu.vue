@@ -82,9 +82,10 @@ async function redirect(page: Page) {
 
   <section class="app-menu">
     <header class="app-menu-header">
-      <button
+      <a
+        href="/desktop"
         class="home-button"
-        @click="toHome()"
+        @click.prevent="toHome()"
       >
         <span class="icon-wrapper">
           <AsyncIcon
@@ -95,15 +96,16 @@ async function redirect(page: Page) {
           />
         </span>
         <span class="title">Vault57</span>
-      </button>
+      </a>
     </header>
 
     <nav>
       <ul>
         <li>
-          <button
+          <a
+            :href="generateUrl(firstScreen)"
             class="menu-button button-group"
-            @click="redirect(firstScreen)"
+            @click.prevent="redirect(firstScreen)"
           >
             <AsyncIcon
               :name="firstScreen.mobile.icon || firstScreen.desktop.icon"
@@ -112,15 +114,16 @@ async function redirect(page: Page) {
               color="#dededc"
             />
             {{ firstScreen.mobile.title }}
-          </button>
+          </a>
           <ul>
             <li
               v-for="link in links"
               :key="link.id"
             >
-              <button
+              <a
+                :href="generateUrl(link)"
                 class="menu-button"
-                @click="redirect(link)"
+                @click.prevent="redirect(link)"
               >
                 <AsyncIcon
                   :name="link.mobile.icon || link.desktop.icon"
@@ -129,7 +132,7 @@ async function redirect(page: Page) {
                   color="#dededc"
                 />
                 {{ link.mobile.title }}
-              </button>
+              </a>
             </li>
           </ul>
         </li>
@@ -192,6 +195,7 @@ async function redirect(page: Page) {
   color: #dededc;
 
   &.button-group {
+    width: min-content;
     gap: 12px;
     font-size: 24px;
     font-weight: 600;

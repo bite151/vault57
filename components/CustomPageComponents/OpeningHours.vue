@@ -59,7 +59,13 @@ function openForm() {
     <footer class="opening-hours-footer">
       <p>Друзья!<br/>Мы работаем с индивидуальным подходом к каждому гостю, именно поэтому необходима</p>
 
-      <button @click="openForm">предварительная запись</button>
+      <a
+        href="/contacts-info/feedback-form"
+        class="feedback-button"
+        @click.prevent="openForm"
+      >
+        предварительная запись
+      </a>
     </footer>
   </section>
 </template>
@@ -159,7 +165,7 @@ function openForm() {
       line-height: 1.4;
     }
 
-    button {
+    .feedback-button {
       padding: 12px 36px 14px;
       font-family: Play-Bold;
       color: #9b9c98;

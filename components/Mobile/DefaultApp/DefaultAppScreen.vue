@@ -116,6 +116,12 @@ async function back(): Promise<void> {
   emits('selectWindow', null)
 }
 
+function getParentPageUrl(): string {
+  const parentPage = windowsStore.openedWindows.find(w => w.id === screen.parentId)
+  if (!parentPage) return '#'
+  return generateUrl(parentPage)
+}
+
 function closeApp(): void {
   windowsStore.closeAllWindows()
   window.history.pushState({}, '', '/desktop')
@@ -155,10 +161,11 @@ function closeScreenBySwipe(): void {
           v-if="isLoaded"
           class="header-content"
         >
-          <button
+          <a
             v-if="isMainScreen"
+            href="/desktop"
             class="menu-button menu-button_home"
-            @click="closeApp()"
+            @click.prevent="closeApp()"
           >
             <AsyncIcon
               name="House"
@@ -166,11 +173,12 @@ function closeScreenBySwipe(): void {
               :stroke-width="1.6"
               color="#3e403b"
             />
-          </button>
-          <button
+          </a>
+          <a
             v-else
+            :href="getParentPageUrl()"
             class="menu-button"
-            @click="back()"
+            @click.prevent="back()"
           >
             <AsyncIcon
               name="ChevronLeft"
@@ -178,7 +186,7 @@ function closeScreenBySwipe(): void {
               :stroke-width="1.5"
               color="#3e403b"
             />
-          </button>
+          </a>
 
           <button
             v-if="!isMainScreen"
@@ -220,13 +228,17 @@ function closeScreenBySwipe(): void {
         class="main-content"
         :class="{'main-content_grid': screen.type === 'folder'}"
       >
-        <DefaultAppIcon
+        <a
           v-for="item in content"
           :key="item.id"
-          :title="item.mobile.shortTitle || item.mobile.title"
-          :icon="item.mobile.icon || item.desktop.icon"
-          @click="launchApp(item)"
-        />
+          :href="generateUrl(item)"
+          @click.prevent="launchApp(item)"
+        >
+          <DefaultAppIcon
+            :title="item.mobile.shortTitle || item.mobile.title"
+            :icon="item.mobile.icon || item.desktop.icon"
+          />
+        </a>
 
         <DefaultAppContent
           v-if="screen.routeParams?.file"

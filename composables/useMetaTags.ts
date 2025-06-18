@@ -9,7 +9,7 @@ export function useMetaTags() {
       description: seo.description,
       ogTitle: seo.ogTitle || seo.title,
       ogDescription: seo.ogDescription || seo.ogDescription,
-      ogImageUrl: seo.ogImageUrl || config.public.IMAGES_URL + '/brand/og-main-image.png',
+      ogImageUrl: config.public.IMAGES_URL + (seo.ogImageUrl || '/brand/og-main-image-dark.png'),
       ogImageWidth: '1200',
       ogImageHeight: '630',
       ogImageAlt: seo.title,
