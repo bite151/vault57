@@ -80,7 +80,7 @@ export const useWindowsStore = defineStore('windowsStore', () => {
       .map((item) => {
         if (item.windowId === windowId) {
           
-          setMetaTags(item.seo)
+          setMetaTags(item.seo, item.fullUrl)
           
           if (import.meta.browser) {
             window.history.pushState({}, '', item.fullUrl)

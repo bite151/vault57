@@ -27,7 +27,10 @@ export function usePage() {
     permission: 'public',
     seo: {
       title: '',
-      description: ''
+      description: '',
+      ogTitle: '',
+      ogDescription: '',
+      ogImageUrl: '',
     },
     mobile: {
       icon: '',

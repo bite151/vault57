@@ -2,11 +2,10 @@
 import AsyncIcon from "~/components/Common/AsyncIcon.vue";
 import { usePagesStore } from "~/store/pagesStore";
 import { useWindowsStore } from "~/store/windowsStore";
-import { openWindow } from "~/helpers/app.helpers";
+import {openWindow, sleep} from "~/helpers/app.helpers";
 import type { MenuItem, Page } from "~/types/Page";
 import type {PageWindow} from "~/types/Window";
 import {useAuthStore} from "~/store/authStore";
-import {sleep} from "@antfu/utils";
 
 const { folderItem, windowId } = defineProps<{
   folderItem: Page,

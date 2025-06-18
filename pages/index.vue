@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import StartScreen from "~/components/StartScreen.vue";
+import {usePagesStore} from "~/store/pagesStore";
+import {useMetaTags} from "~/composables/useMetaTags";
+import type {Page} from "~/types/Page";
 
-useSeoMeta({
-  title: 'Ретро-компьютерный клуб в Орле | Игры 90-х и 2000-х',
-  description: 'Играйте на легендарных ПК и приставках в Орле! Тематические тусовки, экскурсии и VHS-кино. Погружение в атмосферу цифрового прошлого в клубе Vault57.',
-})
+const pagesStore = usePagesStore()
+const { seo } = pagesStore.pages.find(page => page.parentId === 0) as Page
+
+const { setMetaTags } = useMetaTags()
+setMetaTags(seo, '/')
 </script>
 
 <template>

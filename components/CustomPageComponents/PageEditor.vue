@@ -271,395 +271,417 @@ async function deletePage() {
 </script>
 
 <template>
-  <TabsPanel
-    v-if="pagesStore.editedPage"
-    @on-close="confirmCloseTab"
-  />
-<!--  <div style="display: flex; height: 100%; overflow: auto;">-->
-<!--    <pre>{{form}}</pre>-->
-<!--    <pre>{{ pagesStore.editedPage }}</pre>-->
-<!--  </div>-->
-  <ControlPanel
-    v-model:tree="showTree"
-    v-model:tab="tabName"
-    @on-create="createPage"
-    @on-save="savePage"
-    @on-delete="confirmDeletePage"
-  />
-  <div
-    class="content-wrapper"
-    :class="{'page-opened': pagesStore.editedPage}"
-  >
-    <aside
-      v-if="showTree"
-      class="pages-tree"
-    >
-      <Simplebar class="scrollbar-pages-tree">
-        <PagesTree
-          @on-page-click="openPage"
-        />
-      </Simplebar>
-    </aside>
+  <ClientOnly>
+    <TabsPanel
+      v-if="pagesStore.editedPage"
+      @on-close="confirmCloseTab"
+    />
+    <!--  <div style="display: flex; height: 100%; overflow: auto;">-->
+    <!--    <pre>{{form}}</pre>-->
+    <!--    <pre>{{ pagesStore.editedPage }}</pre>-->
+    <!--  </div>-->
+    <ControlPanel
+      v-model:tree="showTree"
+      v-model:tab="tabName"
+      @on-create="createPage"
+      @on-save="savePage"
+      @on-delete="confirmDeletePage"
+    />
     <div
-      v-if="form"
-      class="main-frame"
+      class="content-wrapper"
+      :class="{'page-opened': pagesStore.editedPage}"
     >
+      <aside
+        v-if="showTree"
+        class="pages-tree"
+      >
+        <Simplebar class="scrollbar-pages-tree">
+          <PagesTree
+            @on-page-click="openPage"
+          />
+        </Simplebar>
+      </aside>
       <div
-        v-if="tabName === 'json'"
-        class="form-block form-block_full-width"
-      >
-        <JsonEditor v-model="form" />
-      </div>
-
-      <div v-if="tabName === 'preview'">
-        <FileContent
-          v-if="form.type !== 'review'"
-          :content="form.content"
-        />
-        <div
-          v-if="form.type === 'review'"
-          v-html="form.content.review"
-          style="padding: 24px;"
-        />
-      </div>
-
-      <el-form
-        v-else
-        class="form"
-        :class="{'form_p0': tabName === 'content' && form.type === 'review'}"
-        label-position="top"
+        v-if="form"
+        class="main-frame"
       >
         <div
-          v-if="tabName === 'general'"
-          class="form-block"
-        >
-          <el-form-item
-            label="Parent page"
-            prop="parentId"
-          >
-            <el-select
-              v-model="form.parentId"
-              filterable
-              placeholder="Select"
-              size="large"
-            >
-              <el-option
-                v-for="item in pagesStore.pages"
-                :key="item.id"
-                :label="item.desktop.title"
-                :value="item.id!"
-              />
-            </el-select>
-          </el-form-item>
-
-          <el-form-item
-            label="Url"
-            prop="url"
-          >
-            <el-input
-              size="large"
-              v-model="form.url"
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="Page type"
-            prop="type"
-          >
-            <el-select
-              v-model="form.type"
-              placeholder="Select"
-              size="large"
-            >
-              <el-option
-                v-for="item in types"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-
-          <el-form-item
-            label="Permission"
-            prop="permission"
-          >
-            <el-select
-              v-model="form.permission"
-              placeholder="Select"
-              size="large"
-            >
-              <el-option
-                v-for="item in permissions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-
-          <el-form-item
-            label="Range"
-            prop="range"
-          >
-            <el-input-number
-              v-model="form.range"
-              class="mx-4"
-              :min="0"
-              size="large"
-              controls-position="right"
-            />
-          </el-form-item>
-
-          <el-form-item>
-            <el-switch
-              v-model="form.isPublic"
-              size="large"
-              class="ml-2"
-              width="100"
-              inline-prompt
-              :active-value="1"
-              :inactive-value="0"
-              active-text="public"
-              inactive-text="not public"
-            />
-          </el-form-item>
-        </div>
-
-        <div
-          v-if="tabName === 'seo'"
-          class="form-block"
-        >
-          <el-form-item
-            label="Title"
-            prop="seo.title"
-          >
-            <el-input
-              size="large"
-              v-model="form[tabName].title"
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="Description"
-            prop="seo.description"
-          >
-            <el-input
-              type="textarea"
-              size="large"
-              autosize
-              v-model="form[tabName].description"
-            />
-          </el-form-item>
-        </div>
-
-        <div
-          v-if="tabName === 'desktop'"
-          class="form-block"
-        >
-          <el-form-item
-            label="Icon"
-            prop="desktop.icon"
-          >
-            <el-input
-              size="large"
-              v-model="form[tabName].icon"
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="Title"
-            prop="desktop.title"
-          >
-            <el-input
-              size="large"
-              v-model="form[tabName].title"
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="Custom component (optional)"
-            prop="desktop.contentComponent"
-          >
-            <el-input
-              size="large"
-              v-model="form[tabName].contentComponent"
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="Window background"
-            prop="desktop.background"
-          >
-            <el-input
-              size="large"
-              v-model="form[tabName].background"
-            />
-          </el-form-item>
-
-          <el-form-item
-            class="mb-0"
-          >
-            <el-checkbox
-              v-model="form[tabName].showInFinder"
-              :true-value="1"
-              :false-value="0"
-              label="Show in Finder"
-              size="large"
-            />
-          </el-form-item>
-
-          <el-form-item
-            class="mb-0"
-          >
-            <el-checkbox
-              v-model="form[tabName].resetWidth"
-              :true-value="1"
-              :false-value="0"
-              label="Reset window width"
-              size="large"
-            />
-          </el-form-item>
-
-          <el-form-item
-            class="mb-0"
-          >
-            <el-checkbox
-              v-model="form[tabName].hideStatusBar"
-              :true-value="1"
-              :false-value="0"
-              label="Hide window's Status bar"
-              size="large"
-            />
-          </el-form-item>
-        </div>
-
-        <div
-          v-if="tabName === 'mobile'"
-          class="form-block"
-        >
-          <el-form-item
-            label="Icon"
-            prop="mobile.icon"
-          >
-            <el-input
-              size="large"
-              v-model="form[tabName].icon"
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="Title"
-            prop="mobile.title"
-          >
-            <el-input
-              size="large"
-              v-model="form[tabName].title"
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="Launcher's icon title"
-            prop="mobile.shortTitle"
-          >
-            <el-input
-              size="large"
-              v-model="form[tabName].shortTitle"
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="Description"
-            prop="mobile.description"
-          >
-            <el-input
-              v-model="form[tabName].description"
-              type="textarea"
-              size="large"
-              autosize
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="Custom component (optional)"
-            prop="mobile.contentComponent"
-          >
-            <el-input
-              size="large"
-              v-model="form[tabName].contentComponent"
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="App background color"
-            prop="mobile.background"
-          >
-            <el-input
-              size="large"
-              v-model="form[tabName].background"
-            />
-          </el-form-item>
-
-
-          <el-form-item
-            class="mb-0"
-          >
-            <el-checkbox
-              v-model="form[tabName].showInLauncher"
-              :true-value="1"
-              :false-value="0"
-              label="Show in Launcher"
-              size="large"
-            />
-          </el-form-item>
-
-          <el-form-item
-            class="mb-0"
-          >
-            <el-checkbox
-              v-model="form[tabName].loadParentScreens"
-              :true-value="1"
-              :false-value="0"
-              label="Load Parent's Screens"
-              size="large"
-            />
-          </el-form-item>
-        </div>
-
-        <div
-          v-if="tabName === 'content'"
+          v-if="tabName === 'json'"
           class="form-block form-block_full-width"
         >
-          <ContentEditor
-            v-if="form.type !== 'review'"
-            v-model="form.content"
-          />
-          <ClientOnly >
-            <ReviewEditor
-              :key="form.id"
-              v-if="form.type === 'review'"
-              v-model="form.content.review"
-            />
-          </ClientOnly>
+          <JsonEditor v-model="form" />
         </div>
-      </el-form>
-    </div>
-    <div
-      v-else
-      class="empty-state"
-    >
-      <p>
-        Pick a page to edit<br/>
-        or<br/>
-        <span
-          class="create-page"
-          @click="createPage()"
+
+        <div v-if="tabName === 'preview'">
+          <FileContent
+            v-if="form.type !== 'review'"
+            :content="form.content"
+          />
+          <div
+            v-if="form.type === 'review'"
+            v-html="form.content.review"
+            style="padding: 24px;"
+          />
+        </div>
+
+        <el-form
+          v-else
+          class="form"
+          :class="{'form_p0': tabName === 'content' && form.type === 'review'}"
+          label-position="top"
         >
+          <div
+            v-if="tabName === 'general'"
+            class="form-block"
+          >
+            <el-form-item
+              label="Parent page"
+              prop="parentId"
+            >
+              <el-select
+                v-model="form.parentId"
+                filterable
+                placeholder="Select"
+                size="large"
+              >
+                <el-option
+                  v-for="item in pagesStore.pages"
+                  :key="item.id"
+                  :label="item.desktop.title"
+                  :value="item.id!"
+                />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item
+              label="Url"
+              prop="url"
+            >
+              <el-input
+                size="large"
+                v-model="form.url"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="Page type"
+              prop="type"
+            >
+              <el-select
+                v-model="form.type"
+                placeholder="Select"
+                size="large"
+              >
+                <el-option
+                  v-for="item in types"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item
+              label="Permission"
+              prop="permission"
+            >
+              <el-select
+                v-model="form.permission"
+                placeholder="Select"
+                size="large"
+              >
+                <el-option
+                  v-for="item in permissions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item
+              label="Range"
+              prop="range"
+            >
+              <el-input-number
+                v-model="form.range"
+                class="mx-4"
+                :min="0"
+                size="large"
+                controls-position="right"
+              />
+            </el-form-item>
+
+            <el-form-item>
+              <el-switch
+                v-model="form.isPublic"
+                size="large"
+                class="ml-2"
+                width="100"
+                inline-prompt
+                :active-value="1"
+                :inactive-value="0"
+                active-text="public"
+                inactive-text="not public"
+              />
+            </el-form-item>
+          </div>
+
+          <div
+            v-if="tabName === 'seo'"
+            class="form-block"
+          >
+            <el-form-item
+              label="Title"
+              prop="seo.title"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].title"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="Description"
+              prop="seo.description"
+            >
+              <el-input
+                type="textarea"
+                size="large"
+                autosize
+                v-model="form[tabName].description"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="OG Title"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].ogTitle"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="OG Description"
+            >
+              <el-input
+                type="textarea"
+                size="large"
+                autosize
+                v-model="form[tabName].ogDescription"
+              />
+            </el-form-item>
+          </div>
+
+          <div
+            v-if="tabName === 'desktop'"
+            class="form-block"
+          >
+            <el-form-item
+              label="Icon"
+              prop="desktop.icon"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].icon"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="Title"
+              prop="desktop.title"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].title"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="Custom component (optional)"
+              prop="desktop.contentComponent"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].contentComponent"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="Window background"
+              prop="desktop.background"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].background"
+              />
+            </el-form-item>
+
+            <el-form-item
+              class="mb-0"
+            >
+              <el-checkbox
+                v-model="form[tabName].showInFinder"
+                :true-value="1"
+                :false-value="0"
+                label="Show in Finder"
+                size="large"
+              />
+            </el-form-item>
+
+            <el-form-item
+              class="mb-0"
+            >
+              <el-checkbox
+                v-model="form[tabName].resetWidth"
+                :true-value="1"
+                :false-value="0"
+                label="Reset window width"
+                size="large"
+              />
+            </el-form-item>
+
+            <el-form-item
+              class="mb-0"
+            >
+              <el-checkbox
+                v-model="form[tabName].hideStatusBar"
+                :true-value="1"
+                :false-value="0"
+                label="Hide window's Status bar"
+                size="large"
+              />
+            </el-form-item>
+          </div>
+
+          <div
+            v-if="tabName === 'mobile'"
+            class="form-block"
+          >
+            <el-form-item
+              label="Icon"
+              prop="mobile.icon"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].icon"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="Title"
+              prop="mobile.title"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].title"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="Launcher's icon title"
+              prop="mobile.shortTitle"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].shortTitle"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="Description"
+              prop="mobile.description"
+            >
+              <el-input
+                v-model="form[tabName].description"
+                type="textarea"
+                size="large"
+                autosize
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="Custom component (optional)"
+              prop="mobile.contentComponent"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].contentComponent"
+              />
+            </el-form-item>
+
+            <el-form-item
+              label="App background color"
+              prop="mobile.background"
+            >
+              <el-input
+                size="large"
+                v-model="form[tabName].background"
+              />
+            </el-form-item>
+
+
+            <el-form-item
+              class="mb-0"
+            >
+              <el-checkbox
+                v-model="form[tabName].showInLauncher"
+                :true-value="1"
+                :false-value="0"
+                label="Show in Launcher"
+                size="large"
+              />
+            </el-form-item>
+
+            <el-form-item
+              class="mb-0"
+            >
+              <el-checkbox
+                v-model="form[tabName].loadParentScreens"
+                :true-value="1"
+                :false-value="0"
+                label="Load Parent's Screens"
+                size="large"
+              />
+            </el-form-item>
+          </div>
+
+          <div
+            v-if="tabName === 'content'"
+            class="form-block form-block_full-width"
+          >
+            <ContentEditor
+              v-if="form.type !== 'review'"
+              v-model="form.content"
+            />
+            <ClientOnly >
+              <ReviewEditor
+                :key="form.id"
+                v-if="form.type === 'review'"
+                v-model="form.content.review"
+              />
+            </ClientOnly>
+          </div>
+        </el-form>
+      </div>
+      <div
+        v-else
+        class="empty-state"
+      >
+        <p>
+          Pick a page to edit<br/>
+          or<br/>
+          <span
+            class="create-page"
+            @click="createPage()"
+          >
           start a fresh one
       </span>
-      </p>
+        </p>
+      </div>
     </div>
-  </div>
+  </ClientOnly>
 </template>
 
 <style lang="scss">

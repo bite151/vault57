@@ -1,6 +1,9 @@
 export interface SEO {
   title: string;
   description: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImageUrl?: string;
 }
 
 export type PageType = 'file' | 'folder' | 'review'
